@@ -1,13 +1,15 @@
 import { colors } from "@/styles/global";
+import { Ionicons } from "@expo/vector-icons";
 import { Image, StyleSheet, Text, View } from "react-native";
 
 export type TouristSpotCardData = {
   id: string;
   name: string;
   municipality: string;
-  category: string;
-  description: string;
   image: string;
+  rating: number;
+  reviewCount: string;
+  price: number;
 };
 
 type Props = Readonly<{
@@ -19,10 +21,19 @@ export default function TouristSpotCard({ spot }: Props) {
     <View style={styles.card}>
       <Image source={{ uri: spot.image }} style={styles.image} />
       <View style={styles.content}>
-        <Text style={styles.category}>{spot.category}</Text>
-        <Text style={styles.title}>{spot.name}</Text>
-        <Text style={styles.location}>{spot.municipality}</Text>
-        <Text style={styles.description}>{spot.description}</Text>
+        <Text style={styles.title} numberOfLines={1}>
+          {spot.name}
+        </Text>
+        <Text style={styles.location}>· {spot.municipality}</Text>
+        <View style={styles.row}>
+          <View style={styles.ratingRow}>
+            <Ionicons name="star" size={13} color={colors.primary} />
+            <Text style={styles.rating}>
+              {spot.rating} ({spot.reviewCount})
+            </Text>
+          </View>
+          <Text style={styles.price}>$ {spot.price.toLocaleString()}</Text>
+        </View>
       </View>
     </View>
   );
@@ -33,42 +44,44 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surface,
     borderRadius: 18,
     overflow: "hidden",
-    marginBottom: 16,
-    shadowColor: "#000",
-    shadowOpacity: 0.05,
-    shadowRadius: 12,
-    shadowOffset: { width: 0, height: 4 },
-    elevation: 2,
+    width: 170,
   },
   image: {
     width: "100%",
-    height: 180,
+    height: 130,
     backgroundColor: colors.surfaceMuted,
   },
   content: {
-    padding: 14,
-  },
-  category: {
-    color: colors.primary,
-    fontSize: 11,
-    fontWeight: "700",
-    marginBottom: 6,
-    textTransform: "uppercase",
+    paddingTop: 8,
   },
   title: {
-    fontSize: 18,
-    fontWeight: "800",
+    fontSize: 14,
+    fontWeight: "600",
     color: colors.text,
-    marginBottom: 4,
   },
   location: {
-    color: colors.textMuted,
     fontSize: 12,
-    marginBottom: 8,
+    color: colors.textMuted,
+    marginTop: 2,
+    marginBottom: 6,
   },
-  description: {
-    color: colors.textSoft,
+  row: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  ratingRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 3,
+  },
+  rating: {
+    fontSize: 12,
+    color: colors.textMuted,
+  },
+  price: {
     fontSize: 13,
-    lineHeight: 19,
+    fontWeight: "700",
+    color: colors.text,
   },
 });
