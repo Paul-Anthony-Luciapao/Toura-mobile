@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 14,
-    fontWeight: "600",
+    fontFamily: "Poppins_600Bold",
     color: colors.text,
   },
   location: {
@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
   },
   price: {
     fontSize: 13,
-    fontWeight: "700",
+    fontFamily: "Poppins_700Bold",
     color: colors.text,
   },
 });

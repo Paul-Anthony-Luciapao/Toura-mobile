@@ -40,12 +40,12 @@ export const globalStyles = StyleSheet.create({
   },
   title: {
     fontSize: 20,
-    fontWeight: "bold",
+    fontFamily: "Poppins_700Bold",
     color: colors.text,
   },
   sectionTitle: {
     fontSize: 20,
-    fontWeight: "800",
+    fontFamily: "Poppins_700Bold",
     color: colors.text,
     marginTop: 30,
     marginBottom: 16,

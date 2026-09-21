@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
   },
   headline: {
     fontSize: 34,
-    fontWeight: "700",
+    fontFamily: "Poppins_700Bold",
     color: colors.white,
     lineHeight: 40,
   },
