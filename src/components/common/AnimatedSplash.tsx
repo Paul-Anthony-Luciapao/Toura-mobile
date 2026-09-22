@@ -1,11 +1,10 @@
 import { colors } from "@/styles/global";
-import { Ionicons } from "@expo/vector-icons";
+import { Image } from "expo-image";
 import { useEffect } from "react";
 import {
   ImageBackground,
   ImageSourcePropType,
   StyleSheet,
-  Text,
   View,
 } from "react-native";
 import Animated, {
@@ -18,14 +17,12 @@ import Animated, {
 
 type Props = Readonly<{
   backgroundImage: ImageSourcePropType;
-  logoText?: string;
   holdDuration?: number;
   onFinish: () => void;
 }>;
 
 export default function AnimatedSplash({
   backgroundImage,
-  logoText = "Toura",
   holdDuration = 1800,
   onFinish,
 }: Props) {
@@ -61,9 +58,12 @@ export default function AnimatedSplash({
       <ImageBackground source={backgroundImage} style={styles.background}>
         <View style={styles.overlay} />
         <View style={styles.center}>
-          <Animated.View style={[styles.logoRow, logoStyle]}>
-            <Ionicons name="leaf-outline" size={40} color={colors.white} />
-            <Text style={styles.logoText}>{logoText}</Text>
+          <Animated.View style={logoStyle}>
+            <Image
+              source={require("../../../assets/logo/toura-logo.png")}
+              style={styles.logo}
+              contentFit="contain"
+            />
           </Animated.View>
         </View>
       </ImageBackground>
@@ -84,14 +84,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  logoRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-  },
-  logoText: {
-    fontSize: 32,
-    fontFamily: "Poppins_700Bold",
-    color: colors.white,
+  logo: {
+    width: 120,
+    height: 120,
   },
 });
