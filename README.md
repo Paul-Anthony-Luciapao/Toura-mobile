@@ -1,56 +1,232 @@
-# Welcome to your Expo app 👋
+# Toura Mobile
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Toura is a full-stack travel app made of:
 
-## Get started
+- React Native + Expo frontend in the root project
+- Laravel backend in the `backend/` folder
 
-1. Install dependencies
+This guide explains how to install dependencies, configure environment variables, and run the app locally.
 
-   ```bash
-   npm install
-   ```
+## Prerequisites
 
-2. Start the app
+Before starting, make sure you have the following installed:
 
-   ```bash
-   npx expo start
-   ```
+- Node.js 20+
+- npm
+- Expo CLI (optional, but recommended)
+- PHP 8.2+
+- Composer
+- Git
+- Android Studio / Xcode (only if you want to run emulators)
 
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+## 1) Clone the repository
 
 ```bash
-npm run reset-project
+git clone <your-repo-url>
+cd Toura-mobile
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## 2) Install frontend dependencies
 
-### Other setup steps
+From the project root:
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+```bash
+npm install
+```
 
-## Learn more
+If you want to install Expo CLI globally:
 
-To learn more about developing your project with Expo, look at the following resources:
+```bash
+npm install -g expo-cli
+```
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+## 3) Install backend dependencies
 
-## Join the community
+This project includes a Laravel backend inside the `backend/` folder.
 
-Join our community of developers creating universal apps.
+```bash
+cd backend
+composer install
+```
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+## 4) Configure the Laravel environment
+
+Copy the example env file:
+
+```bash
+cp .env.example .env
+```
+
+Then generate the app key:
+
+```bash
+php artisan key:generate
+```
+
+For the current setup, the backend is configured to use SQLite by default in `.env.example`, so no database host setup is required unless you want to switch to MySQL/PostgreSQL.
+
+Run database migrations:
+
+```bash
+php artisan migrate
+```
+
+If needed, seed the database:
+
+```bash
+php artisan db:seed
+```
+
+## 5) Start the backend
+
+From `backend/`:
+
+```bash
+php artisan serve
+```
+
+This usually runs the API at:
+
+```text
+http://127.0.0.1:8000
+```
+
+The Expo app is configured to call the Laravel API at:
+
+```text
+http://127.0.0.1:8000/api
+```
+
+If you are testing from a physical device, replace `127.0.0.1` with your machine's local IP address in `src/services/api.ts`.
+
+## 6) Start the Expo app
+
+Open a new terminal in the project root and run:
+
+```bash
+npm start
+```
+
+Or directly:
+
+```bash
+npx expo start
+```
+
+Then choose one of the following:
+
+- Android emulator
+- iOS simulator
+- Expo Go on a physical device
+- Web preview
+
+## 7) Common startup flow
+
+To run both apps together, use two terminals:
+
+Terminal 1 - backend:
+
+```bash
+cd backend
+php artisan serve
+```
+
+Terminal 2 - frontend:
+
+```bash
+cd ..
+npm start
+```
+
+## 8) Troubleshooting
+
+### Expo app cannot connect to Laravel
+
+Check that Laravel is running and the API URL matches your environment.
+
+Open `src/services/api.ts` and verify:
+
+```ts
+baseURL: "http://127.0.0.1:8000/api";
+```
+
+For physical devices, use something like:
+
+```ts
+baseURL: "http://192.168.1.10:8000/api";
+```
+
+### Composer install fails
+
+Make sure PHP and Composer are installed correctly:
+
+```bash
+php -v
+composer -V
+```
+
+### Laravel database issue
+
+Check that the database file is writable and the `.env` file has a valid database configuration.
+
+## 9) Useful commands
+
+Frontend:
+
+```bash
+npm install
+npm start
+npx expo start --android
+npx expo start --ios
+npx expo start --web
+```
+
+Backend:
+
+```bash
+cd backend
+composer install
+cp .env.example .env
+php artisan key:generate
+php artisan migrate
+php artisan db:seed
+php artisan serve
+```
+
+## 10) Project structure
+
+```text
+Toura-mobile/
+├── app.json
+├── assets/
+├── backend/
+│   ├── app/
+│   ├── bootstrap/
+│   ├── config/
+│   ├── database/
+│   ├── public/
+│   ├── resources/
+│   ├── routes/
+│   ├── storage/
+│   ├── tests/
+│   ├── .env.example
+│   ├── composer.json
+│   ├── artisan
+│   └── README.md
+├── src/
+│   ├── app/
+│   ├── components/
+│   ├── data/
+│   ├── lib/
+│   ├── styles/
+│   └── services/
+├── package.json
+├── tsconfig.json
+└── README.md
+```
+
+## Notes
+
+- The Expo frontend is the mobile app experience.
+- The Laravel backend handles API endpoints and server-side logic.
+- You usually run both at the same time during app development.
