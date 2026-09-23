@@ -1,6 +1,7 @@
 // services/api.ts is not the backend.
 // code that talks to your backend lives here. (CRUD Functionalities)
 
+
 import axios from "axios";
 
 export const api = axios.create({
@@ -10,3 +11,4 @@ export const api = axios.create({
     "Content-Type": "application/json",
   },
 });
+
