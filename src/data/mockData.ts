@@ -448,6 +448,9 @@ export const INITIAL_TOURIST_SPOTS: TouristSpot[] = [
   {
     id: "spot-1",
     name: "Kayangan Lake",
+    rating: 4.9,
+    reviewCount: "1.3M",
+    price: 1200,
     municipality: "Coron",
     category: "Lakes & Lagoons",
     description:
@@ -459,6 +462,9 @@ export const INITIAL_TOURIST_SPOTS: TouristSpot[] = [
   {
     id: "spot-2",
     name: "Big Lagoon",
+    rating: 4.9,
+    reviewCount: "1.3M",
+    price: 1500,
     municipality: "El Nido",
     category: "Islands & Lagoons",
     description:
@@ -470,6 +476,9 @@ export const INITIAL_TOURIST_SPOTS: TouristSpot[] = [
   {
     id: "spot-3",
     name: "Nacpan Beach",
+    rating: 4.0,
+    reviewCount: "900k",
+    price: 1000,
     municipality: "El Nido",
     category: "Beaches",
     description:
@@ -481,6 +490,9 @@ export const INITIAL_TOURIST_SPOTS: TouristSpot[] = [
   {
     id: "spot-4",
     name: "Puerto Princesa Subterranean River",
+    rating: 5.0,
+    reviewCount: "2M",
+    price: 5000,
     municipality: "Puerto Princesa",
     category: "UNESCO World Heritage",
     description:
@@ -492,6 +504,9 @@ export const INITIAL_TOURIST_SPOTS: TouristSpot[] = [
   {
     id: "spot-5",
     name: "Long Beach",
+    rating: 4.2,
+    reviewCount: "1.5M",
+    price: 1310,
     municipality: "San Vicente",
     category: "Beaches",
     description:
@@ -503,6 +518,9 @@ export const INITIAL_TOURIST_SPOTS: TouristSpot[] = [
   {
     id: "spot-6",
     name: "Twin Lagoon",
+    rating: 4.3,
+    reviewCount: "1.2M",
+    price: 1450,
     municipality: "Coron",
     category: "Lakes & Lagoons",
     description:

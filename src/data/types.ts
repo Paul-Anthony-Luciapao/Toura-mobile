@@ -63,6 +63,9 @@ export type TouristSpot = {
   description: string;
   image: string;
   tags: string[];
+  rating: number;
+  reviewCount: string;
+  price: number;
 };
 
 export type Booking = {
