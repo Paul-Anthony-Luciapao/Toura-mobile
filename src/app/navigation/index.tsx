@@ -1,10 +1,10 @@
 import { ScrollView, StatusBar, StyleSheet, Text, View } from "react-native";
-import PrimaryButton from "../components/common/PrimaryButton";
-import ResortCard from "../components/home/ResortCard";
-import SectionHeader from "../components/home/SectionHeader";
-import TouristSpotCard from "../components/home/TouristSpotCard";
-import { INITIAL_RESORTS, INITIAL_TOURIST_SPOTS } from "../data/mockData";
-import { colors, globalStyles } from "../styles/global";
+import PrimaryButton from "../../components/common/PrimaryButton";
+import ResortCard from "../../components/home/ResortCard";
+import SectionHeader from "../../components/home/SectionHeader";
+import TouristSpotCard from "../../components/home/TouristSpotCard";
+import { INITIAL_RESORTS, INITIAL_TOURIST_SPOTS } from "../../data/mockData";
+import { colors, globalStyles } from "../../styles/global";
 
 export default function Index() {
   return (
