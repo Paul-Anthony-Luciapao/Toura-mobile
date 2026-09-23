@@ -4,10 +4,27 @@ import SectionHeader from "@/components/home/SectionHeader";
 import TourPackageCard from "@/components/home/TourPackageCard";
 import TouristSpotCard from "@/components/home/TouristSpotCard";
 import { INITIAL_TOURIST_SPOTS } from "@/data/mockData";
+import { api } from "@/services/api";
 import { colors } from "@/styles/global";
+import { useEffect } from "react";
 import { ScrollView, StatusBar, StyleSheet, View } from "react-native";
 
 export default function Index() {
+  //!  This useEffect is for testing Frontend Backend connection remove during production
+  useEffect(() => {
+    const testLaravel = async () => {
+      try {
+        const response = await api.get("/test");
+
+        console.log(response.data);
+      } catch (error) {
+        console.error("Laravel API error:", error);
+      }
+    };
+
+    testLaravel();
+  }, []);
+
   return (
     <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
       <StatusBar barStyle="light-content" />
