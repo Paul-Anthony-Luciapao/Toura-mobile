@@ -42,7 +42,8 @@ export default function TouristSpotCard({ spot }: Props) {
 const styles = StyleSheet.create({
   card: {
     backgroundColor: colors.surface,
-    borderRadius: 18,
+    borderTopLeftRadius: 18,
+    borderTopRightRadius: 18,
     overflow: "hidden",
     width: 170,
   },

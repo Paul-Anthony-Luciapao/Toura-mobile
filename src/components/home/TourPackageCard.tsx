@@ -29,7 +29,8 @@ const styles = StyleSheet.create({
   image: {
     width: "100%",
     height: 130,
-    borderRadius: 18,
+    borderTopLeftRadius: 18,
+    borderTopRightRadius: 18,
     backgroundColor: colors.surfaceMuted,
   },
   title: {
