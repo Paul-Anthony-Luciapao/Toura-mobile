@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 22,
-    fontWeight: "800",
+    fontFamily: "Poppins_700Bold",
     color: colors.text,
   },
   subtitle: {
