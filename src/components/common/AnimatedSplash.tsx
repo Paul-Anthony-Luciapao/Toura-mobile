@@ -57,7 +57,7 @@ export default function AnimatedSplash({
           <Animated.View className="items-center" style={logoStyle}>
             <Image
               source={require("../../../assets/logo/toura-logo.png")}
-              style={{ width: 120, height: 120 }}
+              className="h-[120px] w-[120px]"
               contentFit="contain"
             />
           </Animated.View>
