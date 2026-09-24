@@ -1,5 +1,4 @@
-import { colors } from "@/styles/global";
-import { Pressable, StyleSheet, Text } from "react-native";
+import { Pressable, Text } from "react-native";
 
 type Props = Readonly<{
   label: string;
@@ -14,37 +13,20 @@ export default function PrimaryButton({
 }: Props) {
   return (
     <Pressable
-      style={[styles.button, variant === "secondary" && styles.secondaryButton]}
+      className={
+        variant === "secondary"
+          ? "items-center justify-center rounded-[14px] bg-slate-200 px-[18px] py-[14px]"
+          : "items-center justify-center rounded-[14px] bg-[#0f766e] px-[18px] py-[14px]"
+      }
       onPress={onPress}>
       <Text
-        style={[
-          styles.label,
-          variant === "secondary" && styles.secondaryLabel,
-        ]}>
+        className={
+          variant === "secondary"
+            ? "text-[15px] font-bold text-slate-900"
+            : "text-[15px] font-bold text-white"
+        }>
         {label}
       </Text>
     </Pressable>
   );
 }
-
-const styles = StyleSheet.create({
-  button: {
-    backgroundColor: colors.primary,
-    borderRadius: 14,
-    paddingVertical: 14,
-    paddingHorizontal: 18,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  secondaryButton: {
-    backgroundColor: colors.surfaceMuted,
-  },
-  label: {
-    color: colors.surface,
-    fontSize: 15,
-    fontWeight: "700",
-  },
-  secondaryLabel: {
-    color: colors.text,
-  },
-});

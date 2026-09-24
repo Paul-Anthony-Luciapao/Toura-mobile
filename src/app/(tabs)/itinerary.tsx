@@ -1,10 +1,9 @@
-import { globalStyles } from "@/styles/global";
 import { Text, View } from "react-native";
 
 export default function ItineraryScreen() {
   return (
-    <View style={globalStyles.container}>
-      <Text style={globalStyles.title}>Itinerary</Text>
+    <View className="flex-1 bg-white px-5 pt-16">
+      <Text className="text-[20px] font-bold text-slate-900">Itinerary</Text>
     </View>
   );
 }

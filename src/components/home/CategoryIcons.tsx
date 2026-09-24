@@ -1,14 +1,12 @@
-import { colors } from "@/styles/global";
 import { Ionicons } from "@expo/vector-icons";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 
-// Provisional — not backed by a data type yet, revisit once category behavior is decided.
 type CategoryIconItem = {
   id: string;
   label: string;
   icon: keyof typeof Ionicons.glyphMap;
 };
-// To be change later
+
 const PLACEHOLDER_CATEGORIES: CategoryIconItem[] = [
   { id: "activities", label: "Activities", icon: "list-outline" },
   { id: "hotels", label: "Hotels", icon: "business-outline" },
@@ -27,42 +25,20 @@ export default function CategoryIcons({
   onSelect,
 }: Props) {
   return (
-    <View style={styles.row}>
+    <View className="flex-row justify-between">
       {items.map((item) => (
         <Pressable
           key={item.id}
-          style={styles.item}
+          className="items-center gap-[6px]"
           onPress={() => onSelect?.(item)}>
-          <View style={styles.circle}>
-            <Ionicons name={item.icon} size={22} color={colors.text} />
+          <View className="h-[52px] w-[52px] items-center justify-center rounded-full bg-[#eaf5f2]">
+            <Ionicons name={item.icon} size={22} color="#0f172a" />
           </View>
-          <Text style={styles.label}>{item.label}</Text>
+          <Text className="text-[11px] font-medium text-slate-900">
+            {item.label}
+          </Text>
         </Pressable>
       ))}
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  row: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-  item: {
-    alignItems: "center",
-    gap: 6,
-  },
-  circle: {
-    width: 52,
-    height: 52,
-    borderRadius: 26,
-    backgroundColor: colors.surfaceSoft,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  label: {
-    fontSize: 11,
-    fontWeight: "500",
-    color: colors.text,
-  },
-});

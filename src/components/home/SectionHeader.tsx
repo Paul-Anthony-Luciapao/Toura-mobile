@@ -1,5 +1,4 @@
-import { colors, globalStyles } from "@/styles/global";
-import { StyleSheet, Text, View } from "react-native";
+import { Text, View } from "react-native";
 
 type Props = Readonly<{
   title: string;
@@ -9,33 +8,16 @@ type Props = Readonly<{
 
 export default function SectionHeader({ title, subtitle, action }: Props) {
   return (
-    <View style={[globalStyles.header, styles.container]}>
+    <View className="mb-[14px] flex-row items-center justify-between px-0 pt-4 pb-3">
       <View>
-        <Text style={styles.title}>{title}</Text>
-        {subtitle ? <Text style={styles.subtitle}>{subtitle}</Text> : null}
+        <Text className="text-[22px] font-bold text-slate-900">{title}</Text>
+        {subtitle ? (
+          <Text className="mt-1 text-[13px] text-slate-500">{subtitle}</Text>
+        ) : null}
       </View>
-      {action ? <Text style={styles.action}>{action}</Text> : null}
+      {action ? (
+        <Text className="text-[13px] font-bold text-[#0f766e]">{action}</Text>
+      ) : null}
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    marginBottom: 14,
-  },
-  title: {
-    fontSize: 22,
-    fontFamily: "Poppins_700Bold",
-    color: colors.text,
-  },
-  subtitle: {
-    marginTop: 4,
-    fontSize: 13,
-    color: colors.textMuted,
-  },
-  action: {
-    fontSize: 13,
-    fontWeight: "700",
-    color: colors.primary,
-  },
-});

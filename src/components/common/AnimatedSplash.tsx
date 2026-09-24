@@ -1,12 +1,6 @@
-import { colors } from "@/styles/global";
 import { Image } from "expo-image";
 import { useEffect } from "react";
-import {
-  ImageBackground,
-  ImageSourcePropType,
-  StyleSheet,
-  View,
-} from "react-native";
+import { ImageBackground, ImageSourcePropType, View } from "react-native";
 import Animated, {
   runOnJS,
   useAnimatedStyle,
@@ -17,12 +11,14 @@ import Animated, {
 
 type Props = Readonly<{
   backgroundImage: ImageSourcePropType;
+  logoText?: string;
   holdDuration?: number;
   onFinish: () => void;
 }>;
 
 export default function AnimatedSplash({
   backgroundImage,
+  logoText = "Toura",
   holdDuration = 1800,
   onFinish,
 }: Props) {
@@ -54,14 +50,14 @@ export default function AnimatedSplash({
   }));
 
   return (
-    <Animated.View style={[StyleSheet.absoluteFill, containerStyle]}>
-      <ImageBackground source={backgroundImage} style={styles.background}>
-        <View style={styles.overlay} />
-        <View style={styles.center}>
-          <Animated.View style={logoStyle}>
+    <Animated.View className="absolute inset-0" style={containerStyle}>
+      <ImageBackground source={backgroundImage} className="flex-1">
+        <View className="absolute inset-0 bg-[rgba(11,46,74,0.75)]" />
+        <View className="flex-1 items-center justify-center">
+          <Animated.View className="items-center" style={logoStyle}>
             <Image
               source={require("../../../assets/logo/toura-logo.png")}
-              style={styles.logo}
+              style={{ width: 120, height: 120 }}
               contentFit="contain"
             />
           </Animated.View>
@@ -70,22 +66,3 @@ export default function AnimatedSplash({
     </Animated.View>
   );
 }
-
-const styles = StyleSheet.create({
-  background: {
-    flex: 1,
-  },
-  overlay: {
-    ...StyleSheet.absoluteFill,
-    backgroundColor: colors.heroOverlayBottom,
-  },
-  center: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  logo: {
-    width: 120,
-    height: 120,
-  },
-});

@@ -1,5 +1,3 @@
-import { StyleSheet } from "react-native";
-
 export const colors = {
   background: "#ffffff",
   surface: "#ffffff",
@@ -21,56 +19,3 @@ export const colors = {
   heroOverlayBottom: "rgba(11, 46, 74, 0.75)",
   white: "#ffffff",
 };
-
-export const globalStyles = StyleSheet.create({
-  // Use for screens with full-bleed content at the top (hero images, etc.)
-  screen: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
-  // Use for sections that need the standard horizontal margin (everything below the hero)
-  content: {
-    paddingHorizontal: 20,
-  },
-  container: {
-    flex: 1,
-    backgroundColor: colors.background,
-    paddingTop: 60,
-    paddingHorizontal: 20,
-  },
-  title: {
-    fontSize: 20,
-    fontFamily: "Poppins_700Bold",
-    color: colors.text,
-  },
-  sectionTitle: {
-    fontSize: 20,
-    fontFamily: "Poppins_700Bold",
-    color: colors.text,
-    marginTop: 30,
-    marginBottom: 16,
-  },
-  empty: {
-    color: colors.textSecondary,
-    fontSize: 14,
-  },
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingHorizontal: 20,
-    paddingTop: 16,
-    paddingBottom: 12,
-  },
-  headerSearch: {
-    // for the search-bar style header seen on inner screens (light mint bg, back button, search, bell)
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    backgroundColor: colors.surfaceSoft,
-    paddingHorizontal: 20,
-    paddingTop: 16,
-    paddingBottom: 12,
-    gap: 12,
-  },
-});

@@ -1,12 +1,5 @@
-import { colors } from "@/styles/global";
 import { Ionicons } from "@expo/vector-icons";
-import {
-  ImageBackground,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from "react-native";
+import { ImageBackground, Text, TextInput, View } from "react-native";
 import Header from "./Header";
 
 type Props = Readonly<{
@@ -17,63 +10,23 @@ type Props = Readonly<{
 
 export default function HeroBanner({ image, headline, subtext }: Props) {
   return (
-    <ImageBackground source={{ uri: image }} style={styles.background}>
-      <View style={styles.overlay} />
+    <ImageBackground source={{ uri: image }} className="h-[480px] w-full">
+      <View className="absolute inset-0 bg-[rgba(11,46,74,0.75)]" />
       <Header variant="light" />
-      <View style={styles.content}>
-        <Text style={styles.headline}>{headline}</Text>
-        <Text style={styles.subtext}>{subtext}</Text>
-        <View style={styles.searchBar}>
-          <Ionicons name="search" size={18} color={colors.textMuted} />
+      <View className="mt-10 px-5">
+        <Text className="text-[34px] font-bold leading-[40px] text-white">
+          {headline}
+        </Text>
+        <Text className="mt-3 text-[14px] leading-5 text-white">{subtext}</Text>
+        <View className="mt-5 flex-row items-center gap-2 rounded-[14px] bg-white px-[14px] py-[12px]">
+          <Ionicons name="search" size={18} color="#64748b" />
           <TextInput
             placeholder="Search destinations, itineraries..."
-            placeholderTextColor={colors.textMuted}
-            style={styles.searchInput}
+            placeholderTextColor="#64748b"
+            className="flex-1 text-[14px] text-slate-900"
           />
         </View>
       </View>
     </ImageBackground>
   );
 }
-
-const styles = StyleSheet.create({
-  background: {
-    width: "100%",
-    height: 480,
-  },
-  overlay: {
-    ...StyleSheet.absoluteFill,
-    backgroundColor: colors.heroOverlayBottom,
-  },
-  content: {
-    paddingHorizontal: 20,
-    marginTop: 40,
-  },
-  headline: {
-    fontSize: 34,
-    fontFamily: "Poppins_700Bold",
-    color: colors.white,
-    lineHeight: 40,
-  },
-  subtext: {
-    fontSize: 14,
-    color: colors.white,
-    marginTop: 12,
-    lineHeight: 20,
-  },
-  searchBar: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: colors.white,
-    borderRadius: 14,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-    marginTop: 20,
-    gap: 8,
-  },
-  searchInput: {
-    flex: 1,
-    fontSize: 14,
-    color: colors.text,
-  },
-});
