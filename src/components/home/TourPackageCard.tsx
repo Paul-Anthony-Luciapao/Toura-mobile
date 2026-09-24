@@ -1,5 +1,4 @@
-import { colors } from "@/styles/global";
-import { Image, StyleSheet, Text, View } from "react-native";
+import { Image, Text, View } from "react-native";
 
 export type TourPackageCardData = {
   id: string;
@@ -13,30 +12,16 @@ type Props = Readonly<{
 
 export default function TourPackageCard({ item }: Props) {
   return (
-    <View style={styles.card}>
-      <Image source={{ uri: item.image }} style={styles.image} />
-      <Text style={styles.title} numberOfLines={1}>
+    <View className="w-[170px]">
+      <Image
+        source={{ uri: item.image }}
+        className="h-[130px] w-full rounded-t-[18px] bg-slate-200"
+      />
+      <Text
+        className="mt-2 text-[14px] font-semibold text-slate-900"
+        numberOfLines={1}>
         {item.title}
       </Text>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  card: {
-    width: 170,
-  },
-  image: {
-    width: "100%",
-    height: 130,
-    borderTopLeftRadius: 18,
-    borderTopRightRadius: 18,
-    backgroundColor: colors.surfaceMuted,
-  },
-  title: {
-    fontSize: 14,
-    fontFamily: "Poppins_600Bold",
-    color: colors.text,
-    marginTop: 8,
-  },
-});

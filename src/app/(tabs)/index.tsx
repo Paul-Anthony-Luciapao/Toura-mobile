@@ -5,12 +5,10 @@ import TourPackageCard from "@/components/home/TourPackageCard";
 import TouristSpotCard from "@/components/home/TouristSpotCard";
 import { INITIAL_TOURIST_SPOTS } from "@/data/mockData";
 import { api } from "@/services/api";
-import { colors } from "@/styles/global";
 import { useEffect } from "react";
-import { ScrollView, StatusBar, StyleSheet, View } from "react-native";
+import { ScrollView, StatusBar, View } from "react-native";
 
 export default function Index() {
-  //!  This useEffect is for testing Frontend Backend connection remove during production
   useEffect(() => {
     const testLaravel = async () => {
       try {
@@ -26,7 +24,7 @@ export default function Index() {
   }, []);
 
   return (
-    <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
+    <ScrollView className="flex-1 bg-white" contentContainerClassName="pb-10">
       <StatusBar barStyle="light-content" />
 
       <HeroBanner
@@ -35,33 +33,33 @@ export default function Index() {
         subtext="Explore breathing destinations, curated itinerary packages, and unforgettable experience."
       />
 
-      <View style={styles.body}>
-        <View style={styles.categorySection}>
+      <View className="px-5">
+        <View className="mt-5">
           <CategoryIcons />
         </View>
 
-        <View style={styles.section}>
+        <View className="mt-7">
           <SectionHeader title="Itinerary Packages" action="View all" />
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.horizontalList}>
+            contentContainerClassName="pb-1">
             {INITIAL_TOURIST_SPOTS.map((spot) => (
-              <View key={spot.id} style={styles.cardSpacing}>
+              <View key={spot.id} className="mr-[14px]">
                 <TouristSpotCard spot={spot} />
               </View>
             ))}
           </ScrollView>
         </View>
 
-        <View style={styles.section}>
+        <View className="mt-7">
           <SectionHeader title="Tour Packages" action="View all" />
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.horizontalList}>
+            contentContainerClassName="pb-1">
             {INITIAL_TOURIST_SPOTS.map((spot) => (
-              <View key={spot.id} style={styles.cardSpacing}>
+              <View key={spot.id} className="mr-[14px]">
                 <TourPackageCard
                   item={{ id: spot.id, title: spot.name, image: spot.image }}
                 />
@@ -73,28 +71,3 @@ export default function Index() {
     </ScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
-  content: {
-    paddingBottom: 40,
-  },
-  body: {
-    paddingHorizontal: 20,
-  },
-  categorySection: {
-    marginTop: 20,
-  },
-  section: {
-    marginTop: 28,
-  },
-  horizontalList: {
-    paddingBottom: 4,
-  },
-  cardSpacing: {
-    marginRight: 14,
-  },
-});

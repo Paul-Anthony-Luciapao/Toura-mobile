@@ -1,10 +1,9 @@
-import { globalStyles } from "@/styles/global";
 import { Text, View } from "react-native";
 
 export default function Messages() {
   return (
-    <View style={globalStyles.container}>
-      <Text style={globalStyles.title}>Message</Text>
+    <View className="flex-1 bg-white px-5 pt-16">
+      <Text className="text-[20px] font-bold text-slate-900">Message</Text>
     </View>
   );
 }

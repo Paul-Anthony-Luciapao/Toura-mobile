@@ -1,6 +1,5 @@
-import { colors } from "@/styles/global";
 import { Ionicons } from "@expo/vector-icons";
-import { Image, StyleSheet, Text, View } from "react-native";
+import { Image, Text, View } from "react-native";
 
 export type TouristSpotCardData = {
   id: string;
@@ -18,71 +17,32 @@ type Props = Readonly<{
 
 export default function TouristSpotCard({ spot }: Props) {
   return (
-    <View style={styles.card}>
-      <Image source={{ uri: spot.image }} style={styles.image} />
-      <View style={styles.content}>
-        <Text style={styles.title} numberOfLines={1}>
+    <View className="w-[170px] overflow-hidden rounded-t-[18px] bg-white">
+      <Image
+        source={{ uri: spot.image }}
+        className="h-[130px] w-full bg-slate-200"
+      />
+      <View className="pt-2">
+        <Text
+          className="text-[14px] font-semibold text-slate-900"
+          numberOfLines={1}>
           {spot.name}
         </Text>
-        <Text style={styles.location}>· {spot.municipality}</Text>
-        <View style={styles.row}>
-          <View style={styles.ratingRow}>
-            <Ionicons name="star" size={13} color={colors.primary} />
-            <Text style={styles.rating}>
+        <Text className="mt-1 mb-1.5 text-[12px] text-slate-500">
+          · {spot.municipality}
+        </Text>
+        <View className="flex-row items-center justify-between">
+          <View className="flex-row items-center gap-[3px]">
+            <Ionicons name="star" size={13} color="#0f766e" />
+            <Text className="text-[12px] text-slate-500">
               {spot.rating} ({spot.reviewCount})
             </Text>
           </View>
-          <Text style={styles.price}>$ {spot.price.toLocaleString()}</Text>
+          <Text className="text-[13px] font-bold text-slate-900">
+            $ {spot.price.toLocaleString()}
+          </Text>
         </View>
       </View>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  card: {
-    backgroundColor: colors.surface,
-    borderTopLeftRadius: 18,
-    borderTopRightRadius: 18,
-    overflow: "hidden",
-    width: 170,
-  },
-  image: {
-    width: "100%",
-    height: 130,
-    backgroundColor: colors.surfaceMuted,
-  },
-  content: {
-    paddingTop: 8,
-  },
-  title: {
-    fontSize: 14,
-    fontFamily: "Poppins_600Bold",
-    color: colors.text,
-  },
-  location: {
-    fontSize: 12,
-    color: colors.textMuted,
-    marginTop: 2,
-    marginBottom: 6,
-  },
-  row: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  ratingRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 3,
-  },
-  rating: {
-    fontSize: 12,
-    color: colors.textMuted,
-  },
-  price: {
-    fontSize: 13,
-    fontFamily: "Poppins_700Bold",
-    color: colors.text,
-  },
-});
