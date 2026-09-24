@@ -1,4 +1,5 @@
 import AnimatedSplash from "@/components/common/AnimatedSplash";
+import "@/lib/nativewind-setup";
 import {
   Poppins_400Regular,
   Poppins_500Medium,
