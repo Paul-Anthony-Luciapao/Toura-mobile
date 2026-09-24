@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\ResortController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -13,3 +14,5 @@ Route::get('/test', function () {
         'message' => 'Laravel API is working!',
     ]);
 });
+
+Route::apiResource('resorts', ResortController::class);
