@@ -1,9 +1,10 @@
 import CategoryIcons from "@/components/home/CategoryIcons";
 import HeroBanner from "@/components/home/HeroBanner";
+import ResortCard from "@/components/home/ResortCard";
 import SectionHeader from "@/components/home/SectionHeader";
 import TourPackageCard from "@/components/home/TourPackageCard";
 import TouristSpotCard from "@/components/home/TouristSpotCard";
-import { INITIAL_TOURIST_SPOTS } from "@/data/mockData";
+import { INITIAL_RESORTS, INITIAL_TOURIST_SPOTS } from "@/data/mockData";
 import { api } from "@/services/api";
 import { colors } from "@/styles/global";
 import { useEffect } from "react";
@@ -38,6 +39,20 @@ export default function Index() {
       <View style={styles.body}>
         <View style={styles.categorySection}>
           <CategoryIcons />
+        </View>
+
+        <View style={styles.section}>
+          <SectionHeader title="Places to stay" action="View all" />
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.horizontalList}>
+            {INITIAL_RESORTS.map((resort) => (
+              <View key={resort.id} style={styles.cardSpacing}>
+                <ResortCard resort={resort} />
+              </View>
+            ))}
+          </ScrollView>
         </View>
 
         <View style={styles.section}>
