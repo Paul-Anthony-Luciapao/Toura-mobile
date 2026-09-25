@@ -6,8 +6,9 @@ import { formatCurrency } from "../../lib/formatters";
 import { colors, globalStyles } from "../../styles/global";
 
 export default function ResortDetailScreen() {
-  const { id } = useLocalSearchParams<{ id: string }>();
-  const resort = INITIAL_RESORTS.find((item) => item.id === id);
+  const { id } = useLocalSearchParams<{ id?: string | string[] }>();
+  const resortId = Array.isArray(id) ? id[0] : id;
+  const resort = INITIAL_RESORTS.find((item) => item.id === resortId);
 
   if (!resort) {
     return (

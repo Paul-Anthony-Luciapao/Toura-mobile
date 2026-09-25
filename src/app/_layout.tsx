@@ -35,7 +35,7 @@ export default function RootLayout() {
     <SafeAreaProvider>
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen
-          name="navigation"
+          name="(tabs)"
           options={{
             headerShown: false,
           }}
