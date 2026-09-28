@@ -34,7 +34,7 @@ export default function Index() {
       />
 
       <View className="px-5">
-        <View className="mt-5">
+        <View className="-mt-[26px]">
           <CategoryIcons />
         </View>
 
