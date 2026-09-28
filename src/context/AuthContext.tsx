@@ -1,30 +1,80 @@
-import type { User } from "@/data/types";
-import { createContext, useContext, useState, type ReactNode } from "react";
+import type { Role, User } from "@/data/types";
+import { tokenStorage } from "@/lib/tokenStorage";
+import { setAuthToken } from "@/services/api";
+import { fetchMe, loginRequest, logoutRequest } from "@/services/auth";
+import axios from "axios";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  type ReactNode,
+} from "react";
+
+type SignInOptions = { role?: Role; remember?: boolean };
 
 type AuthState = {
   user: User | null;
-  token: string | null;
-  signIn: (user: User, token: string) => void;
-  signOut: () => void;
+  loading: boolean;
+  signIn: (
+    email: string,
+    password: string,
+    options?: SignInOptions,
+  ) => Promise<void>;
+  signOut: () => Promise<void>;
 };
 
 const AuthContext = createContext<AuthState | null>(null);
 
 export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
   const [user, setUser] = useState<User | null>(null);
-  const [token, setToken] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  const signIn = (nextUser: User, nextToken: string) => {
+  // Restore a saved session on launch.
+  useEffect(() => {
+    (async () => {
+      try {
+        const stored = await tokenStorage.get();
+        if (stored) {
+          setAuthToken(stored);
+          setUser(await fetchMe());
+        }
+      } catch (error) {
+        // Drop the token only if the server rejected it; keep it through network errors.
+        if (axios.isAxiosError(error) && error.response?.status === 401) {
+          await tokenStorage.clear();
+        }
+        setAuthToken(null);
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, []);
+
+  const signIn: AuthState["signIn"] = async (email, password, options = {}) => {
+    const { user: nextUser, token } = await loginRequest(
+      email,
+      password,
+      options.role,
+    );
+    setAuthToken(token);
+    if (options.remember) await tokenStorage.set(token);
     setUser(nextUser);
-    setToken(nextToken);
   };
-  const signOut = () => {
+
+  const signOut = async () => {
+    try {
+      await logoutRequest();
+    } catch {
+      // Token may already be invalid or the server unreachable. Clear locally regardless.
+    }
+    await tokenStorage.clear();
+    setAuthToken(null);
     setUser(null);
-    setToken(null);
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, signIn, signOut }}>
+    <AuthContext.Provider value={{ user, loading, signIn, signOut }}>
       {children}
     </AuthContext.Provider>
   );
