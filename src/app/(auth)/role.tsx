@@ -10,7 +10,9 @@ export default function RoleSelectScreen() {
         <GradientButton
           label="User"
           className="w-[220px]"
-          onPress={() => router.push("/login")}
+          onPress={() =>
+            router.push({ pathname: "/login", params: { role: "traveler" } })
+          }
         />
         <GradientButton label="Guest" className="w-[220px]" />
         <GradientButton label="Owner" className="w-[220px]" />

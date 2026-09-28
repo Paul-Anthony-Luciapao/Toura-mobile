@@ -2,24 +2,34 @@ import AuthLayout from "@/components/auth/AuthLayout";
 import AuthTextField from "@/components/auth/AuthTextField";
 import GradientButton from "@/components/common/GradientButton";
 import { useAuth } from "@/context/AuthContext";
-import { INITIAL_USERS } from "@/data/mockData";
+import type { Role } from "@/data/types";
+import { getErrorMessage } from "@/services/api";
 import { Ionicons } from "@expo/vector-icons";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { Pressable, Text, View } from "react-native";
 
 export default function LoginScreen() {
   const { signIn } = useAuth();
+  const { role } = useLocalSearchParams<{ role?: Role }>();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const canSubmit = email.trim().length > 0 && password.length > 0;
 
-  const handleLogin = () => {
-    // TEMPORARY: signs in as the mock traveler until the Sanctum endpoint is wired.
-    signIn(INITIAL_USERS[0], "dev-token");
-    router.replace("/(tabs)");
+  const handleLogin = async () => {
+    setError(null);
+    setSubmitting(true);
+    try {
+      await signIn(email.trim(), password, { role, remember });
+      router.replace("/(tabs)");
+    } catch (e) {
+      setError(getErrorMessage(e));
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -73,10 +83,16 @@ export default function LoginScreen() {
         </Pressable>
       </View>
 
+      {error ? (
+        <Text className="mt-4 text-center font-['Poppins_400Regular'] text-[12px] text-red-600">
+          {error}
+        </Text>
+      ) : null}
+
       <GradientButton
-        label="Log in"
+        label={submitting ? "Logging in..." : "Log in"}
         className="mt-6"
-        disabled={!canSubmit}
+        disabled={!canSubmit || submitting}
         onPress={handleLogin}
       />
 
