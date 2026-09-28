@@ -1,8 +1,15 @@
+import { useAuth } from "@/context/AuthContext";
 import { colors } from "@/styles/global";
 import { Ionicons } from "@expo/vector-icons";
-import { Tabs } from "expo-router";
+import { Redirect, Tabs } from "expo-router";
 
 export default function TabsLayout() {
+  const { user } = useAuth();
+
+  if (!user) {
+    return <Redirect href="/role" />;
+  }
+
   return (
     <Tabs
       screenOptions={{
