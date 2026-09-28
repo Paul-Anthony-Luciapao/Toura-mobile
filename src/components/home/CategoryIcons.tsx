@@ -31,7 +31,7 @@ export default function CategoryIcons({
           key={item.id}
           className="items-center gap-[6px]"
           onPress={() => onSelect?.(item)}>
-          <View className="h-[52px] w-[52px] items-center justify-center rounded-full bg-[#eaf5f2]">
+          <View className="h-[52px] w-[52px] items-center justify-center rounded-full bg-[#eaf5f2] shadow-md shadow-black/10">
             <Ionicons name={item.icon} size={22} color="#0f172a" />
           </View>
           <Text className="text-[11px] font-medium text-slate-900">
