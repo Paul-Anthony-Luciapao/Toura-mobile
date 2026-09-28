@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\Api\AccommodationController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\OfferController;
 use App\Http\Controllers\Api\ResortController;
 use Illuminate\Support\Facades\Route;
 
@@ -22,6 +24,12 @@ Route::prefix('v1')->group(function () {
         Route::get('/me', [AuthController::class, 'me']);
     });
 
-    // Resorts (auth/ownership lockdown lands in the next step)
+    // Resorts
     Route::apiResource('resorts', ResortController::class);
+
+    // Accommodations
+    Route::apiResource('accommodations', AccommodationController::class);
+
+    // Offers
+    Route::apiResource('offers', OfferController::class);
 });
