@@ -1,4 +1,5 @@
 import AnimatedSplash from "@/components/common/AnimatedSplash";
+import { AuthProvider } from "@/context/AuthContext";
 import "@/lib/nativewind-setup";
 import {
   Poppins_400Regular,
@@ -12,6 +13,8 @@ import * as SplashScreen from "expo-splash-screen";
 import { useEffect, useState } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import "../../global.css";
+
+SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const [showSplash, setShowSplash] = useState(true);
@@ -35,31 +38,23 @@ export default function RootLayout() {
 
   return (
     <SafeAreaProvider>
-      <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen
-          name="navigation"
-          options={{
-            headerShown: false,
-          }}
-        />
+      <AuthProvider>
+        <Stack screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="(auth)" />
+          <Stack.Screen name="(tabs)" />
+          <Stack.Screen
+            name="resort/[id]"
+            options={{ headerShown: true, title: "Resort" }}
+          />
+        </Stack>
 
-        <Stack.Screen
-          name="resort/[id]"
-          options={{
-            headerShown: true,
-            title: "Resort",
-          }}
-        />
-      </Stack>
-
-      {showSplash && (
-        <AnimatedSplash
-          backgroundImage={require("../../assets/images/Flash-screen-image.png")}
-          onFinish={() => {
-            setShowSplash(false);
-          }}
-        />
-      )}
+        {showSplash && (
+          <AnimatedSplash
+            backgroundImage={require("../../assets/images/Flash-screen-image.png")}
+            onFinish={() => setShowSplash(false)}
+          />
+        )}
+      </AuthProvider>
     </SafeAreaProvider>
   );
 }
