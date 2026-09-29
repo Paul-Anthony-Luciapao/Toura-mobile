@@ -100,7 +100,7 @@ export default function LoginScreen() {
         <Text className="font-['Poppins_400Regular'] text-[12px] text-[#334155]">
           Don't have an account?{" "}
         </Text>
-        <Pressable hitSlop={8}>
+        <Pressable onPress={() => router.push("/signup")} hitSlop={8}>
           <Text className="font-['Poppins_600SemiBold'] text-[12px] text-[#238276]">
             Sign up here
           </Text>

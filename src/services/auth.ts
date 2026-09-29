@@ -14,6 +14,19 @@ export async function loginRequest(
   return data;
 }
 
+export async function registerRequest(input: {
+  name: string;
+  email: string;
+  password: string;
+  phone?: string;
+}) {
+  const { data } = await api.post<{ user: User; token: string }>(
+    "/register",
+    input,
+  );
+  return data;
+}
+
 export async function fetchMe() {
   const { data } = await api.get<{ user: User }>("/me");
   return data.user;
