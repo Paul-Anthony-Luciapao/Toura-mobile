@@ -1,7 +1,12 @@
 import type { Role, User } from "@/data/types";
 import { tokenStorage } from "@/lib/tokenStorage";
 import { setAuthToken } from "@/services/api";
-import { fetchMe, loginRequest, logoutRequest } from "@/services/auth";
+import {
+  fetchMe,
+  loginRequest,
+  logoutRequest,
+  registerRequest,
+} from "@/services/auth";
 import axios from "axios";
 import {
   createContext,
@@ -13,6 +18,13 @@ import {
 
 type SignInOptions = { role?: Role; remember?: boolean };
 
+type SignUpInput = {
+  name: string;
+  email: string;
+  password: string;
+  phone?: string;
+};
+
 type AuthState = {
   user: User | null;
   loading: boolean;
@@ -22,6 +34,10 @@ type AuthState = {
     options?: SignInOptions,
   ) => Promise<void>;
   signOut: () => Promise<void>;
+  signUp: (
+    input: SignUpInput,
+    options?: { remember?: boolean },
+  ) => Promise<void>;
 };
 
 const AuthContext = createContext<AuthState | null>(null);
@@ -62,6 +78,13 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
     setUser(nextUser);
   };
 
+  const signUp: AuthState["signUp"] = async (input, options = {}) => {
+    const { user: nextUser, token } = await registerRequest(input);
+    setAuthToken(token);
+    if (options.remember) await tokenStorage.set(token);
+    setUser(nextUser);
+  };
+
   const signOut = async () => {
     try {
       await logoutRequest();
@@ -74,7 +97,7 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, signIn, signOut }}>
+    <AuthContext.Provider value={{ user, loading, signIn, signOut, signUp }}>
       {children}
     </AuthContext.Provider>
   );
