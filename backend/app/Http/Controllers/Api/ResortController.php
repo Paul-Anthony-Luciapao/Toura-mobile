@@ -21,7 +21,6 @@ class ResortController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'owner_id' => 'required|exists:users,id',
             'name' => 'required|string|max:255',
             'tagline' => 'nullable|string|max:255',
             'municipality' => 'required|string|max:255',
@@ -35,7 +34,10 @@ class ResortController extends Controller
             'status' => 'nullable|string|max:255',
         ]);
 
-        $resort = Resort::create($validated);
+        $resort = Resort::create([
+            ...$validated,
+            'owner_id' => $request->user()->id,
+        ]);
 
         return response()->json($resort, 201);
     }
@@ -57,8 +59,13 @@ class ResortController extends Controller
     {
         $resort = Resort::findOrFail($id);
 
+        if ($resort->owner_id !== $request->user()->id) {
+            return response()->json([
+                'message' => 'You are not authorized to modify this resort.',
+            ], 403);
+        }        
+
         $validated = $request->validate([
-            'owner_id' => 'sometimes|exists:users,id',
             'name' => 'sometimes|string|max:255',
             'tagline' => 'nullable|string|max:255',
             'municipality' => 'sometimes|string|max:255',
@@ -80,9 +87,15 @@ class ResortController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request, string $id)
     {
         $resort = Resort::findOrFail($id);
+
+        if ($resort->owner_id !== $request->user()->id) {
+            return response()->json([
+                'message' => 'You are not authorized to delete this resort.',
+            ], 403);
+        }
 
         $resort->delete();
 
