@@ -64,7 +64,7 @@ export type TouristSpot = {
   image: string;
   tags: string[];
   rating: number;
-  reviewCount: string;
+  reviewCount: number;
   price: number;
 };
 
