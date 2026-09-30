@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\OfferController;
 use App\Http\Controllers\Api\ResortController;
 use App\Http\Controllers\Api\TouristSpotController;
+use App\Http\Controllers\Api\BookingController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/test', function () {
@@ -25,8 +26,17 @@ Route::prefix('v1')->group(function () {
         Route::get('/me', [AuthController::class, 'me']);
     });
 
-    // Resorts
-    Route::apiResource('resorts', ResortController::class);
+    // Public resort routes
+    Route::get('/resorts', [ResortController::class, 'index']);
+    Route::get('/resorts/{resort}', [ResortController::class, 'show']);
+
+    // Authenticated resort management
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::post('/resorts', [ResortController::class, 'store']);
+        Route::put('/resorts/{resort}', [ResortController::class, 'update']);
+        Route::patch('/resorts/{resort}', [ResortController::class, 'update']);
+        Route::delete('/resorts/{resort}', [ResortController::class, 'destroy']);
+    });
 
     // Accommodations
     Route::apiResource('accommodations', AccommodationController::class);
@@ -36,4 +46,9 @@ Route::prefix('v1')->group(function () {
 
     // Tourist Spots
     Route::apiResource('tourist-spots', TouristSpotController::class);
+
+    // Bookings
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::apiResource('bookings', BookingController::class)->except(['destroy']);
+    });
 });
