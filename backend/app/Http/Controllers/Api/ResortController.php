@@ -8,68 +8,68 @@ use Illuminate\Http\Request;
 
 class ResortController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(Request $request)
     {
-        return response()->json(Resort::all());
+        $resorts = Resort::query()
+            ->where('status', 'published')
+            ->when($request->filled('municipality'), fn ($q) => $q->where('municipality', $request->string('municipality')))
+            ->latest()
+            ->paginate($request->integer('per_page', 15));
+
+        return response()->json($resorts);
     }
-    /**
-     * Store a newly created resource in storage.
-     */
+
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'owner_id' => 'required|exists:users,id',
             'name' => 'required|string|max:255',
             'tagline' => 'nullable|string|max:255',
             'municipality' => 'required|string|max:255',
             'location' => 'required|string|max:255',
             'description' => 'required|string',
             'cover_image' => 'nullable|string|max:255',
-            'rating' => 'nullable|numeric|min:0|max:5',
-            'review_count' => 'nullable|integer|min:0',
+            'images' => 'nullable|array',
+            'images.*' => 'string',
             'base_price' => 'required|numeric|min:0',
             'amenities' => 'nullable|array',
-            'status' => 'nullable|string|max:255',
+            'status' => 'nullable|in:draft,published,archived',
         ]);
 
-        $resort = Resort::create($validated);
+        // owner_id always comes from the authenticated user, never from the request.
+        $resort = Resort::create($validated + [
+            'owner_id' => $request->user()->id,
+            'status' => $validated['status'] ?? 'draft',
+        ]);
 
         return response()->json($resort, 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
-        $resort = Resort::findOrFail($id);
+        $resort = Resort::with(['accommodations', 'offers'])
+            ->where('status', 'published')
+            ->findOrFail($id);
 
         return response()->json($resort);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
         $resort = Resort::findOrFail($id);
+        abort_unless($resort->owner_id === $request->user()->id, 403, 'Not your resort.');
 
         $validated = $request->validate([
-            'owner_id' => 'sometimes|exists:users,id',
             'name' => 'sometimes|string|max:255',
             'tagline' => 'nullable|string|max:255',
             'municipality' => 'sometimes|string|max:255',
             'location' => 'sometimes|string|max:255',
             'description' => 'sometimes|string',
             'cover_image' => 'nullable|string|max:255',
-            'rating' => 'nullable|numeric|min:0|max:5',
-            'review_count' => 'nullable|integer|min:0',
+            'images' => 'nullable|array',
+            'images.*' => 'string',
             'base_price' => 'sometimes|numeric|min:0',
             'amenities' => 'nullable|array',
-            'status' => 'nullable|string|max:255',
+            'status' => 'nullable|in:draft,published,archived',
         ]);
 
         $resort->update($validated);
@@ -77,17 +77,13 @@ class ResortController extends Controller
         return response()->json($resort);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    public function destroy(Request $request, string $id)
     {
         $resort = Resort::findOrFail($id);
+        abort_unless($resort->owner_id === $request->user()->id, 403, 'Not your resort.');
 
         $resort->delete();
 
-        return response()->json([
-            'message' => 'Resort deleted successfully.',
-        ]);
+        return response()->json(['message' => 'Resort deleted successfully.']);
     }
 }
