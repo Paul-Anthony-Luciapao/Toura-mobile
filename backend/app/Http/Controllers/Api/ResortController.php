@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ResortResource;
 use App\Models\Resort;
 use Illuminate\Http\Request;
 
@@ -16,7 +17,7 @@ class ResortController extends Controller
             ->latest()
             ->paginate($request->integer('per_page', 15));
 
-        return response()->json($resorts);
+        return ResortResource::collection($resorts);
     }
 
     public function store(Request $request)
@@ -35,13 +36,12 @@ class ResortController extends Controller
             'status' => 'nullable|in:draft,published,archived',
         ]);
 
-        // owner_id always comes from the authenticated user, never from the request.
         $resort = Resort::create($validated + [
             'owner_id' => $request->user()->id,
             'status' => $validated['status'] ?? 'draft',
         ]);
 
-        return response()->json($resort, 201);
+        return new ResortResource($resort);
     }
 
     public function show(string $id)
@@ -50,7 +50,7 @@ class ResortController extends Controller
             ->where('status', 'published')
             ->findOrFail($id);
 
-        return response()->json($resort);
+        return new ResortResource($resort);
     }
 
     public function update(Request $request, string $id)
@@ -74,7 +74,7 @@ class ResortController extends Controller
 
         $resort->update($validated);
 
-        return response()->json($resort);
+        return new ResortResource($resort);
     }
 
     public function destroy(Request $request, string $id)
