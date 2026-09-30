@@ -1,3 +1,4 @@
+import { formatCurrency, formatReviewCount } from "@/lib/formatters";
 import { Ionicons } from "@expo/vector-icons";
 import { Image, Text, View } from "react-native";
 
@@ -7,7 +8,7 @@ export type TouristSpotCardData = {
   municipality: string;
   image: string;
   rating: number;
-  reviewCount: string;
+  reviewCount: number;
   price: number;
 };
 
@@ -35,11 +36,11 @@ export default function TouristSpotCard({ spot }: Props) {
           <View className="flex-row items-center gap-[3px]">
             <Ionicons name="star" size={13} color="#0f766e" />
             <Text className="text-[12px] text-slate-500">
-              {spot.rating} ({spot.reviewCount})
+              {spot.rating} ({formatReviewCount(spot.reviewCount)})
             </Text>
           </View>
           <Text className="text-[13px] font-bold text-slate-900">
-            $ {spot.price.toLocaleString()}
+            {formatCurrency(spot.price)}
           </Text>
         </View>
       </View>
