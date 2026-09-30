@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\AccommodationController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\OfferController;
 use App\Http\Controllers\Api\ResortController;
+use App\Http\Controllers\Api\TouristSpotController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/test', function () {
@@ -32,4 +33,7 @@ Route::prefix('v1')->group(function () {
 
     // Offers
     Route::apiResource('offers', OfferController::class);
+
+    // Tourist Spots
+    Route::apiResource('tourist-spots', TouristSpotController::class);
 });
