@@ -12,10 +12,13 @@ Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:10
 // Public: browsing resorts
 Route::apiResource('resorts', ResortController::class)->only(['index', 'show']);
 
-// Logged-in only
+// Owner-only: managing resorts
+Route::middleware(['auth:sanctum', 'owner'])->group(function () {
+    Route::apiResource('resorts', ResortController::class)->only(['store', 'update', 'destroy']);
+});
+
+// Logged-in only (any role)
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
     Route::post('/logout', [AuthController::class, 'logout']);
-
-    Route::apiResource('resorts', ResortController::class)->except(['index', 'show']);
 });

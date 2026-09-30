@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('location');
             $table->text('description');
             $table->string('cover_image')->nullable();
+            $table->json('images')->nullable();
             $table->decimal('rating', 3, 2)->default(0);
             $table->unsignedInteger('review_count')->default(0);
             $table->decimal('base_price', 10, 2);

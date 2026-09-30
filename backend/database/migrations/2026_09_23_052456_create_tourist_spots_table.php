@@ -19,6 +19,9 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->string('image')->nullable();
             $table->json('tags')->nullable();
+            $table->decimal('rating', 3, 2)->default(0);
+            $table->unsignedInteger('review_count')->default(0);
+            $table->decimal('price', 10, 2)->default(0);
             $table->timestamps();
         });
     }
