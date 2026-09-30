@@ -39,10 +39,26 @@ Route::prefix('v1')->group(function () {
     });
 
     // Accommodations
-    Route::apiResource('accommodations', AccommodationController::class);
+    Route::get('/accommodations', [AccommodationController::class, 'index']);
+    Route::get('/accommodations/{accommodation}', [AccommodationController::class, 'show']);
+
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::post('/accommodations', [AccommodationController::class, 'store']);
+        Route::put('/accommodations/{accommodation}', [AccommodationController::class, 'update']);
+        Route::patch('/accommodations/{accommodation}', [AccommodationController::class, 'update']);
+        Route::delete('/accommodations/{accommodation}', [AccommodationController::class, 'destroy']);
+    });
 
     // Offers
-    Route::apiResource('offers', OfferController::class);
+    Route::get('/offers', [OfferController::class, 'index']);
+    Route::get('/offers/{offer}', [OfferController::class, 'show']);
+
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::post('/offers', [OfferController::class, 'store']);
+        Route::put('/offers/{offer}', [OfferController::class, 'update']);
+        Route::patch('/offers/{offer}', [OfferController::class, 'update']);
+        Route::delete('/offers/{offer}', [OfferController::class, 'destroy']);
+    });
 
     // Tourist Spots
     Route::apiResource('tourist-spots', TouristSpotController::class);
