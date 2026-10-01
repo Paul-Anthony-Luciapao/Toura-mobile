@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import SearchBar from "@/components/common/SearchBar";
 import TouristSpotCard from "@/components/home/TouristSpotCard";
 import { INITIAL_TOURIST_SPOTS } from "@/data/mockData";
@@ -14,9 +15,13 @@ import {
     View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+=======
+import { Text, View } from "react-native";
+>>>>>>> origin/main
 
 function EmptyState({ search }: Readonly<{ search: string }>) {
   return (
+<<<<<<< HEAD
     <View className="items-center gap-2 px-8 pt-20">
       <View className="h-16 w-16 items-center justify-center rounded-full bg-surfaceSoft">
         <Ionicons
@@ -35,6 +40,10 @@ function EmptyState({ search }: Readonly<{ search: string }>) {
           ? `Nothing matches "${search}". Try another name or municipality.`
           : "Browse destinations and curated itineraries will show up here."}
       </Text>
+=======
+    <View className="flex-1 bg-white px-5 pt-16">
+      <Text className="text-[20px] font-bold text-slate-900">Itinerary</Text>
+>>>>>>> origin/main
     </View>
   );
 }

@@ -1,4 +1,5 @@
 import AnimatedSplash from "@/components/common/AnimatedSplash";
+import "@/lib/nativewind-setup";
 import {
     Poppins_400Regular,
     Poppins_500Medium,
@@ -10,10 +11,9 @@ import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect, useState } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import "../../global.css";
 import "../global.css";
 import "../lib/icons";
-
-
 
 export default function RootLayout() {
   const [showSplash, setShowSplash] = useState(true);

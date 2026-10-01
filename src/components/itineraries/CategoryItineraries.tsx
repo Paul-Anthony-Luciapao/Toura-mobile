@@ -1,5 +1,10 @@
-import { useState } from 'react';
-import { Pressable, ScrollView, Text, View } from 'react-native';
+import { useState } from "react";
+import {
+    Pressable,
+    ScrollView,
+    Text,
+    View,
+} from "react-native";
 
 type CategoryItineraryPlaces = {
   id: string;
@@ -8,12 +13,12 @@ type CategoryItineraryPlaces = {
 };
 
 const PLACEHOLDER_CATEGORIES_ITINERARIES: CategoryItineraryPlaces[] = [
-  { id: 'all', name: 'All', label: 'All' },
-  { id: '1', name: 'Palawan', label: 'Palawan' },
-  { id: '2', name: 'Cebu', label: 'Cebu' },
-  { id: '3', name: 'Baguio', label: 'Baguio' },
-  { id: '4', name: 'Siargao', label: 'Siargao' },
-  { id: '5', name: 'Vigan', label: 'Vigan' },
+  { id: "all", name: "All", label: "All" },
+  { id: "1", name: "Palawan", label: "Palawan" },
+  { id: "2", name: "Cebu", label: "Cebu" },
+  { id: "3", name: "Baguio", label: "Baguio" },
+  { id: "4", name: "Siargao", label: "Siargao" },
+  { id: "5", name: "Vigan", label: "Vigan" },
 ];
 
 type Props = Readonly<{
@@ -25,7 +30,7 @@ const CategoryItineraries = ({
   items = PLACEHOLDER_CATEGORIES_ITINERARIES,
   onSelect,
 }: Props) => {
-  const [selectedId, setSelectedId] = useState('all');
+  const [selectedId, setSelectedId] = useState("all");
 
   const handleSelect = (item: CategoryItineraryPlaces) => {
     setSelectedId(item.id);
@@ -34,36 +39,39 @@ const CategoryItineraries = ({
 
   return (
     <ScrollView
-        horizontal={true}
-        showsHorizontalScrollIndicator={false}
-        contentContainerClassName="flex-row items-center gap-2 px-4 py-2"
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      contentContainerStyle={{
+        paddingHorizontal: 16,
+        paddingVertical: 8,
+        gap: 8,
+      }}
     >
-        {items.map((item) => {
-            const isSelected = selectedId === item.id;
+      {items.map((item) => {
+        const isSelected = selectedId === item.id;
 
-            return (
+        return (
+          <Pressable
+            key={item.id}
+            onPress={() => handleSelect(item)}
+            className={`rounded-full px-4 py-2 ${
+              isSelected ? "bg-primary" : "bg-transparent"
+            }`}
+          >
+            <Text
+              className={`font-poppins-medium text-[11px] ${
+                isSelected ? "text-white" : "text-textMuted"
+              }`}
+            >
+              {item.label}
+            </Text>
 
-                <Pressable
-                    key={item.id}
-                    onPress={() => handleSelect(item)}
-                    className={`rounded-full px-4 py-2 ${
-                    isSelected ? 'bg-primary' : 'bg-transparent'
-                    }`}
-                >
-                    <Text
-                    className={`text-[11px] font-medium ${
-                        isSelected ? 'text-white' : 'text-textMe'
-                    }`}
-                    >
-                    {item.label}
-                    </Text>
-
-                    {isSelected && (
-                    <View className="h-1 w-1 rounded-full bg-primary" />
-                    )}
-                </Pressable> 
-            );
-        })}
+            {isSelected && (
+              <View className="absolute bottom-0 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-white" />
+            )}
+          </Pressable>
+        );
+      })}
     </ScrollView>
   );
 };

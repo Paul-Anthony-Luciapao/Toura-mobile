@@ -1,11 +1,8 @@
-import {
-    ImageBackground,
-    Text,
-    View,
-} from "react-native";
-
 import { colors } from "@/styles/global";
 import SearchBar from "../common/SearchBar";
+
+import { ImageBackground, Text, View } from "react-native";
+
 import Header from "./Header";
 
 type Props = Readonly<{
@@ -34,7 +31,7 @@ export default function HeroBanner({ image, headline, subtext }: Props) {
           {headline}
         </Text>
 
-        <Text className="max-w-80 mt-3 text-xl leading-6 text-white">
+        <Text className="mt-3 max-w-80 text-xl leading-6 text-white">
           {subtext}
         </Text>
 

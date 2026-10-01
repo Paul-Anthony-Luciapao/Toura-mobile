@@ -14,11 +14,12 @@ export default function SectionHeader({
   onActionPress,
 }: Props) {
   return (
-    <View className="mb-3.5 flex-row items-center justify-between">
+    <View className="mb-[14px] flex-row items-center justify-between px-0 pt-4 pb-3">
       <View>
         <Text className="font-poppins-bold text-[22px] text-textMain">
           {title}
         </Text>
+
         {subtitle ? (
           <Text className="mt-1 font-poppins text-[13px] text-textMuted">
             {subtitle}
@@ -27,7 +28,11 @@ export default function SectionHeader({
       </View>
 
       {action ? (
-        <Pressable onPress={onActionPress} hitSlop={8} className="active:opacity-70">
+        <Pressable
+          onPress={onActionPress}
+          hitSlop={8}
+          className="active:opacity-70"
+        >
           <Text className="font-poppins-bold text-[13px] text-primary">
             {action}
           </Text>
@@ -36,4 +41,3 @@ export default function SectionHeader({
     </View>
   );
 }
-
