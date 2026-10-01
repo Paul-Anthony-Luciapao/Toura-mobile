@@ -10,6 +10,10 @@ import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect, useState } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import "../global.css";
+import "../lib/icons";
+
+
 
 export default function RootLayout() {
   const [showSplash, setShowSplash] = useState(true);
@@ -48,7 +52,16 @@ export default function RootLayout() {
             title: "Resort",
           }}
         />
+
+        <Stack.Screen
+          name="itinerary-packages/index"
+          options={{
+            headerShown: false,
+          }}
+        />
       </Stack>
+
+
 
       {showSplash && (
         <AnimatedSplash

@@ -1,37 +1,33 @@
-import { Ionicons } from "@expo/vector-icons";
+import NotificationBell from "@/components/common/NotificationBell";
 import { Image } from "expo-image";
-import { StyleSheet, View } from "react-native";
+import { useRouter } from "expo-router";
+import { View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-type Props = Readonly<{
+export type Props = Readonly<{
   variant?: "light" | "dark";
 }>;
 
 export default function Header({ variant = "dark" }: Props) {
+  const router = useRouter();
+
   const insets = useSafeAreaInsets();
-  const iconColor = variant === "light" ? "#ffffff" : "#0f172a";
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top + 8 }]}>
+    <View
+      className="flex-row items-center justify-between px-5"
+      style={{ paddingTop: insets.top + 8 }}
+    >
       <Image
         source={require("../../../assets/logo/toura-logo.png")}
-        style={styles.logo}
+        className="h-9 w-9"
         contentFit="contain"
       />
-      <Ionicons name="notifications-outline" size={22} color={iconColor} />
+
+      <NotificationBell
+        variant={variant}
+        onPress={() => router.push("/notifications")}
+      />
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingHorizontal: 20,
-  },
-  logo: {
-    width: 36,
-    height: 36,
-  },
-});

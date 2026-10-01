@@ -1,41 +1,39 @@
-import { colors, globalStyles } from "@/styles/global";
-import { StyleSheet, Text, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 
 type Props = Readonly<{
   title: string;
   subtitle?: string;
   action?: string;
+  onActionPress?: () => void;
 }>;
 
-export default function SectionHeader({ title, subtitle, action }: Props) {
+export default function SectionHeader({
+  title,
+  subtitle,
+  action,
+  onActionPress,
+}: Props) {
   return (
-    <View style={[globalStyles.header, styles.container]}>
+    <View className="mb-3.5 flex-row items-center justify-between">
       <View>
-        <Text style={styles.title}>{title}</Text>
-        {subtitle ? <Text style={styles.subtitle}>{subtitle}</Text> : null}
+        <Text className="font-poppins-bold text-[22px] text-textMain">
+          {title}
+        </Text>
+        {subtitle ? (
+          <Text className="mt-1 font-poppins text-[13px] text-textMuted">
+            {subtitle}
+          </Text>
+        ) : null}
       </View>
-      {action ? <Text style={styles.action}>{action}</Text> : null}
+
+      {action ? (
+        <Pressable onPress={onActionPress} hitSlop={8} className="active:opacity-70">
+          <Text className="font-poppins-bold text-[13px] text-primary">
+            {action}
+          </Text>
+        </Pressable>
+      ) : null}
     </View>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    marginBottom: 14,
-  },
-  title: {
-    fontSize: 22,
-    fontFamily: "Poppins_700Bold",
-    color: colors.text,
-  },
-  subtitle: {
-    marginTop: 4,
-    fontSize: 13,
-    color: colors.textMuted,
-  },
-  action: {
-    fontSize: 13,
-    fontWeight: "700",
-    color: colors.primary,
-  },
-});
