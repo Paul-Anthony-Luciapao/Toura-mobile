@@ -1,18 +1,45 @@
+import PrimaryButton from "@/components/common/PrimaryButton";
+import type { Resort } from "@/data/types";
+import { formatCurrency } from "@/lib/formatters";
+import { getErrorMessage } from "@/services/api";
+import { fetchResort } from "@/services/resorts";
 import { useLocalSearchParams } from "expo-router";
-import { Image, ScrollView, Text, View } from "react-native";
-import PrimaryButton from "../../components/common/PrimaryButton";
-import { INITIAL_RESORTS } from "../../data/mockData";
-import { formatCurrency } from "../../lib/formatters";
+import { useEffect, useState } from "react";
+import { ActivityIndicator, Image, ScrollView, Text, View } from "react-native";
 
 export default function ResortDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const resort = INITIAL_RESORTS.find((item) => item.id === id);
+  const [resort, setResort] = useState<Resort | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  if (!resort) {
+  useEffect(() => {
+    (async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        setResort(await fetchResort(id));
+      } catch (e) {
+        setError(getErrorMessage(e));
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, [id]);
+
+  if (loading) {
     return (
       <View className="flex-1 items-center justify-center bg-white">
-        <Text className="text-[18px] font-bold text-slate-900">
-          Resort not found.
+        <ActivityIndicator color="#0f766e" />
+      </View>
+    );
+  }
+
+  if (error || !resort) {
+    return (
+      <View className="flex-1 items-center justify-center bg-white px-6">
+        <Text className="text-center text-[15px] font-bold text-slate-900">
+          {error ?? "Resort not found."}
         </Text>
       </View>
     );

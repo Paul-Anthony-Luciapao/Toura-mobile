@@ -6,6 +6,7 @@ import TouristSpotCard from "@/components/home/TouristSpotCard";
 import type { TouristSpot } from "@/data/types";
 import { getErrorMessage } from "@/services/api";
 import { fetchTouristSpots } from "@/services/touristSpots";
+import { router } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import {
   ActivityIndicator,
@@ -121,7 +122,13 @@ export default function Index() {
 
       <View className="px-5">
         <View className="-mt-[26px]">
-          <CategoryIcons />
+          <CategoryIcons
+            onSelect={(item) => {
+              if (item.id === "hotels") {
+                router.push("/hotels");
+              }
+            }}
+          />
         </View>
 
         {renderContent()}

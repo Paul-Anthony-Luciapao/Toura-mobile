@@ -46,6 +46,7 @@ export default function RootLayout() {
           }}>
           <Stack.Screen name="(auth)" />
           <Stack.Screen name="(tabs)" />
+          <Stack.Screen name="hotels" />
           <Stack.Screen
             name="resort/[id]"
             options={{ headerShown: true, title: "Resort" }}
