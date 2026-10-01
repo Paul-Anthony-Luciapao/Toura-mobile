@@ -1,7 +1,6 @@
 import { formatCurrency } from "@/lib/formatters";
-import { colors } from "@/styles/global";
 import { Link } from "expo-router";
-import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+import { Image, Pressable, Text, View } from "react-native";
 
 export type ResortCardData = {
   id: string;
@@ -24,100 +23,42 @@ export default function ResortCard({ resort }: Props) {
     <Link
       href={{ pathname: "/resort/[id]", params: { id: resort.id } }}
       asChild>
-      <Pressable style={styles.card}>
-        <Image source={{ uri: resort.coverImage }} style={styles.image} />
+      <Pressable className="mr-4 w-[280px] overflow-hidden rounded-[18px] bg-white shadow-sm shadow-black/5">
+        <Image
+          source={{ uri: resort.coverImage }}
+          className="h-[190px] w-full bg-slate-200"
+        />
 
-        <View style={styles.content}>
-          <View style={styles.topRow}>
-            <Text style={styles.location}>{resort.municipality}</Text>
-            <Text style={styles.rating}>★ {resort.rating}</Text>
+        <View className="p-[14px]">
+          <View className="mb-2 flex-row items-center justify-between">
+            <Text className="text-[12px] font-bold text-[#0f766e]">
+              {resort.municipality}
+            </Text>
+            <Text className="text-[12px] font-bold text-[#f59e0b]">
+              ★ {resort.rating}
+            </Text>
           </View>
 
-          <Text style={styles.title}>{resort.name}</Text>
-          <Text style={styles.tagline}>{resort.tagline}</Text>
+          <Text className="mb-1.5 text-[18px] font-extrabold text-slate-900">
+            {resort.name}
+          </Text>
+          <Text className="min-h-[36px] text-[12px] leading-[18px] text-slate-700">
+            {resort.tagline}
+          </Text>
 
-          <View style={styles.footer}>
+          <View className="mt-3 flex-row items-end justify-between">
             <View>
-              <Text style={styles.price}>
+              <Text className="text-[18px] font-extrabold text-slate-900">
                 {formatCurrency(resort.basePrice)}
               </Text>
-              <Text style={styles.meta}>per night</Text>
+              <Text className="text-[11px] text-slate-500">per night</Text>
             </View>
-            <Text style={styles.review}>{resort.reviewCount} reviews</Text>
+            <Text className="text-[11px] font-bold text-slate-500">
+              {resort.reviewCount} reviews
+            </Text>
           </View>
         </View>
       </Pressable>
     </Link>
   );
 }
-
-const styles = StyleSheet.create({
-  card: {
-    width: 280,
-    backgroundColor: colors.surface,
-    borderRadius: 18,
-    overflow: "hidden",
-    marginRight: 16,
-    shadowColor: "#000",
-    shadowOpacity: 0.06,
-    shadowRadius: 12,
-    shadowOffset: { width: 0, height: 4 },
-    elevation: 3,
-  },
-  image: {
-    width: "100%",
-    height: 190,
-    backgroundColor: colors.surfaceMuted,
-  },
-  content: {
-    padding: 14,
-  },
-  topRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 8,
-  },
-  location: {
-    color: colors.primary,
-    fontWeight: "700",
-    fontSize: 12,
-  },
-  rating: {
-    color: colors.warning,
-    fontWeight: "700",
-    fontSize: 12,
-  },
-  title: {
-    color: colors.text,
-    fontSize: 18,
-    fontWeight: "800",
-    marginBottom: 6,
-  },
-  tagline: {
-    color: colors.textSoft,
-    fontSize: 12,
-    lineHeight: 18,
-    minHeight: 36,
-  },
-  footer: {
-    marginTop: 12,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "flex-end",
-  },
-  price: {
-    color: colors.text,
-    fontWeight: "800",
-    fontSize: 18,
-  },
-  meta: {
-    color: colors.textMuted,
-    fontSize: 11,
-  },
-  review: {
-    color: colors.textMuted,
-    fontSize: 11,
-    fontWeight: "bold",
-  },
-});

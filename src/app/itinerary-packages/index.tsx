@@ -14,7 +14,9 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-function EmptyState({ search }: Readonly<{ search: string }>) {
+function EmptyState({
+  search,
+}: Readonly<{ search: string }>) {
   return (
     <View className="items-center justify-center px-8 pt-20">
       <Text className="font-poppins-semibold text-[16px] text-textMain">
@@ -76,18 +78,20 @@ const ItineraryPackagesScreen = () => {
             value={search}
             onChangeText={setSearch}
             placeholder="Search"
-            className=""
           />
         </View>
       </View>
 
-      {/* Itineraries */}
+      {/* Itineraries / Destinations */}
       <FlatList
         data={filteredSpots}
         keyExtractor={(item) => item.id}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
-        contentContainerClassName="p-4 pb-8"
+        contentContainerStyle={{
+          padding: 16,
+          paddingBottom: 32,
+        }}
         ListHeaderComponent={
           <View>
             {/* Categories */}

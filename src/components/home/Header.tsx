@@ -10,20 +10,23 @@ export type Props = Readonly<{
 
 export default function Header({ variant = "dark" }: Props) {
   const router = useRouter();
-
   const insets = useSafeAreaInsets();
 
   return (
     <View
       className="flex-row items-center justify-between px-5"
-      style={{ paddingTop: insets.top + 8 }}
+      style={{
+        paddingTop: insets.top + 8,
+      }}
     >
+      {/* Logo */}
       <Image
         source={require("../../../assets/logo/toura-logo.png")}
         className="h-9 w-9"
         contentFit="contain"
       />
 
+      {/* Notification */}
       <NotificationBell
         variant={variant}
         onPress={() => router.push("/notifications")}

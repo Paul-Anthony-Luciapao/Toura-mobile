@@ -16,21 +16,25 @@ export default function TourPackageCard({
   className = "",
 }: Props) {
   return (
-    <View className={`w-full ${className}`}>
+    <View
+      className={`w-[170px] overflow-hidden rounded-[18px] bg-white shadow-md shadow-black/10 ${className}`}
+    >
       {/* Image */}
       <Image
         source={{ uri: item.image }}
         resizeMode="cover"
-        className="h-[180px] w-full rounded-3xl bg-surfaceMuted"
+        className="h-[130px] w-full bg-slate-200"
       />
 
       {/* Title */}
-      <Text
-        className="mt-2 font-poppins-semibold text-[14px] text-textMain"
-        numberOfLines={1}
-      >
-        {item.title}
-      </Text>
+      <View className="px-3 pb-3 pt-2">
+        <Text
+          className="font-poppins-semibold text-[14px] text-textMain"
+          numberOfLines={1}
+        >
+          {item.title}
+        </Text>
+      </View>
     </View>
   );
 }

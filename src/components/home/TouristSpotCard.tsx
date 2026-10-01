@@ -23,17 +23,18 @@ export default function TouristSpotCard({
 }: Props) {
   return (
     <View
-      className={`overflow-hidden rounded-3xl bg-surface ${className}`}
+      className={`w-full overflow-hidden rounded-[18px] bg-white shadow-md shadow-black/10 ${className}`}
     >
       {/* Image */}
       <Image
         source={{ uri: spot.image }}
         resizeMode="cover"
-        className="h-[180px] w-full rounded-3xl bg-surfaceMuted"
+        className="h-[180px] w-full bg-slate-200"
       />
 
       {/* Content */}
       <View className="px-3 pb-4 pt-3">
+        {/* Name */}
         <Text
           className="font-poppins-semibold text-[15px] text-textMain"
           numberOfLines={1}
@@ -41,11 +42,14 @@ export default function TouristSpotCard({
           {spot.name}
         </Text>
 
+        {/* Municipality */}
         <Text className="mt-1 font-poppins text-[12px] text-textMuted">
           · {spot.municipality}
         </Text>
 
+        {/* Rating + Price */}
         <View className="mt-2 flex-row items-center justify-between">
+          {/* Rating */}
           <View className="flex-row items-center gap-[3px]">
             <Ionicons
               name="star"
@@ -58,6 +62,7 @@ export default function TouristSpotCard({
             </Text>
           </View>
 
+          {/* Price */}
           <Text className="font-poppins-bold text-[13px] text-textMain">
             $ {spot.price.toLocaleString()}
           </Text>

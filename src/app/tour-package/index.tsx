@@ -14,7 +14,9 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-function EmptyState({ search }: Readonly<{ search: string }>) {
+function EmptyState({
+  search,
+}: Readonly<{ search: string }>) {
   return (
     <View className="items-center justify-center px-8 pt-20">
       <Text className="font-poppins-semibold text-[16px] text-textMain">
@@ -53,7 +55,6 @@ const TourPackageScreen = () => {
       <View className="px-4 pb-4 pt-3">
         {/* Title Row */}
         <View className="relative flex-row items-center justify-center">
-          {/* Back Button */}
           <Pressable
             onPress={() => router.back()}
             hitSlop={8}
@@ -66,7 +67,6 @@ const TourPackageScreen = () => {
             />
           </Pressable>
 
-          {/* Centered Title */}
           <Text className="font-poppins-semibold text-[20px] text-textMain">
             Tour Packages
           </Text>
@@ -89,7 +89,10 @@ const TourPackageScreen = () => {
         keyExtractor={(item) => item.id}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
-        contentContainerClassName="p-4 pb-8"
+        contentContainerStyle={{
+          padding: 16,
+          paddingBottom: 32,
+        }}
         ListHeaderComponent={
           <View>
             {/* Categories */}
