@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Accommodation;
+use App\Models\Resort;
 use Illuminate\Http\Request;
 
 class AccommodationController extends Controller
@@ -35,6 +36,14 @@ class AccommodationController extends Controller
             'amenities' => 'nullable|array',
         ]);
 
+        $resort = Resort::findOrFail($validated['resort_id']);
+
+        if ($resort->owner_id !== $request->user()->id) {
+            return response()->json([
+                'message' => 'You are not authorized to manage accommodations for this resort.',
+            ], 403);
+        }        
+
         $accommodation = Accommodation::create($validated);
 
         return response()->json($accommodation, 201);
@@ -56,6 +65,14 @@ class AccommodationController extends Controller
     public function update(Request $request, string $id)
     {
         $accommodation = Accommodation::findOrFail($id);
+
+        $resort = Resort::findOrFail($accommodation->resort_id);
+
+        if ($resort->owner_id !== $request->user()->id) {
+            return response()->json([
+                'message' => 'You are not authorized to manage accommodations for this resort.',
+            ], 403);
+        }        
 
         $validated = $request->validate([
             'resort_id' => 'sometimes|exists:resorts,id',
@@ -79,10 +96,18 @@ class AccommodationController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request, string $id)
     {
         $accommodation = Accommodation::findOrFail($id);
 
+        $resort = Resort::findOrFail($accommodation->resort_id);
+
+        if ($resort->owner_id !== $request->user()->id) {
+            return response()->json([
+                'message' => 'You are not authorized to manage accommodations for this resort.',
+            ], 403);
+        }
+        
         $accommodation->delete();
 
         return response()->json([

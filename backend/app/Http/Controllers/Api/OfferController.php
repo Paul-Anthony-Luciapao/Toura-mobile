@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Offer;
+use App\Models\Resort;
 use Illuminate\Http\Request;
 
 class OfferController extends Controller
@@ -25,6 +26,14 @@ class OfferController extends Controller
             'inclusions' => 'nullable|array',
         ]);
 
+        $resort = Resort::findOrFail($validated['resort_id']);
+
+        if ($resort->owner_id !== $request->user()->id) {
+            return response()->json([
+                'message' => 'You are not authorized to manage offers for this resort.',
+            ], 403);
+        }        
+
         $offer = Offer::create($validated);
 
         return response()->json($offer, 201);
@@ -41,6 +50,14 @@ class OfferController extends Controller
     {
         $offer = Offer::findOrFail($id);
 
+        $resort = Resort::findOrFail($offer->resort_id);
+
+        if ($resort->owner_id !== $request->user()->id) {
+            return response()->json([
+                'message' => 'You are not authorized to manage offers for this resort.',
+            ], 403);
+        }        
+
         $validated = $request->validate([
             'resort_id' => 'sometimes|exists:resorts,id',
             'title' => 'sometimes|string|max:255',
@@ -56,9 +73,17 @@ class OfferController extends Controller
         return response()->json($offer);
     }
 
-    public function destroy(string $id)
+    public function destroy(Request $request, string $id)
     {
         $offer = Offer::findOrFail($id);
+
+        $resort = Resort::findOrFail($offer->resort_id);
+
+        if ($resort->owner_id !== $request->user()->id) {
+            return response()->json([
+                'message' => 'You are not authorized to manage offers for this resort.',
+            ], 403);
+        }
 
         $offer->delete();
 
