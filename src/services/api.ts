@@ -6,7 +6,7 @@ import axios from "axios";
 const baseURL = process.env.EXPO_PUBLIC_API_URL ?? "http://127.0.0.1:8000/api";
 
 export const api = axios.create({
-  baseURL: "http://127.0.0.1:8000/api", // Or use you device IP to test physical device
+  baseURL,
   timeout: 15000,
   headers: {
     Accept: "application/json",
