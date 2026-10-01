@@ -5,7 +5,10 @@
 import axios from "axios";
 
 export const api = axios.create({
-  baseURL: "http://127.0.0.1:8000/api", // Or use you device IP to test physical device
+  baseURL:
+    process.env.EXPO_PUBLIC_API_URL ||
+    process.env.EXPO_PUBLIC_API_BASE_URL ||
+    "http://192.168.1.17:8000/api", // Or use your device IP to test physical device
   headers: {
     Accept: "application/json",
     "Content-Type": "application/json",

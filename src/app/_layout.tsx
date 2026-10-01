@@ -1,10 +1,10 @@
 import AnimatedSplash from "@/components/common/AnimatedSplash";
 import "@/lib/nativewind-setup";
 import {
-  Poppins_400Regular,
-  Poppins_500Medium,
-  Poppins_600SemiBold,
-  Poppins_700Bold,
+    Poppins_400Regular,
+    Poppins_500Medium,
+    Poppins_600SemiBold,
+    Poppins_700Bold,
 } from "@expo-google-fonts/poppins";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
@@ -12,6 +12,8 @@ import * as SplashScreen from "expo-splash-screen";
 import { useEffect, useState } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import "../../global.css";
+import "../global.css";
+import "../lib/icons";
 
 export default function RootLayout() {
   const [showSplash, setShowSplash] = useState(true);
@@ -37,7 +39,7 @@ export default function RootLayout() {
     <SafeAreaProvider>
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen
-          name="navigation"
+          name="(tabs)"
           options={{
             headerShown: false,
           }}
@@ -50,7 +52,16 @@ export default function RootLayout() {
             title: "Resort",
           }}
         />
+
+        <Stack.Screen
+          name="itinerary-packages/index"
+          options={{
+            headerShown: false,
+          }}
+        />
       </Stack>
+
+
 
       {showSplash && (
         <AnimatedSplash

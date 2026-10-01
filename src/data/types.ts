@@ -93,3 +93,22 @@ export type Booking = {
 };
 
 // Guest and Admin
+
+export type NotificationKind =
+  | "booking"
+  | "trip"
+  | "offer"
+  | "message"
+  | "payment"
+  | "system";
+
+export type Notification = {
+  id: string;
+  kind: NotificationKind;
+  title: string;
+  body: string;
+  /** ISO 8601 timestamp — drives both the "2h ago" label and the Today/Yesterday grouping. */
+  createdAt: string;
+  read: boolean;
+};
+

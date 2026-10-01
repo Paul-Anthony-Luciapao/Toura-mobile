@@ -1,5 +1,8 @@
-import { Ionicons } from "@expo/vector-icons";
-import { ImageBackground, Text, TextInput, View } from "react-native";
+import { colors } from "@/styles/global";
+import SearchBar from "../common/SearchBar";
+
+import { ImageBackground, Text, View } from "react-native";
+
 import Header from "./Header";
 
 type Props = Readonly<{
@@ -10,22 +13,29 @@ type Props = Readonly<{
 
 export default function HeroBanner({ image, headline, subtext }: Props) {
   return (
-    <ImageBackground source={{ uri: image }} className="h-[480px] w-full">
-      <View className="absolute inset-0 bg-[rgba(11,46,74,0.75)]" />
+    <ImageBackground
+      source={{ uri: image }}
+      className="h-[460px] w-full"
+    >
+      <View
+        className="absolute inset-0"
+        style={{
+          backgroundColor: colors.heroOverlayBottom,
+        }}
+      />
+
       <Header variant="light" />
-      <View className="mt-10 px-5">
-        <Text className="text-[34px] font-bold leading-[40px] text-white">
+
+      <View className="mt-16 px-5">
+        <Text className="font-poppins-semibold text-6xl leading-[50px] text-white">
           {headline}
         </Text>
-        <Text className="mt-3 text-[14px] leading-5 text-white">{subtext}</Text>
-        <View className="mt-5 flex-row items-center gap-2 rounded-[14px] bg-white px-[14px] py-[12px]">
-          <Ionicons name="search" size={18} color="#64748b" />
-          <TextInput
-            placeholder="Search destinations, itineraries..."
-            placeholderTextColor="#64748b"
-            className="flex-1 text-[14px] text-slate-900"
-          />
-        </View>
+
+        <Text className="mt-3 max-w-80 text-xl leading-6 text-white">
+          {subtext}
+        </Text>
+
+        <SearchBar containerClassName="mt-5 border-transparent shadow-md shadow-black/10" />
       </View>
     </ImageBackground>
   );
