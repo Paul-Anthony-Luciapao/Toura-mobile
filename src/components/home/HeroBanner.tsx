@@ -13,10 +13,7 @@ type Props = Readonly<{
 
 export default function HeroBanner({ image, headline, subtext }: Props) {
   return (
-    <ImageBackground
-      source={{ uri: image }}
-      className="h-[460px] w-full"
-    >
+    <ImageBackground source={{ uri: image }} className="h-[460px] w-full">
       <View
         className="absolute inset-0"
         style={{
@@ -26,8 +23,8 @@ export default function HeroBanner({ image, headline, subtext }: Props) {
 
       <Header variant="light" />
 
-      <View className="mt-16 px-5">
-        <Text className="font-poppins-semibold text-6xl leading-[50px] text-white">
+      <View className="p-5">
+        <Text className="font-poppins-semibold text-5xl lg:text-6xl leading-[50px] text-white">
           {headline}
         </Text>
 
