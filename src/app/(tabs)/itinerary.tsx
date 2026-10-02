@@ -1,11 +1,12 @@
 import SearchBar from "@/components/common/SearchBar";
-import TouristSpotCard from "@/components/home/TouristSpotCard";
 import { INITIAL_TOURIST_SPOTS } from "@/data/mockData";
 import { colors } from "@/styles/global";
+import TouristSpotCard from "@components/home/TouristSpotCard";
 import CategoryItineraries from "@components/itineraries/CategoryItineraries";
+import ItineraryCards from "@components/itineraries/ItineraryCards";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { FlatList, Pressable, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -85,6 +86,9 @@ export default function ItineraryPackagesScreen() {
         renderItem={({ item }) => (
           <View className="mb-4 w-full">
             <TouristSpotCard spot={item} />
+            <ItineraryCards
+              spot={item}
+            />
           </View>
         )}
       />
