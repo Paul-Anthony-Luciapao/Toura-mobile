@@ -1,12 +1,12 @@
 import SearchBar from "@/components/common/SearchBar";
-import TouristSpotCard from "@/components/home/TouristSpotCard";
 import { INITIAL_TOURIST_SPOTS } from "@/data/mockData";
 import { colors } from "@/styles/global";
 import CategoryItineraries from "@components/itineraries/CategoryItineraries";
+import ItineraryCards, { Dates } from "@components/itineraries/ItineraryCards";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useMemo, useState } from "react";
-import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
+import { FlatList, Pressable, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 function EmptyState({ search }: Readonly<{ search: string }>) {
@@ -82,18 +82,12 @@ export default function ItineraryPackagesScreen() {
         contentContainerClassName="p-4 pb-8"
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={<EmptyState search={search} />}
-        renderItem={({ item }) => (
+        renderItem={({ item, index }) => (
           <View className="mb-4 w-full">
-            <TouristSpotCard spot={item} />
+            <ItineraryCards spot={item} date={Dates[index % Dates.length]} />
           </View>
         )}
       />
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  gridCard: {
-    width: "100%",
-  },
-});
