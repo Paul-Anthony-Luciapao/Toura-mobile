@@ -2,8 +2,7 @@ import { useState } from "react";
 import {
     Pressable,
     ScrollView,
-    Text,
-    View,
+    Text
 } from "react-native";
 
 type CategoryItineraryPlaces = {
@@ -41,9 +40,10 @@ const CategoryItineraries = ({
     <ScrollView
       horizontal
       showsHorizontalScrollIndicator={false}
+      style={{ height: 56 }}
       contentContainerStyle={{
         paddingHorizontal: 16,
-        paddingVertical: 8,
+        paddingVertical: 12,
         gap: 8,
       }}
     >
@@ -65,10 +65,6 @@ const CategoryItineraries = ({
             >
               {item.label}
             </Text>
-
-            {isSelected && (
-              <View className="absolute bottom-0 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-white" />
-            )}
           </Pressable>
         );
       })}
