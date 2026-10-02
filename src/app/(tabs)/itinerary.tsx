@@ -5,7 +5,7 @@ import CategoryItineraries from "@components/itineraries/CategoryItineraries";
 import ItineraryCards, { Dates } from "@components/itineraries/ItineraryCards";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import React, { useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { FlatList, Pressable, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
