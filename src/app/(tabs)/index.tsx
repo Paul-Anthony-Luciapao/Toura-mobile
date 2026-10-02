@@ -5,19 +5,13 @@ import TourPackageCard from "@/components/home/TourPackageCard";
 import TouristSpotCard from "@/components/home/TouristSpotCard";
 import { INITIAL_TOURIST_SPOTS } from "@/data/mockData";
 import { api } from "@/services/api";
-<<<<<<< HEAD
 import { useRouter } from "expo-router";
-=======
->>>>>>> origin/main
 import { useEffect } from "react";
 import { ScrollView, StatusBar, View } from "react-native";
 
 export default function Index() {
-<<<<<<< HEAD
   const router = useRouter();
 
-=======
->>>>>>> origin/main
   useEffect(() => {
     const testLaravel = async () => {
       try {
@@ -32,15 +26,10 @@ export default function Index() {
   }, []);
 
   return (
-<<<<<<< HEAD
     <ScrollView
       className="flex-1 bg-background"
       contentContainerClassName="pb-10"
-      showsVerticalScrollIndicator={false}
-    >
-=======
-    <ScrollView className="flex-1 bg-white" contentContainerClassName="pb-10">
->>>>>>> origin/main
+      showsVerticalScrollIndicator={false}>
       <StatusBar barStyle="light-content" />
 
       {/* Hero Banner */}
@@ -51,7 +40,6 @@ export default function Index() {
       />
 
       <View className="px-5">
-<<<<<<< HEAD
         {/* Category Icons */}
         <View className=" -mt-10 z-10 rounded-2xl px-2 py-3.5 shadow-md shadow-black/10">
           <CategoryIcons />
@@ -68,38 +56,15 @@ export default function Index() {
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
-            contentContainerClassName="pb-1"
-          >
-            {INITIAL_TOURIST_SPOTS.map((spot) => (
-              <View
-                key={spot.id}
-                className="mr-3.5 w-[280px]"
-              >
-                <TouristSpotCard
-                  spot={spot}
-                  className="w-full"
-                />
-=======
-        <View className="-mt-[26px]">
-          <CategoryIcons />
-        </View>
-
-        <View className="mt-7">
-          <SectionHeader title="Itinerary Packages" action="View all" />
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
             contentContainerClassName="pb-1">
             {INITIAL_TOURIST_SPOTS.map((spot) => (
-              <View key={spot.id} className="mr-[14px]">
-                <TouristSpotCard spot={spot} />
->>>>>>> origin/main
+              <View key={spot.id} className="mr-3.5 w-[280px]">
+                <TouristSpotCard spot={spot} className="w-full" />
               </View>
             ))}
           </ScrollView>
         </View>
 
-<<<<<<< HEAD
         {/* Tour Packages */}
         <View className="mt-7">
           <SectionHeader
@@ -111,23 +76,9 @@ export default function Index() {
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
-            contentContainerClassName="pb-1"
-          >
-            {INITIAL_TOURIST_SPOTS.map((spot) => (
-              <View
-                key={spot.id}
-                className="mr-3.5 w-[280px]"
-              >
-=======
-        <View className="mt-7">
-          <SectionHeader title="Tour Packages" action="View all" />
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
             contentContainerClassName="pb-1">
             {INITIAL_TOURIST_SPOTS.map((spot) => (
-              <View key={spot.id} className="mr-[14px]">
->>>>>>> origin/main
+              <View key={spot.id} className="mr-3.5 w-[280px]">
                 <TourPackageCard
                   item={{
                     id: spot.id,
