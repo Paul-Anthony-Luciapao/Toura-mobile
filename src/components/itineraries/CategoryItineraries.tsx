@@ -43,7 +43,7 @@ const CategoryItineraries = ({
       style={{ height: 56 }}
       contentContainerStyle={{
         paddingHorizontal: 16,
-        paddingVertical: 8,
+        paddingVertical: 12,
         gap: 8,
       }}
     >
