@@ -1,9 +1,8 @@
 import SearchBar from "@/components/common/SearchBar";
 import { INITIAL_TOURIST_SPOTS } from "@/data/mockData";
 import { colors } from "@/styles/global";
-import TouristSpotCard from "@components/home/TouristSpotCard";
 import CategoryItineraries from "@components/itineraries/CategoryItineraries";
-import ItineraryCards from "@components/itineraries/ItineraryCards";
+import ItineraryCards, { Dates } from "@components/itineraries/ItineraryCards";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React, { useMemo, useState } from "react";
@@ -83,12 +82,9 @@ export default function ItineraryPackagesScreen() {
         contentContainerClassName="p-4 pb-8"
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={<EmptyState search={search} />}
-        renderItem={({ item }) => (
+        renderItem={({ item, index }) => (
           <View className="mb-4 w-full">
-            <TouristSpotCard spot={item} />
-            <ItineraryCards
-              spot={item}
-            />
+            <ItineraryCards spot={item} date={Dates[index % Dates.length]} />
           </View>
         )}
       />
