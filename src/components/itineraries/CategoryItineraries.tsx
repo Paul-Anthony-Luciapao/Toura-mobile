@@ -40,6 +40,7 @@ const CategoryItineraries = ({
     <ScrollView
       horizontal
       showsHorizontalScrollIndicator={false}
+      style={{ height: 56 }}
       contentContainerStyle={{
         paddingHorizontal: 16,
         paddingVertical: 8,
