@@ -6,7 +6,7 @@ import TouristSpotCard from "@/components/home/TouristSpotCard";
 import type { TouristSpot } from "@/data/types";
 import { getErrorMessage } from "@/services/api";
 import { fetchTouristSpots } from "@/services/touristSpots";
-import { router } from "expo-router";
+import { useRouter } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import {
   ActivityIndicator,
@@ -18,6 +18,7 @@ import {
 } from "react-native";
 
 export default function Index() {
+  const router = useRouter();
   const [spots, setSpots] = useState<TouristSpot[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -72,30 +73,47 @@ export default function Index() {
     }
     return (
       <>
-        <View className="mt-7">
-          <SectionHeader title="Itinerary Packages" action="View all" />
+        {/* Itinerary Packages */}
+        <View className="mt-5">
+          <SectionHeader
+            title="Itinerary Packages"
+            action="View all"
+            onActionPress={() => router.push("/itinerary-packages")}
+          />
+
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
             contentContainerClassName="pb-1">
             {spots.map((spot) => (
-              <View key={spot.id} className="mr-[14px]">
-                <TouristSpotCard spot={spot} />
+              <View key={spot.id} className="mr-3.5 w-[280px]">
+                <TouristSpotCard spot={spot} className="w-full" />
               </View>
             ))}
           </ScrollView>
         </View>
 
+        {/* Tour Packages */}
         <View className="mt-7">
-          <SectionHeader title="Tour Packages" action="View all" />
+          <SectionHeader
+            title="Tour Packages"
+            action="View all"
+            onActionPress={() => router.push("/tour-package")}
+          />
+
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
             contentContainerClassName="pb-1">
             {spots.map((spot) => (
-              <View key={spot.id} className="mr-[14px]">
+              <View key={spot.id} className="mr-3.5 w-[280px]">
                 <TourPackageCard
-                  item={{ id: spot.id, title: spot.name, image: spot.image }}
+                  item={{
+                    id: spot.id,
+                    title: spot.name,
+                    image: spot.image,
+                  }}
+                  className="w-full"
                 />
               </View>
             ))}
@@ -107,13 +125,15 @@ export default function Index() {
 
   return (
     <ScrollView
-      className="flex-1 bg-white"
+      className="flex-1 bg-background"
       contentContainerClassName="pb-10"
+      showsVerticalScrollIndicator={false}
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
       }>
       <StatusBar barStyle="light-content" />
 
+      {/* Hero Banner */}
       <HeroBanner
         image="https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1400&q=85"
         headline={"Discover\nYour Next\nAdventure"}
@@ -121,7 +141,8 @@ export default function Index() {
       />
 
       <View className="px-5">
-        <View className="-mt-[26px]">
+        {/* Category Icons */}
+        <View className="-mt-10 z-10 rounded-2xl px-2 py-3.5 shadow-md shadow-black/10">
           <CategoryIcons
             onSelect={(item) => {
               if (item.id === "hotels") {

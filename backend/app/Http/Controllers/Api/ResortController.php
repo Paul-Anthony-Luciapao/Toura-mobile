@@ -36,9 +36,9 @@ class ResortController extends Controller
             'status' => 'nullable|in:draft,published,archived',
         ]);
 
-        $resort = Resort::create($validated + [
+        $resort = Resort::create([
+            ...$validated,
             'owner_id' => $request->user()->id,
-            'status' => $validated['status'] ?? 'draft',
         ]);
 
         return new ResortResource($resort);
@@ -77,10 +77,19 @@ class ResortController extends Controller
         return new ResortResource($resort);
     }
 
+    /**
+     * Remove the specified resource from storage.
+     */
     public function destroy(Request $request, string $id)
     {
         $resort = Resort::findOrFail($id);
         abort_unless($resort->owner_id === $request->user()->id, 403, 'Not your resort.');
+
+        if ($resort->owner_id !== $request->user()->id) {
+            return response()->json([
+                'message' => 'You are not authorized to delete this resort.',
+            ], 403);
+        }
 
         $resort->delete();
 

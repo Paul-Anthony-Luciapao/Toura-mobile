@@ -1,4 +1,5 @@
 import { formatCurrency, formatReviewCount } from "@/lib/formatters";
+import { colors } from "@/styles/global";
 import { Ionicons } from "@expo/vector-icons";
 import { Image, Text, View } from "react-native";
 
@@ -14,32 +15,47 @@ export type TouristSpotCardData = {
 
 type Props = Readonly<{
   spot: TouristSpotCardData;
+  className?: string;
 }>;
 
-export default function TouristSpotCard({ spot }: Props) {
+export default function TouristSpotCard({ spot, className = "" }: Props) {
   return (
-    <View className="w-[170px] overflow-hidden rounded-t-[18px] bg-white">
+    <View
+      className={`w-full overflow-hidden rounded-[18px] bg-white shadow-md shadow-black/10 ${className}`}>
+      {/* Image */}
       <Image
         source={{ uri: spot.image }}
-        className="h-[130px] w-full bg-slate-200"
+        resizeMode="cover"
+        className="h-[180px] w-full bg-slate-200"
       />
-      <View className="pt-2">
+
+      {/* Content */}
+      <View className="px-3 pb-4 pt-3">
+        {/* Name */}
         <Text
-          className="text-[14px] font-semibold text-slate-900"
+          className="font-poppins-semibold text-[15px] text-textMain"
           numberOfLines={1}>
           {spot.name}
         </Text>
-        <Text className="mt-1 mb-1.5 text-[12px] text-slate-500">
+
+        {/* Municipality */}
+        <Text className="mt-1 font-poppins text-[12px] text-textMuted">
           · {spot.municipality}
         </Text>
-        <View className="flex-row items-center justify-between">
+
+        {/* Rating + Price */}
+        <View className="mt-2 flex-row items-center justify-between">
+          {/* Rating */}
           <View className="flex-row items-center gap-[3px]">
-            <Ionicons name="star" size={13} color="#0f766e" />
-            <Text className="text-[12px] text-slate-500">
+            <Ionicons name="star" size={13} color={colors.primary} />
+
+            <Text className="font-poppins text-[12px] text-textMuted">
               {spot.rating} ({formatReviewCount(spot.reviewCount)})
             </Text>
           </View>
-          <Text className="text-[13px] font-bold text-slate-900">
+
+          {/* Price */}
+          <Text className="font-poppins-bold text-[13px] text-textMain">
             {formatCurrency(spot.price)}
           </Text>
         </View>
