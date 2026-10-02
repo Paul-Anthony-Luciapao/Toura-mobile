@@ -8,24 +8,32 @@ import { useEffect, useState } from "react";
 import { ActivityIndicator, Image, ScrollView, Text, View } from "react-native";
 
 export default function ResortDetailScreen() {
-  const { id } = useLocalSearchParams<{ id: string }>();
+  const { id } = useLocalSearchParams<{ id?: string | string[] }>();
+  const resortId = Array.isArray(id) ? id[0] : id;
+
   const [resort, setResort] = useState<Resort | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!resortId) {
+      setError("Resort not found.");
+      setLoading(false);
+      return;
+    }
+
     (async () => {
       setLoading(true);
       setError(null);
       try {
-        setResort(await fetchResort(id));
+        setResort(await fetchResort(resortId));
       } catch (e) {
         setError(getErrorMessage(e));
       } finally {
         setLoading(false);
       }
     })();
-  }, [id]);
+  }, [resortId]);
 
   if (loading) {
     return (

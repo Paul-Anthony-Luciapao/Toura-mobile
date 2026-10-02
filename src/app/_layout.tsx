@@ -13,6 +13,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { useEffect, useState } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import "../../global.css";
+import "../lib/icons";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -51,6 +52,7 @@ export default function RootLayout() {
             name="resort/[id]"
             options={{ headerShown: true, title: "Resort" }}
           />
+          <Stack.Screen name="itinerary-packages/index" />
         </Stack>
 
         {showSplash && (

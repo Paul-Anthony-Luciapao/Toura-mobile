@@ -6,11 +6,14 @@ export async function loginRequest(
   password: string,
   role?: Role,
 ) {
-  const { data } = await api.post<{ user: User; token: string }>("/login", {
-    email,
-    password,
-    role,
-  });
+  const { data } = await api.post<{ user: User; token: string }>(
+    "/auth/login",
+    {
+      email,
+      password,
+      role,
+    },
+  );
   return data;
 }
 
@@ -21,7 +24,7 @@ export async function registerRequest(input: {
   phone?: string;
 }) {
   const { data } = await api.post<{ user: User; token: string }>(
-    "/register",
+    "/auth/register",
     input,
   );
   return data;
@@ -33,5 +36,5 @@ export async function fetchMe() {
 }
 
 export async function logoutRequest() {
-  await api.post("/logout");
+  await api.post("/auth/logout");
 }

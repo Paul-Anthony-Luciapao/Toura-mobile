@@ -3,7 +3,14 @@
 
 import axios from "axios";
 
-const baseURL = process.env.EXPO_PUBLIC_API_URL ?? "http://127.0.0.1:8000/api";
+const rawBaseURL =
+  process.env.EXPO_PUBLIC_API_URL ||
+  process.env.EXPO_PUBLIC_API_BASE_URL ||
+  "http://127.0.0.1:8000/api"; // use your computer's LAN IP to test on a physical device
+
+// Backend routes live under /api/v1. Append it unless the env value already has it.
+const trimmed = rawBaseURL.replace(/\/+$/, "");
+const baseURL = trimmed.endsWith("/v1") ? trimmed : `${trimmed}/v1`;
 
 export const api = axios.create({
   baseURL,
