@@ -2,9 +2,9 @@ import { TouristSpot } from "@/data/types";
 import { Image, Text, View } from "react-native";
 
 export type ItineraryCardData = TouristSpot & {
-  arrival: string;
-  departure: string;
-  days: string;
+  arrival?: string;
+  departure?: string;
+  days?: string;
 };
 
 type Props = Readonly<{
@@ -12,18 +12,19 @@ type Props = Readonly<{
   className?: string;
 }>;
 
-export default function ItineraryCard({
-  spot,
-  className = "",
-}: Props) {
+export default function ItineraryCards({ spot, className = "" }: Props) {
+  const arrival = spot.arrival ?? "To be confirmed";
+  const departure = spot.departure ?? "To be confirmed";
+
   return (
     <View className={`w-full ${className}`}>
-      {/* Name above card */}
-      <Text className="mb-2 font-poppins-semibold text-[15px] text-textMain" numberOfLines={1} >
+      <Text
+        className="mb-2 font-poppins-semibold text-[15px] text-textMain"
+        numberOfLines={1}
+      >
         {spot.name} Package
       </Text>
 
-      {/* Card */}
       <View className="h-[140px] w-full flex-row overflow-hidden rounded-[18px] bg-white shadow-md shadow-black/10">
         {/* Image */}
         <Image
@@ -32,22 +33,18 @@ export default function ItineraryCard({
           className="h-full w-[140px] bg-slate-200"
         />
 
-        {/* Details */}
-        <View className="flex-1 px-10 py-3">
+        <View className="flex-1 justify-center px-6 py-3">
           <Text className="font-poppins font-bold text-[12px] text-textMuted">
-            Date Arrival
+            Date of Arrival
           </Text>
-
           <Text className="font-poppins text-[12px] text-textMuted">
-            {spot.arrival}
+            {arrival}
           </Text>
-
-          <Text className="mt-8 font-poppins font-bold text-[12px] text-textMuted">
-            Date Departure
+          <Text className="mt-5 font-poppins font-bold text-[12px] text-textMuted">
+            Date of Departure
           </Text>
-
-        <Text className="font-poppins text-[12px] text-textMuted">
-            {spot.departure}
+          <Text className="font-poppins text-[12px] text-textMuted">
+            {departure}
           </Text>
         </View>
       </View>

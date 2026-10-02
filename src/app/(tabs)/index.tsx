@@ -15,10 +15,10 @@ export default function Index() {
   useEffect(() => {
     const testLaravel = async () => {
       try {
-        const response = await api.get("/test");
+        const response = await api.get('/test');
         console.log(response.data);
       } catch (error) {
-        console.error("Laravel API error:", error);
+        console.error('Laravel API error:', error);
       }
     };
 
@@ -29,19 +29,20 @@ export default function Index() {
     <ScrollView
       className="flex-1 bg-background"
       contentContainerClassName="pb-10"
-      showsVerticalScrollIndicator={false}>
+      showsVerticalScrollIndicator={false}
+    >
       <StatusBar barStyle="light-content" />
 
       {/* Hero Banner */}
       <HeroBanner
         image="https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1400&q=85"
-        headline={"Discover\nYour Next\nAdventure"}
+        headline={'Discover\nYour Next\nAdventure'}
         subtext="Explore breathing destinations, curated itinerary packages, and unforgettable experience."
       />
 
       <View className="px-5">
         {/* Category Icons */}
-        <View className=" -mt-10 z-10 rounded-2xl px-2 py-3.5 shadow-md shadow-black/10">
+        <View className="-mt-10 z-10 rounded-2xl px-2 py-3.5 shadow-md shadow-black/10">
           <CategoryIcons />
         </View>
 
@@ -50,13 +51,14 @@ export default function Index() {
           <SectionHeader
             title="Itinerary Packages"
             action="View all"
-            onActionPress={() => router.push("/itinerary-packages")}
+            onActionPress={() => router.push('/itinerary-packages')}
           />
 
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
-            contentContainerClassName="pb-1">
+            contentContainerClassName="pb-1"
+          >
             {INITIAL_TOURIST_SPOTS.map((spot) => (
               <View key={spot.id} className="mr-3.5 w-[280px]">
                 <TouristSpotCard spot={spot} className="w-full" />
@@ -70,13 +72,14 @@ export default function Index() {
           <SectionHeader
             title="Tour Packages"
             action="View all"
-            onActionPress={() => router.push("/tour-package")}
+            onActionPress={() => router.push('/tour-package')}
           />
 
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
-            contentContainerClassName="pb-1">
+            contentContainerClassName="pb-1"
+          >
             {INITIAL_TOURIST_SPOTS.map((spot) => (
               <View key={spot.id} className="mr-3.5 w-[280px]">
                 <TourPackageCard
