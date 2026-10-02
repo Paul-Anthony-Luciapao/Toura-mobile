@@ -6,14 +6,18 @@ import CategoryItineraries from "@components/itineraries/CategoryItineraries";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useMemo, useState } from "react";
-import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
+import { FlatList, Pressable, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 function EmptyState({ search }: Readonly<{ search: string }>) {
   return (
     <View className="items-center gap-2 px-8 pt-20">
       <View className="h-16 w-16 items-center justify-center rounded-full bg-surfaceSoft">
-        <Ionicons name="search-outline" size={28} color={colors.textMuted} />
+        <Ionicons
+          name="search-outline"
+          size={28}
+          color={colors.textMuted}
+        />
       </View>
 
       <Text className="font-poppins-semibold text-[16px] text-textMain">
@@ -36,6 +40,10 @@ export default function ItineraryPackagesScreen() {
   const filteredSpots = useMemo(() => {
     const term = search.trim().toLowerCase();
 
+    if (!term) {
+      return INITIAL_TOURIST_SPOTS;
+    }
+
     return INITIAL_TOURIST_SPOTS.filter(
       (spot) =>
         spot.name.toLowerCase().includes(term) ||
@@ -56,7 +64,8 @@ export default function ItineraryPackagesScreen() {
         <Pressable
           onPress={() => router.back()}
           hitSlop={8}
-          className="h-11 w-11 items-center justify-center rounded-full active:opacity-70">
+          className="h-11 w-11 items-center justify-center rounded-full active:opacity-70"
+        >
           <Ionicons name="arrow-back" size={24} color={colors.text} />
         </Pressable>
 
@@ -71,9 +80,7 @@ export default function ItineraryPackagesScreen() {
       </View>
 
       {/* Categories */}
-      <View>
-        <CategoryItineraries />
-      </View>
+      <CategoryItineraries />
 
       {/* List of Packages */}
       <FlatList
@@ -91,9 +98,3 @@ export default function ItineraryPackagesScreen() {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  gridCard: {
-    width: "100%",
-  },
-});

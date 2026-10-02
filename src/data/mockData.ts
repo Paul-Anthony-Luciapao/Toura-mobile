@@ -4,11 +4,11 @@
  */
 
 import type {
-  Booking,
-  Notification,
-  Resort,
-  TouristSpot,
-  User,
+    Booking,
+    Notification,
+    Resort,
+    TouristSpot,
+    User,
 } from "./types";
 
 export const INITIAL_USERS: User[] = [
@@ -450,6 +450,7 @@ export const INITIAL_RESORTS: Resort[] = [
   },
 ];
 
+
 export const INITIAL_TOURIST_SPOTS: TouristSpot[] = [
   {
     id: "spot-1",
@@ -709,3 +710,26 @@ export const INITIAL_NOTIFICATIONS: Notification[] = [
     read: true,
   },
 ];
+
+export const INITIAL_ITINERARIES = INITIAL_TOURIST_SPOTS.map(
+  (spot, index) => ({
+    ...spot,
+    arrival: [
+      "October 10, 2023",
+      "November 5, 2023",
+      "December 1, 2023",
+      "January 15, 2024",
+      "February 10, 2024",
+    ][index % 5],
+
+    departure: [
+      "October 15, 2023",
+      "November 10, 2023",
+      "December 5, 2023",
+      "January 20, 2024",
+      "February 15, 2024",
+    ][index % 5],
+
+    days: "5 days",
+  }),
+);
