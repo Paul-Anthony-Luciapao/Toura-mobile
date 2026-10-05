@@ -90,12 +90,16 @@ const OPTIONS: OptionItem[] = [
 
 export default function MoreOptionsScreen() {
   const router = useRouter();
-  const { signOut } = useAuth();
+  const { user, signOut } = useAuth();
+
+  const visibleOptions = user
+    ? OPTIONS
+    : OPTIONS.filter((option) => option.id !== "logout");
 
   const handleOptionPress = async (option: OptionItem) => {
     if (option.id === "logout") {
       await signOut();
-      router.replace("/role");
+      router.replace("/profile");
       return;
     }
 
@@ -152,7 +156,7 @@ export default function MoreOptionsScreen() {
           </Text>
 
           <View className="mt-[18px] gap-[12px]">
-            {OPTIONS.map((option) => (
+            {visibleOptions.map((option) => (
               <Pressable
                 key={option.id}
                 onPress={() => handleOptionPress(option)}
