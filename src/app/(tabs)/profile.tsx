@@ -1,10 +1,32 @@
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "expo-router";
-import { Pressable, Text, View } from "react-native";
+import { Alert, Pressable, Text, View } from "react-native";
 
 export default function Profile() {
   const router = useRouter();
-  const { user, signOut } = useAuth();
+  const { user, signOut, deleteAccount } = useAuth();
+
+  const handleDeleteAccount = () => {
+    Alert.alert(
+      "Delete account",
+      "This action is permanent. Are you sure you want to delete your account?",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              await deleteAccount();
+              router.replace("/");
+            } catch {
+              Alert.alert("Error", "Could not delete the account.");
+            }
+          },
+        },
+      ],
+    );
+  };
 
   if (!user) {
     return (
@@ -53,6 +75,14 @@ export default function Profile() {
           className="items-center rounded-xl bg-red-50 px-4 py-3">
           <Text className="text-[15px] font-semibold text-red-600">
             Log out
+          </Text>
+        </Pressable>
+
+        <Pressable
+          onPress={handleDeleteAccount}
+          className="items-center rounded-xl border border-red-200 bg-red-50 px-4 py-3">
+          <Text className="text-[15px] font-semibold text-red-600">
+            Delete account
           </Text>
         </Pressable>
       </View>

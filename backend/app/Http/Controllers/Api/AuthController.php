@@ -79,6 +79,22 @@ class AuthController extends Controller
         return response()->json(['message' => 'Logged out.']);
     }
 
+
+public function deleteAccount(Request $request): JsonResponse
+{
+    $user = $request->user();
+
+    // Remove all tokens for the user
+    $user->tokens()->delete();
+
+    // Delete the user record
+    $user->delete();
+
+    return response()->json([
+        'message' => 'Account deleted successfully.',
+    ]);
+}
+
     private function tokenResponse(User $user, int $status = 200): JsonResponse
     {
         return response()->json([

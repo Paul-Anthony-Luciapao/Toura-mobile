@@ -38,3 +38,7 @@ export async function fetchMe() {
 export async function logoutRequest() {
   await api.post("/auth/logout");
 }
+
+export async function deleteAccountRequest() {
+  await api.delete("/auth/account");
+}

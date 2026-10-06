@@ -2,6 +2,7 @@ import type { Role, User } from "@/data/types";
 import { tokenStorage } from "@/lib/tokenStorage";
 import { setAuthToken } from "@/services/api";
 import {
+  deleteAccountRequest,
   fetchMe,
   loginRequest,
   logoutRequest,
@@ -34,6 +35,7 @@ type AuthState = {
     options?: SignInOptions,
   ) => Promise<void>;
   signOut: () => Promise<void>;
+  deleteAccount: () => Promise<void>;
   signUp: (
     input: SignUpInput,
     options?: { remember?: boolean },
@@ -46,7 +48,6 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Restore a saved session on launch.
   useEffect(() => {
     (async () => {
       try {
@@ -56,7 +57,6 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
           setUser(await fetchMe());
         }
       } catch (error) {
-        // Drop the token only if the server rejected it; keep it through network errors.
         if (axios.isAxiosError(error) && error.response?.status === 401) {
           await tokenStorage.clear();
         }
@@ -89,15 +89,29 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
     try {
       await logoutRequest();
     } catch {
-      // Token may already be invalid or the server unreachable. Clear locally regardless.
+      // Ignore server errors; clear local session anyway.
     }
     await tokenStorage.clear();
     setAuthToken(null);
     setUser(null);
   };
 
+  const deleteAccount: AuthState["deleteAccount"] = async () => {
+    try {
+      await deleteAccountRequest();
+    } catch (error) {
+      console.error("Delete account failed:", error);
+      throw error;
+    }
+
+    await tokenStorage.clear();
+    setAuthToken(null);
+    setUser(null);
+  };
+
   return (
-    <AuthContext.Provider value={{ user, loading, signIn, signOut, signUp }}>
+    <AuthContext.Provider
+      value={{ user, loading, signIn, signOut, deleteAccount, signUp }}>
       {children}
     </AuthContext.Provider>
   );
