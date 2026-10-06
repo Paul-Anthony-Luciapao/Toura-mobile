@@ -28,6 +28,7 @@ Route::prefix('v1')->group(function () {
     // Any logged-in user
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('/auth/logout', [AuthController::class, 'logout']);
+        Route::delete('/auth/account', [AuthController::class, 'deleteAccount']);
         Route::get('/me', [AuthController::class, 'me']);
 
         Route::apiResource('bookings', BookingController::class)->except(['destroy']);
