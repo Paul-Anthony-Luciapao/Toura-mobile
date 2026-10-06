@@ -15,14 +15,14 @@ export default function PrimaryButton({
     <Pressable
       className={
         variant === "secondary"
-          ? "items-center justify-center rounded-[14px] bg-slate-200 px-[18px] py-[14px]"
-          : "items-center justify-center rounded-[14px] bg-[#0f766e] px-[18px] py-[14px]"
+          ? "items-center justify-center rounded-[14px] bg-coral-100 px-[18px] py-[14px]"
+          : "items-center justify-center rounded-[14px] bg-coral-400 px-[18px] py-[14px]"
       }
       onPress={onPress}>
       <Text
         className={
           variant === "secondary"
-            ? "text-[15px] font-bold text-slate-900"
+            ? "text-[15px] font-bold text-ink"
             : "text-[15px] font-bold text-white"
         }>
         {label}

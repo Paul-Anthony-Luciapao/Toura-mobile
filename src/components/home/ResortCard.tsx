@@ -23,37 +23,37 @@ export default function ResortCard({ resort }: Props) {
     <Link
       href={{ pathname: "/resort/[id]", params: { id: resort.id } }}
       asChild>
-      <Pressable className="mr-4 w-[280px] overflow-hidden rounded-[18px] bg-white shadow-sm shadow-black/5">
+      <Pressable className="mr-4 w-[280px] overflow-hidden rounded-[18px] border border-coral-100 bg-white shadow-sm shadow-black/[0.06]">
         <Image
           source={{ uri: resort.coverImage }}
-          className="h-[190px] w-full bg-slate-200"
+          className="h-[190px] w-full bg-coral-100"
         />
 
         <View className="p-[14px]">
           <View className="mb-2 flex-row items-center justify-between">
-            <Text className="text-[12px] font-bold text-[#0f766e]">
+            <Text className="text-[12px] font-bold text-coral-400">
               {resort.municipality}
             </Text>
-            <Text className="text-[12px] font-bold text-[#f59e0b]">
+            <Text className="text-[12px] font-bold text-coral-300">
               ★ {resort.rating}
             </Text>
           </View>
 
-          <Text className="mb-1.5 text-[18px] font-extrabold text-slate-900">
+          <Text className="mb-1.5 text-[18px] font-extrabold text-ink">
             {resort.name}
           </Text>
-          <Text className="min-h-[36px] text-[12px] leading-[18px] text-slate-700">
+          <Text className="min-h-[36px] text-[12px] leading-[18px] text-ink-600">
             {resort.tagline}
           </Text>
 
           <View className="mt-3 flex-row items-end justify-between">
             <View>
-              <Text className="text-[18px] font-extrabold text-slate-900">
+              <Text className="text-[18px] font-extrabold text-coral-600">
                 {formatCurrency(resort.basePrice)}
               </Text>
-              <Text className="text-[11px] text-slate-500">per night</Text>
+              <Text className="text-[11px] text-ink-500">per night</Text>
             </View>
-            <Text className="text-[11px] font-bold text-slate-500">
+            <Text className="text-[11px] font-bold text-ink-500">
               {resort.reviewCount} reviews
             </Text>
           </View>

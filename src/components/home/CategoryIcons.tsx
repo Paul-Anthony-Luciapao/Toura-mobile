@@ -1,4 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
+import { colors } from "@/styles/global";
 import { Pressable, Text, View } from "react-native";
 
 type CategoryIconItem = {
@@ -25,16 +26,16 @@ export default function CategoryIcons({
   onSelect,
 }: Props) {
   return (
-    <View className="flex-row justify-between">
+    <View className="flex-row justify-between gap-2">
       {items.map((item) => (
         <Pressable
           key={item.id}
-          className="items-center gap-[6px]"
+          className="flex-1 items-center gap-[8px]"
           onPress={() => onSelect?.(item)}>
-          <View className="h-[52px] w-[52px] items-center justify-center rounded-full bg-[#eaf5f2] shadow-md shadow-black/10">
-            <Ionicons name={item.icon} size={22} color="#0f172a" />
+          <View className="h-[52px] w-[52px] items-center justify-center rounded-[18px] border border-coral-100 bg-coral-50 shadow-sm shadow-black/[0.06]">
+            <Ionicons name={item.icon} size={22} color={colors.primaryPressed} />
           </View>
-          <Text className="text-[11px] font-medium text-slate-900">
+          <Text className="text-[11px] font-medium text-ink-600">
             {item.label}
           </Text>
         </Pressable>

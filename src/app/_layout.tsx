@@ -1,5 +1,7 @@
 import AnimatedSplash from "@/components/common/AnimatedSplash";
+import { AuthProvider, useAuth } from "@/context/auth";
 import "@/lib/nativewind-setup";
+import { colors } from "@/styles/global";
 import {
   Poppins_400Regular,
   Poppins_500Medium,
@@ -10,12 +12,11 @@ import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect, useState } from "react";
+import { ActivityIndicator, View } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import "../../global.css";
 
 export default function RootLayout() {
-  const [showSplash, setShowSplash] = useState(true);
-
   const [fontsLoaded] = useFonts({
     Poppins_400Regular,
     Poppins_500Medium,
@@ -34,23 +35,45 @@ export default function RootLayout() {
   }
 
   return (
-    <SafeAreaProvider>
-      <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen
-          name="navigation"
-          options={{
-            headerShown: false,
-          }}
-        />
+    <AuthProvider>
+      <SafeAreaProvider>
+        <RootNavigator />
+      </SafeAreaProvider>
+    </AuthProvider>
+  );
+}
 
-        <Stack.Screen
-          name="resort/[id]"
-          options={{
-            headerShown: true,
-            title: "Resort",
-          }}
-        />
-      </Stack>
+function RootNavigator() {
+  const { token, isLoading } = useAuth();
+  const [showSplash, setShowSplash] = useState(true);
+
+  return (
+    <>
+      {isLoading ? (
+        <View className="flex-1 items-center justify-center bg-cream">
+          <ActivityIndicator color={colors.primary} />
+        </View>
+      ) : (
+        <Stack screenOptions={{ headerShown: false }}>
+          <Stack.Protected guard={!!token}>
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+
+            <Stack.Screen
+              name="resort/[id]"
+              options={{
+                headerShown: true,
+                title: "Resort",
+              }}
+            />
+
+            <Stack.Screen name="chat/[id]" options={{ headerShown: false }} />
+          </Stack.Protected>
+
+          <Stack.Protected guard={!token}>
+            <Stack.Screen name="login" options={{ headerShown: false }} />
+          </Stack.Protected>
+        </Stack>
+      )}
 
       {showSplash && (
         <AnimatedSplash
@@ -60,6 +83,6 @@ export default function RootLayout() {
           }}
         />
       )}
-    </SafeAreaProvider>
+    </>
   );
 }

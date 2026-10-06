@@ -1,8 +1,14 @@
+import { useAuth } from "@/context/auth";
+import { useUnreadCount } from "@/hooks/useUnreadCount";
 import { colors } from "@/styles/global";
 import { Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 
 export default function TabsLayout() {
+  const { user } = useAuth();
+  const unread = useUnreadCount();
+  const isAdmin = user?.role === "admin";
+
   return (
     <Tabs
       screenOptions={{
@@ -32,6 +38,14 @@ export default function TabsLayout() {
         name="messages"
         options={{
           title: "Messages",
+          href: isAdmin ? null : undefined,
+          tabBarBadge:
+            unread > 0 ? (unread > 99 ? "99+" : unread) : undefined,
+          tabBarBadgeStyle: {
+            backgroundColor: colors.primary,
+            color: colors.white,
+            fontSize: 10,
+          },
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="chatbubble-outline" size={size} color={color} />
           ),
