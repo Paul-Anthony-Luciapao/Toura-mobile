@@ -63,9 +63,19 @@ export type TouristSpot = {
   description: string;
   image: string;
   tags: string[];
-  rating: number;
-  reviewCount: string;
-  price: number;
+  rating?: number;
+  reviewCount?: string;
+  price?: number;
+};
+
+export type SpotSummary = {
+  id: string;
+  name: string;
+  municipality: string;
+  image: string;
+  rating?: number;
+  reviewCount?: string;
+  price?: number;
 };
 
 export type Booking = {
@@ -89,6 +99,56 @@ export type Booking = {
   totalPrice: number;
   status: "confirmed" | "pending" | "completed";
   paymentNote: string;
+  createdAt: string;
+};
+
+// Chat — private threads between a traveler and a resort owner.
+
+export type ChatRole = "traveler" | "owner";
+
+export type ChatParty = {
+  id: string;
+  name: string;
+  email: string | null;
+  avatar: string | null;
+  role: Role;
+};
+
+export type ChatResort = {
+  id: string;
+  name: string;
+  municipality: string;
+  coverImage: string | null;
+};
+
+export type ChatMessage = {
+  id: string;
+  conversationId: string;
+  senderId: string | null;
+  senderName: string;
+  senderRole: Role | null;
+  body: string;
+  clientId: string | null;
+  createdAt: string;
+};
+
+export type Conversation = {
+  id: string;
+  subject: string | null;
+  status: "open" | "closed";
+  myRole: ChatRole;
+  otherParty: ChatParty | null;
+  resort: ChatResort | null;
+  bookingId: string | null;
+  lastMessageAt: string | null;
+  unreadCount: number;
+  lastMessage: {
+    id: string;
+    senderId: string | null;
+    senderName: string;
+    body: string;
+    createdAt: string;
+  } | null;
   createdAt: string;
 };
 

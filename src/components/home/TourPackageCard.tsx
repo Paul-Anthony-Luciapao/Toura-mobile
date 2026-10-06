@@ -15,10 +15,10 @@ export default function TourPackageCard({ item }: Props) {
     <View className="w-[170px]">
       <Image
         source={{ uri: item.image }}
-        className="h-[130px] w-full rounded-t-[18px] bg-slate-200"
+        className="h-[130px] w-full rounded-t-[18px] bg-coral-100"
       />
       <Text
-        className="mt-2 text-[14px] font-semibold text-slate-900"
+        className="mt-2 text-[14px] font-semibold text-ink"
         numberOfLines={1}>
         {item.title}
       </Text>

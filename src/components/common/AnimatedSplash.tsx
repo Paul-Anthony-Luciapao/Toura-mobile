@@ -52,7 +52,7 @@ export default function AnimatedSplash({
   return (
     <Animated.View className="absolute inset-0" style={containerStyle}>
       <ImageBackground source={backgroundImage} className="flex-1">
-        <View className="absolute inset-0 bg-[rgba(11,46,74,0.75)]" />
+        <View className="absolute inset-0 bg-[rgba(27,31,30,0.75)]" />
         <View className="flex-1 items-center justify-center">
           <Animated.View className="items-center" style={logoStyle}>
             <Image
