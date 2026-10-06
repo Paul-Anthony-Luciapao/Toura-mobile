@@ -45,7 +45,7 @@ export default function Profile() {
           </Pressable>
 
           <Pressable
-            onPress={() => router.push("/login")}
+            onPress={() => router.push("/signup-role")}
             className="items-center rounded-xl border border-slate-300 px-4 py-3">
             <Text className="text-[15px] font-semibold text-slate-900">
               Sign up

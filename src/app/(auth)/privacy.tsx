@@ -1,23 +1,22 @@
 import ConsentStep from "@/components/auth/ConsentStep";
 import { DATA_PRIVACY } from "@/data/legalContent";
+import type { Role } from "@/data/types";
 import { router, useLocalSearchParams } from "expo-router";
 
 export default function PrivacyScreen() {
-  const { role } = useLocalSearchParams<{ role?: string }>();
-
-  const handleAccept = () => {
-    if (role === "traveler") {
-      router.push({ pathname: "/login", params: { role } });
-    } else {
-      router.push({ pathname: "/coming-soon", params: { role } });
-    }
-  };
+  const { role } = useLocalSearchParams<{ role?: Role }>();
 
   return (
     <ConsentStep
       title="Data Privacy"
       sections={DATA_PRIVACY}
-      onAccept={handleAccept}
+      onAccept={() =>
+        router.push({
+          pathname: "/signup",
+          params: { role },
+        })
+      }
+      onDecline={() => router.replace("/")}
     />
   );
 }
