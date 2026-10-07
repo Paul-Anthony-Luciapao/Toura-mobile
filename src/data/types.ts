@@ -4,8 +4,8 @@ export type User = {
   id: string;
   name: string;
   email: string;
-  role: Role;
-  avatar: string;
+  role: Role | null;
+  avatar: string | null;
   phone: string;
   joinedAt: string;
   status: string;
@@ -64,7 +64,7 @@ export type TouristSpot = {
   image: string;
   tags: string[];
   rating: number;
-  reviewCount: string;
+  reviewCount: number;
   price: number;
 };
 

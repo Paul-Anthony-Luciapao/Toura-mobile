@@ -1,19 +1,65 @@
+import PrimaryButton from "@/components/common/PrimaryButton";
+import type { Resort } from "@/data/types";
+import { formatCurrency } from "@/lib/formatters";
+import { getErrorMessage } from "@/services/api";
+import { fetchResort } from "@/services/resorts";
 import { useLocalSearchParams } from "expo-router";
-import { Image, ScrollView, Text, View } from "react-native";
-import PrimaryButton from "../../components/common/PrimaryButton";
-import { INITIAL_RESORTS } from "../../data/mockData";
-import { formatCurrency } from "../../lib/formatters";
+import { useEffect, useState } from "react";
+import { ActivityIndicator, Image, ScrollView, Text, View } from "react-native";
 
 export default function ResortDetailScreen() {
   const { id } = useLocalSearchParams<{ id?: string | string[] }>();
   const resortId = Array.isArray(id) ? id[0] : id;
-  const resort = INITIAL_RESORTS.find((item) => item.id === resortId);
 
-  if (!resort) {
+  const [resort, setResort] = useState<Resort | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!resortId) {
+      return;
+    }
+
+    const loadResort = async () => {
+      setLoading(true);
+      setError(null);
+
+      try {
+        const data = await fetchResort(resortId);
+        setResort(data);
+      } catch (e) {
+        setError(getErrorMessage(e));
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    void loadResort();
+  }, [resortId]);
+
+  if (!resortId) {
+    return (
+      <View className="flex-1 items-center justify-center bg-white px-6">
+        <Text className="text-center text-[15px] font-bold text-slate-900">
+          Resort not found.
+        </Text>
+      </View>
+    );
+  }
+
+  if (loading) {
     return (
       <View className="flex-1 items-center justify-center bg-white">
-        <Text className="text-[18px] font-bold text-slate-900">
-          Resort not found.
+        <ActivityIndicator color="#0f766e" />
+      </View>
+    );
+  }
+
+  if (error || !resort) {
+    return (
+      <View className="flex-1 items-center justify-center bg-white px-6">
+        <Text className="text-center text-[15px] font-bold text-slate-900">
+          {error ?? "Resort not found."}
         </Text>
       </View>
     );
@@ -32,9 +78,11 @@ export default function ResortDetailScreen() {
         <Text className="text-[12px] font-bold uppercase tracking-normal text-[#0f766e]">
           {resort.municipality}
         </Text>
+
         <Text className="mt-1.5 text-[28px] font-extrabold text-slate-900">
           {resort.name}
         </Text>
+
         <Text className="mt-2 text-[15px] leading-[22px] text-slate-700">
           {resort.tagline}
         </Text>
@@ -43,6 +91,7 @@ export default function ResortDetailScreen() {
           <Text className="text-[15px] font-extrabold text-[#f59e0b]">
             ★ {resort.rating}
           </Text>
+
           <Text className="ml-2 text-[13px] text-slate-500">
             ({resort.reviewCount} reviews)
           </Text>
@@ -57,6 +106,7 @@ export default function ResortDetailScreen() {
         <Text className="mb-3 text-[20px] font-extrabold text-slate-900">
           Amenities
         </Text>
+
         <View className="flex-row flex-wrap">
           {resort.amenities.map((item) => (
             <Text
@@ -72,6 +122,7 @@ export default function ResortDetailScreen() {
         <Text className="mb-3 text-[20px] font-extrabold text-slate-900">
           Available stays
         </Text>
+
         {resort.accommodations.map((room) => (
           <View
             key={room.id}
@@ -80,20 +131,25 @@ export default function ResortDetailScreen() {
               source={{ uri: room.image }}
               className="h-[170px] w-full bg-slate-200"
             />
+
             <View className="p-[14px]">
               <Text className="text-[18px] font-extrabold text-slate-900">
                 {room.title}
               </Text>
+
               <Text className="mt-2 text-[13px] leading-5 text-slate-700">
                 {room.description}
               </Text>
+
               <Text className="mt-2 text-[12px] text-slate-500">
                 {room.capacity} guests • {room.bedType} • {room.size}
               </Text>
+
               <View className="mt-3 flex-row items-baseline">
                 <Text className="text-[22px] font-extrabold text-slate-900">
                   {formatCurrency(room.pricePerNight)}
                 </Text>
+
                 <Text className="text-[12px] text-slate-500">/ night</Text>
               </View>
             </View>
@@ -105,6 +161,7 @@ export default function ResortDetailScreen() {
         <Text className="mb-3 text-[20px] font-extrabold text-slate-900">
           Special offers
         </Text>
+
         {resort.offers.map((offer) => (
           <View
             key={offer.id}
@@ -112,12 +169,15 @@ export default function ResortDetailScreen() {
             <Text className="text-[11px] font-extrabold uppercase text-[#c2410c]">
               {offer.tag}
             </Text>
+
             <Text className="mt-2 text-[18px] font-extrabold text-slate-900">
               {offer.title}
             </Text>
+
             <Text className="mt-2 text-[13px] leading-5 text-slate-700">
               {offer.description}
             </Text>
+
             <Text className="mt-2.5 text-[14px] font-extrabold text-[#b45309]">
               {offer.discountRate}
             </Text>
@@ -129,6 +189,7 @@ export default function ResortDetailScreen() {
         <Text className="mb-3 text-[18px] font-extrabold text-slate-900">
           From {formatCurrency(resort.basePrice)} / night
         </Text>
+
         <PrimaryButton label="Book this stay" />
       </View>
     </ScrollView>

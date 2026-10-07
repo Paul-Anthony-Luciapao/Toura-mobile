@@ -51,14 +51,9 @@ export default function CategoryIcons({
         <Pressable
           key={item.id}
           className="items-center gap-1.5 active:opacity-70"
-          onPress={() => onSelect?.(item)}
-        >
+          onPress={() => onSelect?.(item)}>
           <View className="h-[52px] w-[52px] items-center justify-center rounded-full bg-[#eaf5f2] shadow-md shadow-black/10">
-            <Ionicons
-              name={item.icon}
-              size={22}
-              color={colors.text}
-            />
+            <Ionicons name={item.icon} size={22} color={colors.text} />
           </View>
 
           <Text className="text-[11px] font-medium text-textMain">

@@ -1,5 +1,7 @@
 import AnimatedSplash from "@/components/common/AnimatedSplash";
+import { AuthProvider } from "@/context/AuthContext";
 import "@/lib/nativewind-setup";
+
 import {
     Poppins_400Regular,
     Poppins_500Medium,
@@ -12,9 +14,15 @@ import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect, useState } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+
 import "../../global.css";
-import "../global.css";
 import "../lib/icons";
+
+SplashScreen.preventAutoHideAsync();
+
+export const unstable_settings = {
+  initialRouteName: "index",
+};
 
 export default function RootLayout() {
   const [showSplash, setShowSplash] = useState(true);
@@ -38,48 +46,51 @@ export default function RootLayout() {
 
   return (
     <SafeAreaProvider>
-      <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen
-          name="(tabs)"
-          options={{
+      <AuthProvider>
+        <Stack
+          screenOptions={{
             headerShown: false,
+            animation: "slide_from_bottom",
           }}
-        />
+        >
+          <Stack.Screen name="(auth)" />
+          <Stack.Screen name="(tabs)" />
+          <Stack.Screen name="settings" />
+          <Stack.Screen name="hotels" />
 
-        <Stack.Screen
-          name="resort/[id]"
-          options={{
-            headerShown: true,
-            title: "Resort",
-          }}
-        />
+          <Stack.Screen
+            name="resort/[id]"
+            options={{
+              headerShown: true,
+              title: "Resort",
+            }}
+          />
 
-        <Stack.Screen
-          name="itinerary-packages/index"
-          options={{
-            headerShown: false,
-          }}
-        />
+          <Stack.Screen
+            name="itinerary-packages/index"
+            options={{
+              headerShown: false,
+            }}
+          />
 
-        <Stack.Screen
-          name="itinerary-packages/[id]"
-          options={{
-            headerShown: false,
-            title: "Itinerary Package",
-          }}
-        />
-      </Stack>
+          <Stack.Screen
+            name="itinerary-packages/[id]"
+            options={{
+              headerShown: false,
+              title: "Itinerary Package",
+            }}
+          />
+        </Stack>
 
-
-
-      {showSplash && (
-        <AnimatedSplash
-          backgroundImage={require("../../assets/images/Flash-screen-image.png")}
-          onFinish={() => {
-            setShowSplash(false);
-          }}
-        />
-      )}
+        {showSplash && (
+          <AnimatedSplash
+            backgroundImage={require("../../assets/images/Flash-screen-image.png")}
+            onFinish={() => {
+              setShowSplash(false);
+            }}
+          />
+        )}
+      </AuthProvider>
     </SafeAreaProvider>
   );
 }
