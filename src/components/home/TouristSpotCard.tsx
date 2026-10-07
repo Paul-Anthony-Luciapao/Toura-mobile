@@ -1,3 +1,5 @@
+import { formatCurrency, formatReviewCount } from "@/lib/formatters";
+import { colors } from "@/styles/global";
 import { Ionicons } from "@expo/vector-icons";
 import { colors } from "@/styles/global";
 import { Image, Text, View } from "react-native";
@@ -7,49 +9,42 @@ export type TouristSpotCardData = {
   name: string;
   municipality: string;
   image: string;
-  rating?: number;
-  reviewCount?: string;
-  price?: number;
+  rating: number;
+  reviewCount: string;
+  price: number;
 };
 
 type Props = Readonly<{
   spot: TouristSpotCardData;
+  className?: string;
 }>;
 
 export default function TouristSpotCard({ spot }: Props) {
-  const hasRating = spot.rating !== undefined;
-
   return (
-    <View className="w-[170px] overflow-hidden rounded-[18px] border border-coral-100 bg-white shadow-sm shadow-black/[0.06]">
+    <View className="w-[170px] overflow-hidden rounded-t-[18px] bg-white">
       <Image
         source={{ uri: spot.image }}
-        className="h-[130px] w-full bg-coral-100"
+        className="h-[130px] w-full bg-slate-200"
       />
-      <View className="p-3">
+      <View className="pt-2">
         <Text
-          className="text-[14px] font-semibold text-ink"
+          className="text-[14px] font-semibold text-slate-900"
           numberOfLines={1}>
           {spot.name}
         </Text>
-        <Text className="mt-1 mb-1.5 text-[12px] text-ink-500">
+        <Text className="mt-1 mb-1.5 text-[12px] text-slate-500">
           · {spot.municipality}
         </Text>
         <View className="flex-row items-center justify-between">
-          {hasRating ? (
-            <View className="flex-row items-center gap-[3px]">
-              <Ionicons name="star" size={13} color={colors.gold} />
-              <Text className="text-[12px] text-ink-500">
-                {spot.rating} ({spot.reviewCount})
-              </Text>
-            </View>
-          ) : (
-            <View />
-          )}
-          {spot.price !== undefined ? (
-            <Text className="text-[13px] font-bold text-coral-600">
-              $ {spot.price.toLocaleString()}
+          <View className="flex-row items-center gap-[3px]">
+            <Ionicons name="star" size={13} color="#0f766e" />
+            <Text className="text-[12px] text-slate-500">
+              {spot.rating} ({spot.reviewCount})
             </Text>
-          ) : null}
+          </View>
+          <Text className="text-[13px] font-bold text-slate-900">
+            $ {spot.price.toLocaleString()}
+          </Text>
         </View>
       </View>
     </View>

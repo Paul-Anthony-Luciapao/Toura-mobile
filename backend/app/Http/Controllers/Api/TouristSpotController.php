@@ -3,14 +3,20 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\TouristSpotResource;
 use App\Models\TouristSpot;
 use Illuminate\Http\Request;
 
 class TouristSpotController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return response()->json(TouristSpot::all());
+        $spots = TouristSpot::query()
+            ->when($request->filled('municipality'), fn ($q) => $q->where('municipality', $request->string('municipality')))
+            ->latest()
+            ->paginate($request->integer('per_page', 15));
+
+        return TouristSpotResource::collection($spots);
     }
 
     public function store(Request $request)
@@ -26,14 +32,12 @@ class TouristSpotController extends Controller
 
         $touristSpot = TouristSpot::create($validated);
 
-        return response()->json($touristSpot, 201);
+        return (new TouristSpotResource($touristSpot))->response()->setStatusCode(201);
     }
 
     public function show(string $id)
     {
-        $touristSpot = TouristSpot::findOrFail($id);
-
-        return response()->json($touristSpot);
+        return new TouristSpotResource(TouristSpot::findOrFail($id));
     }
 
     public function update(Request $request, string $id)
@@ -51,7 +55,7 @@ class TouristSpotController extends Controller
 
         $touristSpot->update($validated);
 
-        return response()->json($touristSpot);
+        return new TouristSpotResource($touristSpot);
     }
 
     public function destroy(string $id)

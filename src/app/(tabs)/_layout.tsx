@@ -1,20 +1,39 @@
-import { useAuth } from "@/context/auth";
-import { useUnreadCount } from "@/hooks/useUnreadCount";
 import { colors } from "@/styles/global";
 import { Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
+import React, { memo } from "react";
+import { ColorValue } from "react-native";
+
+const TabIcon = memo(
+  ({
+    focused,
+    color,
+    tab,
+  }: {
+    focused: boolean;
+    color: ColorValue | string;
+    tab: TabItem;
+  }) => (
+    <Ionicons
+      name={focused ? tab.focusedIcon : tab.icon}
+      size={22}
+      color={color as string}
+    />
+  ),
+);
+
+TabIcon.displayName = "TabIcon";
 
 export default function TabsLayout() {
-  const { user } = useAuth();
-  const unread = useUnreadCount();
-  const isAdmin = user?.role === "admin";
-
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: colors.textMuted,
+        animation: "none",
+        freezeOnBlur: true,
+        lazy: true,
       }}>
       <Tabs.Screen
         name="index"
@@ -38,14 +57,6 @@ export default function TabsLayout() {
         name="messages"
         options={{
           title: "Messages",
-          href: isAdmin ? null : undefined,
-          tabBarBadge:
-            unread > 0 ? (unread > 99 ? "99+" : unread) : undefined,
-          tabBarBadgeStyle: {
-            backgroundColor: colors.primary,
-            color: colors.white,
-            fontSize: 10,
-          },
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="chatbubble-outline" size={size} color={color} />
           ),

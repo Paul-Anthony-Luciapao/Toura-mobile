@@ -17,9 +17,9 @@ export type AuthSession = {
 
 type RawAuthUser = Omit<AuthUser, "id"> & { id: string | number };
 
-type LoginResponse = {
+type SessionResponse = {
   success: boolean;
-  message: string;
+  message?: string;
   token: string;
   user: RawAuthUser;
 };
@@ -36,8 +36,9 @@ function toAuthUser(raw: RawAuthUser): AuthUser {
 export async function loginRequest(
   email: string,
   password: string,
+  _role?: Role,
 ): Promise<AuthSession> {
-  const { data } = await api.post<LoginResponse>("/auth/login", {
+  const { data } = await api.post<SessionResponse>("/auth/login", {
     email: email.trim(),
     password,
   });
@@ -45,8 +46,20 @@ export async function loginRequest(
   return { token: data.token, user: toAuthUser(data.user) };
 }
 
+export async function registerRequest(input: {
+  name: string;
+  email: string;
+  password: string;
+  phone?: string;
+}): Promise<AuthSession> {
+  const { data } = await api.post<SessionResponse>("/auth/register", input);
+
+  return { token: data.token, user: toAuthUser(data.user) };
+}
+
 export async function fetchMe(): Promise<AuthUser> {
   const { data } = await api.get<MeResponse>("/auth/me");
+
   return toAuthUser(data.user);
 }
 
@@ -56,6 +69,10 @@ export async function logoutRequest(): Promise<void> {
   } catch {
     // Clearing the local session is what actually signs the user out.
   }
+}
+
+export async function deleteAccountRequest(): Promise<void> {
+  await api.delete("/auth/account");
 }
 
 export function roleLabel(role: Role): string {
