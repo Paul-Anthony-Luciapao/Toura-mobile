@@ -94,6 +94,8 @@ export default function CurrentItineraryPackage() {
     0,
   );
 
+  const heroHeight = 270 + insets.top;
+
   const sharePackage = async () => {
     try {
       await Share.share({
@@ -105,12 +107,13 @@ export default function CurrentItineraryPackage() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-background" edges={["top"]}>
+    <View className="flex-1 bg-background">
       <StatusBar style="light" />
 
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 24 }}>
+        contentContainerStyle={{ paddingBottom: 24 }}
+        contentInsetAdjustmentBehavior="never">
         <View className="relative">
           <ScrollView
             horizontal
@@ -126,12 +129,14 @@ export default function CurrentItineraryPackage() {
                 key={image}
                 source={{ uri: image }}
                 resizeMode="cover"
-                style={{ width, height: 270 }}
+                style={{ width, height: heroHeight }}
               />
             ))}
           </ScrollView>
 
-          <View className="absolute inset-0 justify-between p-4">
+          <View
+            className="absolute inset-0 justify-between p-4"
+            style={{ paddingTop: insets.top + 12 }}>
             <View className="flex-row justify-between">
               <Pressable
                 onPress={() => router.back()}
@@ -163,13 +168,13 @@ export default function CurrentItineraryPackage() {
             </View>
 
             <View>
+              <Text className="mt-5 font-poppins-semibold text-[1.50rem] leading-7 text-white">
+                {spot.municipality} Itinerary{"\n"}Packages
+              </Text>
               <Text className="self-end rounded-full bg-white/90 px-3 py-1 font-poppins text-[12px] text-textMain">
                 {galleryIndex + 1}/{gallery.length}
               </Text>
-              <Text className="mt-3 font-poppins-semibold text-[25px] leading-7 text-white">
-                {spot.municipality} Itinerary{"\n"}Packages
-              </Text>
-              <Text className="mt-1 font-poppins text-[12px] text-white">
+              <Text className="mt-1 font-poppins text-[14px] text-white">
                 5 days · 4 nights
               </Text>
             </View>
@@ -369,6 +374,6 @@ export default function CurrentItineraryPackage() {
           </Pressable>
         )}
       </View>
-    </SafeAreaView>
+    </View>
   );
 }
