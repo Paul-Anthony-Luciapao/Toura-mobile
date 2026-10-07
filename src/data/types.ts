@@ -4,8 +4,8 @@ export type User = {
   id: string;
   name: string;
   email: string;
-  role: Role;
-  avatar: string;
+  role: Role | null;
+  avatar: string | null;
   phone: string;
   joinedAt: string;
   status: string;
@@ -63,19 +63,9 @@ export type TouristSpot = {
   description: string;
   image: string;
   tags: string[];
-  rating?: number;
-  reviewCount?: string;
-  price?: number;
-};
-
-export type SpotSummary = {
-  id: string;
-  name: string;
-  municipality: string;
-  image: string;
-  rating?: number;
-  reviewCount?: string;
-  price?: number;
+  rating: number;
+  reviewCount: string;
+  price: number;
 };
 
 export type Booking = {
@@ -153,3 +143,22 @@ export type Conversation = {
 };
 
 // Guest and Admin
+
+export type NotificationKind =
+  | "booking"
+  | "trip"
+  | "offer"
+  | "message"
+  | "payment"
+  | "system";
+
+export type Notification = {
+  id: string;
+  kind: NotificationKind;
+  title: string;
+  body: string;
+  /** ISO 8601 timestamp — drives both the "2h ago" label and the Today/Yesterday grouping. */
+  createdAt: string;
+  read: boolean;
+};
+

@@ -3,7 +3,13 @@
  * Geographic focus: Palawan, Philippines
  */
 
-import type { Booking, Resort, TouristSpot, User } from "./types";
+import type {
+  Booking,
+  Notification,
+  Resort,
+  TouristSpot,
+  User,
+} from "./types";
 
 export const INITIAL_USERS: User[] = [
   {
@@ -449,7 +455,7 @@ export const INITIAL_TOURIST_SPOTS: TouristSpot[] = [
     id: "spot-1",
     name: "Kayangan Lake",
     rating: 4.9,
-    reviewCount: "1.3M",
+    reviewCount: 1300000,
     price: 1200,
     municipality: "Coron",
     category: "Lakes & Lagoons",
@@ -463,7 +469,7 @@ export const INITIAL_TOURIST_SPOTS: TouristSpot[] = [
     id: "spot-2",
     name: "Big Lagoon",
     rating: 4.9,
-    reviewCount: "1.3M",
+    reviewCount: 1300000,
     price: 1500,
     municipality: "El Nido",
     category: "Islands & Lagoons",
@@ -477,7 +483,7 @@ export const INITIAL_TOURIST_SPOTS: TouristSpot[] = [
     id: "spot-3",
     name: "Nacpan Beach",
     rating: 4.0,
-    reviewCount: "900k",
+    reviewCount: 900000,
     price: 1000,
     municipality: "El Nido",
     category: "Beaches",
@@ -491,7 +497,7 @@ export const INITIAL_TOURIST_SPOTS: TouristSpot[] = [
     id: "spot-4",
     name: "Puerto Princesa Subterranean River",
     rating: 5.0,
-    reviewCount: "2M",
+    reviewCount: 2000000,
     price: 5000,
     municipality: "Puerto Princesa",
     category: "UNESCO World Heritage",
@@ -505,7 +511,7 @@ export const INITIAL_TOURIST_SPOTS: TouristSpot[] = [
     id: "spot-5",
     name: "Long Beach",
     rating: 4.2,
-    reviewCount: "1.5M",
+    reviewCount: 1500000,
     price: 1310,
     municipality: "San Vicente",
     category: "Beaches",
@@ -519,7 +525,7 @@ export const INITIAL_TOURIST_SPOTS: TouristSpot[] = [
     id: "spot-6",
     name: "Twin Lagoon",
     rating: 4.3,
-    reviewCount: "1.2M",
+    reviewCount: 1200000,
     price: 1450,
     municipality: "Coron",
     category: "Lakes & Lagoons",
@@ -628,4 +634,78 @@ export const PALAWAN_MUNICIPALITIES: string[] = [
   "San Vicente",
   "Sofronio Española",
   "Taytay",
+];
+
+/**
+ * Notifications are timestamped relative to "now" so the Today / Yesterday /
+ * Earlier grouping and the "2h ago" labels always look alive in the demo.
+ */
+const hoursAgo = (hours: number) =>
+  new Date(Date.now() - hours * 3_600_000).toISOString();
+
+export const INITIAL_NOTIFICATIONS: Notification[] = [
+  {
+    id: "notif-1",
+    kind: "booking",
+    title: "Booking confirmed",
+    body: "Coron Cove Resort — 2 nights for 2 guests. Show this booking at check-in.",
+    createdAt: hoursAgo(0.6),
+    read: false,
+  },
+  {
+    id: "notif-2",
+    kind: "trip",
+    title: "Your trip starts soon",
+    body: "Kayangan Lake island hop departs from Coron town wharf. Meet your guide 30 minutes early.",
+    createdAt: hoursAgo(3),
+    read: false,
+  },
+  {
+    id: "notif-3",
+    kind: "offer",
+    title: "20% off El Nido lagoon tours",
+    body: "Weekday departures only. Book by Sunday to lock in the rate.",
+    createdAt: hoursAgo(7),
+    read: false,
+  },
+  {
+    id: "notif-4",
+    kind: "message",
+    title: "Message from Danilo Villanueva",
+    body: "Hi! I confirmed your airport transfer from Puerto Princesa. What time does your flight land?",
+    createdAt: hoursAgo(26),
+    read: false,
+  },
+  {
+    id: "notif-5",
+    kind: "payment",
+    title: "Payment received",
+    body: "PHP 11,400 paid for your Big Lagoon escape. A receipt was emailed to you.",
+    createdAt: hoursAgo(31),
+    read: true,
+  },
+  {
+    id: "notif-6",
+    kind: "booking",
+    title: "Stay completed",
+    body: "Thanks for staying at Long Beach Garden Hotel. Leave a review to help other travellers.",
+    createdAt: hoursAgo(52),
+    read: true,
+  },
+  {
+    id: "notif-7",
+    kind: "system",
+    title: "New feature: saved itineraries",
+    body: "You can now build and share multi-day Palawan itineraries from the Itinerary tab.",
+    createdAt: hoursAgo(84),
+    read: true,
+  },
+  {
+    id: "notif-8",
+    kind: "trip",
+    title: "Weather advisory for Busuanga",
+    body: "Moderate seas expected this weekend. Your tour operator may reschedule the dive trip.",
+    createdAt: hoursAgo(200),
+    read: true,
+  },
 ];

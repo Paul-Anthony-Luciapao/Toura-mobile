@@ -3,21 +3,23 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ResortResource;
 use App\Models\Resort;
 use Illuminate\Http\Request;
 
 class ResortController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(Request $request)
     {
-        return response()->json(Resort::all());
+        $resorts = Resort::query()
+            ->where('status', 'published')
+            ->when($request->filled('municipality'), fn ($q) => $q->where('municipality', $request->string('municipality')))
+            ->latest()
+            ->paginate($request->integer('per_page', 15));
+
+        return ResortResource::collection($resorts);
     }
-    /**
-     * Store a newly created resource in storage.
-     */
+
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -27,11 +29,11 @@ class ResortController extends Controller
             'location' => 'required|string|max:255',
             'description' => 'required|string',
             'cover_image' => 'nullable|string|max:255',
-            'rating' => 'nullable|numeric|min:0|max:5',
-            'review_count' => 'nullable|integer|min:0',
+            'images' => 'nullable|array',
+            'images.*' => 'string',
             'base_price' => 'required|numeric|min:0',
             'amenities' => 'nullable|array',
-            'status' => 'nullable|string|max:255',
+            'status' => 'nullable|in:draft,published,archived',
         ]);
 
         $resort = Resort::create([
@@ -39,31 +41,22 @@ class ResortController extends Controller
             'owner_id' => $request->user()->id,
         ]);
 
-        return response()->json($resort, 201);
+        return new ResortResource($resort);
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
-        $resort = Resort::findOrFail($id);
+        $resort = Resort::with(['accommodations', 'offers'])
+            ->where('status', 'published')
+            ->findOrFail($id);
 
-        return response()->json($resort);
+        return new ResortResource($resort);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
         $resort = Resort::findOrFail($id);
-
-        if ($resort->owner_id !== $request->user()->id) {
-            return response()->json([
-                'message' => 'You are not authorized to modify this resort.',
-            ], 403);
-        }        
+        abort_unless($resort->owner_id === $request->user()->id, 403, 'Not your resort.');
 
         $validated = $request->validate([
             'name' => 'sometimes|string|max:255',
@@ -72,16 +65,16 @@ class ResortController extends Controller
             'location' => 'sometimes|string|max:255',
             'description' => 'sometimes|string',
             'cover_image' => 'nullable|string|max:255',
-            'rating' => 'nullable|numeric|min:0|max:5',
-            'review_count' => 'nullable|integer|min:0',
+            'images' => 'nullable|array',
+            'images.*' => 'string',
             'base_price' => 'sometimes|numeric|min:0',
             'amenities' => 'nullable|array',
-            'status' => 'nullable|string|max:255',
+            'status' => 'nullable|in:draft,published,archived',
         ]);
 
         $resort->update($validated);
 
-        return response()->json($resort);
+        return new ResortResource($resort);
     }
 
     /**
@@ -90,6 +83,7 @@ class ResortController extends Controller
     public function destroy(Request $request, string $id)
     {
         $resort = Resort::findOrFail($id);
+        abort_unless($resort->owner_id === $request->user()->id, 403, 'Not your resort.');
 
         if ($resort->owner_id !== $request->user()->id) {
             return response()->json([
@@ -99,8 +93,6 @@ class ResortController extends Controller
 
         $resort->delete();
 
-        return response()->json([
-            'message' => 'Resort deleted successfully.',
-        ]);
+        return response()->json(['message' => 'Resort deleted successfully.']);
     }
 }

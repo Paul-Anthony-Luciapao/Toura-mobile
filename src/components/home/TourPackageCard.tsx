@@ -8,17 +8,24 @@ export type TourPackageCardData = {
 
 type Props = Readonly<{
   item: TourPackageCardData;
+  className?: string;
 }>;
 
-export default function TourPackageCard({ item }: Props) {
+export default function TourPackageCard({
+  item,
+  className = "",
+}: Props) {
   return (
-    <View className="w-[170px]">
+    <View
+      className={`w-[170px] overflow-hidden rounded-[18px] bg-white shadow-md shadow-black/10 ${className}`}
+    >
+      {/* Image */}
       <Image
         source={{ uri: item.image }}
-        className="h-[130px] w-full rounded-t-[18px] bg-coral-100"
+        className="h-[130px] w-full rounded-t-[18px] bg-slate-200"
       />
       <Text
-        className="mt-2 text-[14px] font-semibold text-ink"
+        className="mt-2 text-[14px] font-semibold text-slate-900"
         numberOfLines={1}>
         {item.title}
       </Text>

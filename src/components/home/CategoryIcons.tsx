@@ -1,3 +1,4 @@
+import { colors } from "@/styles/global";
 import { Ionicons } from "@expo/vector-icons";
 import { colors } from "@/styles/global";
 import { Pressable, Text, View } from "react-native";
@@ -9,11 +10,31 @@ type CategoryIconItem = {
 };
 
 const PLACEHOLDER_CATEGORIES: CategoryIconItem[] = [
-  { id: "activities", label: "Activities", icon: "list-outline" },
-  { id: "hotels", label: "Hotels", icon: "business-outline" },
-  { id: "car-rentals", label: "Car Rentals", icon: "car-outline" },
-  { id: "esims", label: "E-Sims", icon: "hardware-chip-outline" },
-  { id: "more", label: "More", icon: "ellipsis-vertical" },
+  {
+    id: "activities",
+    label: "Activities",
+    icon: "list-outline",
+  },
+  {
+    id: "hotels",
+    label: "Hotels",
+    icon: "business-outline",
+  },
+  {
+    id: "car-rentals",
+    label: "Car Rentals",
+    icon: "car-outline",
+  },
+  {
+    id: "esims",
+    label: "E-Sims",
+    icon: "hardware-chip-outline",
+  },
+  {
+    id: "more",
+    label: "More",
+    icon: "ellipsis-vertical",
+  },
 ];
 
 type Props = Readonly<{
@@ -30,12 +51,12 @@ export default function CategoryIcons({
       {items.map((item) => (
         <Pressable
           key={item.id}
-          className="flex-1 items-center gap-[8px]"
+          className="items-center gap-[6px]"
           onPress={() => onSelect?.(item)}>
-          <View className="h-[52px] w-[52px] items-center justify-center rounded-[18px] border border-coral-100 bg-coral-50 shadow-sm shadow-black/[0.06]">
-            <Ionicons name={item.icon} size={22} color={colors.primaryPressed} />
+          <View className="h-[52px] w-[52px] items-center justify-center rounded-full bg-[#eaf5f2] shadow-md shadow-black/10">
+            <Ionicons name={item.icon} size={22} color="#0f172a" />
           </View>
-          <Text className="text-[11px] font-medium text-ink-600">
+          <Text className="text-[11px] font-medium text-slate-900">
             {item.label}
           </Text>
         </Pressable>

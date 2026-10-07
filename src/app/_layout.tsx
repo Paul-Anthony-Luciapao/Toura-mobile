@@ -1,5 +1,4 @@
 import AnimatedSplash from "@/components/common/AnimatedSplash";
-import { AuthProvider, useAuth } from "@/context/auth";
 import "@/lib/nativewind-setup";
 import { colors } from "@/styles/global";
 import {
@@ -15,6 +14,9 @@ import { useEffect, useState } from "react";
 import { ActivityIndicator, View } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import "../../global.css";
+import "../lib/icons";
+
+SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
@@ -35,45 +37,23 @@ export default function RootLayout() {
   }
 
   return (
-    <AuthProvider>
-      <SafeAreaProvider>
-        <RootNavigator />
-      </SafeAreaProvider>
-    </AuthProvider>
-  );
-}
+    <SafeAreaProvider>
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen
+          name="navigation"
+          options={{
+            headerShown: false,
+          }}
+        />
 
-function RootNavigator() {
-  const { token, isLoading } = useAuth();
-  const [showSplash, setShowSplash] = useState(true);
-
-  return (
-    <>
-      {isLoading ? (
-        <View className="flex-1 items-center justify-center bg-cream">
-          <ActivityIndicator color={colors.primary} />
-        </View>
-      ) : (
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Protected guard={!!token}>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-
-            <Stack.Screen
-              name="resort/[id]"
-              options={{
-                headerShown: true,
-                title: "Resort",
-              }}
-            />
-
-            <Stack.Screen name="chat/[id]" options={{ headerShown: false }} />
-          </Stack.Protected>
-
-          <Stack.Protected guard={!token}>
-            <Stack.Screen name="login" options={{ headerShown: false }} />
-          </Stack.Protected>
-        </Stack>
-      )}
+        <Stack.Screen
+          name="resort/[id]"
+          options={{
+            headerShown: true,
+            title: "Resort",
+          }}
+        />
+      </Stack>
 
       {showSplash && (
         <AnimatedSplash
@@ -83,6 +63,6 @@ function RootNavigator() {
           }}
         />
       )}
-    </>
+    </SafeAreaProvider>
   );
 }

@@ -16,6 +16,7 @@ class Resort extends Model
         'location',
         'description',
         'cover_image',
+        'images',
         'rating',
         'review_count',
         'base_price',
@@ -27,6 +28,7 @@ class Resort extends Model
     {
         return [
             'amenities' => 'array',
+            'images' => 'array',
         ];
     }
     public function owner(): BelongsTo
