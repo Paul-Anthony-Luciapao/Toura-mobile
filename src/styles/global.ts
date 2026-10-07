@@ -4,6 +4,7 @@ export const colors = {
   primaryHover: "#C9613E",
   primaryPressed: "#A14E32",
   primaryDeep: "#7A3B26", // strong emphasis, disabled
+  primaryDark: "#A14E32", // deep brand tone for small icons/badges
   accentSoft: "#E48B70",
   accentBorder: "#EDB29E",
   accentFill: "#F6D8CC",

@@ -3,7 +3,7 @@ import { ImageBackground, Text, TextInput, View } from "react-native";
 import Header from "./Header";
 
 type Props = Readonly<{
-  image: ImageSourcePropType;
+  image: string;
   headline: string;
   subtext: string;
 }>;

@@ -1,36 +1,26 @@
 import { colors } from "@/styles/global";
 import { Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
-import React, { memo } from "react";
-import { ColorValue } from "react-native";
-
-const TabIcon = memo(
-  ({
-    focused,
-    color,
-    tab,
-  }: {
-    focused: boolean;
-    color: ColorValue | string;
-    tab: TabItem;
-  }) => (
-    <Ionicons
-      name={focused ? tab.focusedIcon : tab.icon}
-      size={22}
-      color={color as string}
-    />
-  ),
-);
-
-TabIcon.displayName = "TabIcon";
 
 export default function TabsLayout() {
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: colors.primary,
-        tabBarInactiveTintColor: colors.textMuted,
+        tabBarActiveTintColor: "#3BA29A",
+        tabBarInactiveTintColor: "#1F2937",
+        tabBarStyle: {
+          borderTopWidth: 1,
+          borderTopColor: "#F3F4F6",
+          height: 60,
+          paddingBottom: 8,
+          paddingTop: 8,
+        },
+        tabBarLabelStyle: {
+          fontFamily: "Poppins_400Regular",
+          fontSize: 11,
+          marginTop: -4,
+        },
         animation: "none",
         freezeOnBlur: true,
         lazy: true,
@@ -40,7 +30,7 @@ export default function TabsLayout() {
         options={{
           title: "Home",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="home-outline" size={size} color={color} />
+            <Ionicons name="home-outline" size={24} color={color} />
           ),
         }}
       />
@@ -49,7 +39,7 @@ export default function TabsLayout() {
         options={{
           title: "Itinerary",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="time-outline" size={size} color={color} />
+            <Ionicons name="clipboard-outline" size={24} color={color} />
           ),
         }}
       />
@@ -58,7 +48,7 @@ export default function TabsLayout() {
         options={{
           title: "Messages",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="chatbubble-outline" size={size} color={color} />
+            <Ionicons name="chatbubble-outline" size={24} color={color} />
           ),
         }}
       />
@@ -67,7 +57,7 @@ export default function TabsLayout() {
         options={{
           title: "Profile",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="person-outline" size={size} color={color} />
+            <Ionicons name="person-outline" size={24} color={color} />
           ),
         }}
       />
@@ -76,7 +66,7 @@ export default function TabsLayout() {
         options={{
           title: "More",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="ellipsis-horizontal" size={size} color={color} />
+            <Ionicons name="ellipsis-horizontal" size={24} color={color} />
           ),
         }}
       />

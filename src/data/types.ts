@@ -55,6 +55,16 @@ export type Resort = {
   offers: Offer[];
 };
 
+export type SpotSummary = {
+  id: string;
+  name: string;
+  municipality: string;
+  image: string;
+  rating: number;
+  reviewCount: number;
+  price: number;
+};
+
 export type TouristSpot = {
   id: string;
   name: string;
@@ -64,7 +74,7 @@ export type TouristSpot = {
   image: string;
   tags: string[];
   rating: number;
-  reviewCount: string;
+  reviewCount: number;
   price: number;
 };
 

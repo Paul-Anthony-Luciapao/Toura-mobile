@@ -1,7 +1,4 @@
-import { formatCurrency, formatReviewCount } from "@/lib/formatters";
-import { colors } from "@/styles/global";
 import { Ionicons } from "@expo/vector-icons";
-import { colors } from "@/styles/global";
 import { Image, Text, View } from "react-native";
 
 export type TouristSpotCardData = {
@@ -10,7 +7,7 @@ export type TouristSpotCardData = {
   municipality: string;
   image: string;
   rating: number;
-  reviewCount: string;
+  reviewCount: number;
   price: number;
 };
 

@@ -1,16 +1,7 @@
 import { useAuth } from "@/context/AuthContext";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import {
-  Alert,
-  Pressable,
-  ScrollView,
-  StatusBar,
-  Text,
-  TextInput,
-  View,
-} from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { Alert, Pressable, ScrollView, Text, View } from "react-native";
 
 type OptionItem = {
   id: string;
@@ -26,57 +17,57 @@ const OPTIONS: OptionItem[] = [
     id: "bookings",
     label: "My bookings",
     icon: "clipboard-outline",
-    iconBg: "#F0F3F2",
-    iconColor: "#1F2937",
+    iconBg: "#FBEDE8",
+    iconColor: "#A14E32",
   },
   {
     id: "history",
     label: "Transaction History",
     icon: "receipt-outline",
-    iconBg: "#F0F3F2",
-    iconColor: "#1F2937",
+    iconBg: "#FBEDE8",
+    iconColor: "#A14E32",
   },
   {
     id: "saved",
     label: "Saved Destinations",
     icon: "heart-outline",
-    iconBg: "#F0F3F2",
-    iconColor: "#1F2937",
+    iconBg: "#FBEDE8",
+    iconColor: "#A14E32",
   },
   {
     id: "settings",
     label: "Settings",
     icon: "settings-outline",
-    iconBg: "#F0F3F2",
-    iconColor: "#1F2937",
+    iconBg: "#FBEDE8",
+    iconColor: "#A14E32",
   },
   {
     id: "about",
     label: "About",
     icon: "information-circle-outline",
-    iconBg: "#F0F3F2",
-    iconColor: "#1F2937",
+    iconBg: "#FBEDE8",
+    iconColor: "#A14E32",
   },
   {
     id: "help",
     label: "Help Center",
     icon: "help-circle-outline",
-    iconBg: "#F0F3F2",
-    iconColor: "#1F2937",
+    iconBg: "#FBEDE8",
+    iconColor: "#A14E32",
   },
   {
     id: "emergency",
     label: "Emergency",
     icon: "warning-outline",
-    iconBg: "#F0F3F2",
-    iconColor: "#1F2937",
+    iconBg: "#FBEDE8",
+    iconColor: "#A14E32",
   },
   {
     id: "rate",
     label: "Rate our app",
     icon: "thumbs-up-outline",
-    iconBg: "#F0F3F2",
-    iconColor: "#1F2937",
+    iconBg: "#FBEDE8",
+    iconColor: "#A14E32",
   },
   {
     id: "logout",
@@ -88,6 +79,11 @@ const OPTIONS: OptionItem[] = [
   },
 ];
 
+const LEGAL_LINKS = [
+  { id: "terms", label: "Terms & Conditions", path: "/legal/terms" },
+  { id: "privacy", label: "Data Privacy", path: "/legal/privacy" },
+] as const;
+
 export default function MoreOptionsScreen() {
   const router = useRouter();
   const { user, signOut } = useAuth();
@@ -97,9 +93,18 @@ export default function MoreOptionsScreen() {
     : OPTIONS.filter((option) => option.id !== "logout");
 
   const handleOptionPress = async (option: OptionItem) => {
+    if (option.id === "settings") {
+      router.push("/settings");
+      return;
+    }
+
     if (option.id === "logout") {
-      await signOut();
-      router.replace("/profile");
+      try {
+        await signOut();
+      } catch {
+        // Signing out locally is enough to leave this screen usable.
+      }
+      router.replace("/");
       return;
     }
 
@@ -108,25 +113,51 @@ export default function MoreOptionsScreen() {
 
   return (
     <View className="flex-1 bg-white px-5 pt-16">
-      <Text className="text-[20px] font-bold text-slate-900">More</Text>
+      <ScrollView
+        className="flex-1"
+        contentContainerClassName="pb-10"
+        showsVerticalScrollIndicator={false}>
+        <Text className="text-[20px] font-bold text-ink">More</Text>
 
-      <View className="mt-6 gap-3">
-        <Pressable
-          onPress={() => router.push("/legal/terms")}
-          className="rounded-xl bg-slate-300 px-4 py-3">
-          <Text className="text-[15px] font-medium text-slate-900">
-            Terms & Conditions
-          </Text>
-        </Pressable>
+        <View className="mt-6 gap-3">
+          {visibleOptions.map((option) => (
+            <Pressable
+              key={option.id}
+              onPress={() => handleOptionPress(option)}
+              className="flex-row items-center gap-3 rounded-[14px] border border-coral-100 bg-white px-4 py-3.5">
+              <View
+                className="h-9 w-9 items-center justify-center rounded-[10px]"
+                style={{ backgroundColor: option.iconBg }}>
+                <Ionicons
+                  name={option.icon}
+                  size={18}
+                  color={option.iconColor}
+                />
+              </View>
+              <Text
+                className={`flex-1 text-[15px] font-medium ${
+                  option.highlight ? "text-[#E75C4F]" : "text-ink"
+                }`}>
+                {option.label}
+              </Text>
+              <Ionicons name="chevron-forward" size={16} color="#9AA09C" />
+            </Pressable>
+          ))}
+        </View>
 
-        <Pressable
-          onPress={() => router.push("/legal/privacy")}
-          className="rounded-xl bg-slate-300 px-4 py-3">
-          <Text className="text-[15px] font-medium text-slate-900">
-            Data Privacy
-          </Text>
-        </Pressable>
-      </View>
-    </SafeAreaView>
+        <View className="mt-6 gap-3">
+          {LEGAL_LINKS.map((link) => (
+            <Pressable
+              key={link.id}
+              onPress={() => router.push(link.path)}
+              className="rounded-[14px] bg-coral-50 px-4 py-3">
+              <Text className="text-[15px] font-medium text-ink">
+                {link.label}
+              </Text>
+            </Pressable>
+          ))}
+        </View>
+      </ScrollView>
+    </View>
   );
 }

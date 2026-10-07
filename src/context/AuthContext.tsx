@@ -1,4 +1,9 @@
-import type { Role, User } from "@/data/types";
+import type { Role } from "@/data/types";
+import {
+  getStoredItem,
+  removeStoredItem,
+  setStoredItem,
+} from "@/lib/secure-storage";
 import { tokenStorage } from "@/lib/tokenStorage";
 import { setAuthToken } from "@/services/api";
 import {
@@ -7,6 +12,7 @@ import {
   loginRequest,
   logoutRequest,
   registerRequest,
+  type AuthUser,
 } from "@/services/auth";
 import axios from "axios";
 import {
@@ -27,40 +33,66 @@ type SignUpInput = {
 };
 
 type AuthState = {
-  user: User | null;
+  user: AuthUser | null;
+  token: string | null;
   loading: boolean;
   signIn: (
     email: string,
     password: string,
     options?: SignInOptions,
   ) => Promise<void>;
+  signUp: (input: SignUpInput, options?: { remember?: boolean }) => Promise<void>;
   signOut: () => Promise<void>;
   deleteAccount: () => Promise<void>;
-  signUp: (
-    input: SignUpInput,
-    options?: { remember?: boolean },
-  ) => Promise<void>;
 };
+
+const LEGACY_TOKEN_KEY = "toura.session.token";
+const LEGACY_USER_KEY = "toura.session.user";
 
 const AuthContext = createContext<AuthState | null>(null);
 
 export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<AuthUser | null>(null);
+  const [token, setToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     (async () => {
       try {
-        const stored = await tokenStorage.get();
+        let stored = await tokenStorage.get();
+
+        // Pick up a session saved by the previous storage layer.
+        if (!stored) {
+          const legacy = await getStoredItem(LEGACY_TOKEN_KEY);
+          if (legacy) {
+            stored = legacy;
+            await tokenStorage.set(legacy);
+          }
+        }
+
         if (stored) {
           setAuthToken(stored);
+          setToken(stored);
+
+          const cached = await getStoredItem(LEGACY_USER_KEY);
+          if (cached) {
+            try {
+              setUser(JSON.parse(cached) as AuthUser);
+            } catch {
+              // ignore malformed cache
+            }
+          }
+
           setUser(await fetchMe());
         }
       } catch (error) {
         if (axios.isAxiosError(error) && error.response?.status === 401) {
           await tokenStorage.clear();
+          await removeStoredItem(LEGACY_TOKEN_KEY);
+          await removeStoredItem(LEGACY_USER_KEY);
+          setToken(null);
+          setUser(null);
         }
-        setAuthToken(null);
       } finally {
         setLoading(false);
       }
@@ -68,21 +100,37 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
   }, []);
 
   const signIn: AuthState["signIn"] = async (email, password, options = {}) => {
-    const { user: nextUser, token } = await loginRequest(
+    const { user: nextUser, token: nextToken } = await loginRequest(
       email,
       password,
       options.role,
     );
-    setAuthToken(token);
-    if (options.remember) await tokenStorage.set(token);
+
+    setAuthToken(nextToken);
+    setToken(nextToken);
     setUser(nextUser);
+
+    await tokenStorage.set(nextToken);
+    await setStoredItem(LEGACY_USER_KEY, JSON.stringify(nextUser));
+
+    if (options.remember) {
+      await setStoredItem(LEGACY_TOKEN_KEY, nextToken);
+    }
   };
 
   const signUp: AuthState["signUp"] = async (input, options = {}) => {
-    const { user: nextUser, token } = await registerRequest(input);
-    setAuthToken(token);
-    if (options.remember) await tokenStorage.set(token);
+    const { user: nextUser, token: nextToken } = await registerRequest(input);
+
+    setAuthToken(nextToken);
+    setToken(nextToken);
     setUser(nextUser);
+
+    await tokenStorage.set(nextToken);
+    await setStoredItem(LEGACY_USER_KEY, JSON.stringify(nextUser));
+
+    if (options.remember) {
+      await setStoredItem(LEGACY_TOKEN_KEY, nextToken);
+    }
   };
 
   const signOut = async () => {
@@ -91,12 +139,16 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
     } catch {
       // Ignore server errors; clear local session anyway.
     }
+
     await tokenStorage.clear();
+    await removeStoredItem(LEGACY_TOKEN_KEY);
+    await removeStoredItem(LEGACY_USER_KEY);
     setAuthToken(null);
+    setToken(null);
     setUser(null);
   };
 
-  const deleteAccount: AuthState["deleteAccount"] = async () => {
+  const deleteAccount = async () => {
     try {
       await deleteAccountRequest();
     } catch (error) {
@@ -105,15 +157,25 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
     }
 
     await tokenStorage.clear();
+    await removeStoredItem(LEGACY_TOKEN_KEY);
+    await removeStoredItem(LEGACY_USER_KEY);
     setAuthToken(null);
+    setToken(null);
     setUser(null);
   };
 
+  const value: AuthState = {
+    user,
+    token,
+    loading,
+    signIn,
+    signUp,
+    signOut,
+    deleteAccount,
+  };
+
   return (
-    <AuthContext.Provider
-      value={{ user, loading, signIn, signOut, deleteAccount, signUp }}>
-      {children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
   );
 }
 
