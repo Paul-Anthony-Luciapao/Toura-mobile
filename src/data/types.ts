@@ -155,12 +155,7 @@ export type Conversation = {
 // Guest and Admin
 
 export type NotificationKind =
-  | "booking"
-  | "trip"
-  | "offer"
-  | "message"
-  | "payment"
-  | "system";
+  "booking" | "trip" | "offer" | "message" | "payment" | "system";
 
 export type Notification = {
   id: string;
@@ -172,3 +167,50 @@ export type Notification = {
   read: boolean;
 };
 
+export type Driver = {
+  id: string;
+  name: string;
+  plateNumber: string;
+  car: string;
+  mobileNumber: string;
+};
+
+export type Hotel = {
+  id: string;
+  description: string;
+};
+
+export type Itineraries = {
+  id: string;
+  price: string;
+  minicontent: string;
+};
+
+export type ItineraryDay = {
+  id: string;
+  title: string;
+  notes: string[];
+};
+
+export type PackagePriceLine = {
+  label: string;
+  amount: number;
+};
+
+export type PackageReview = {
+  id: string;
+  name: string;
+  rating: number;
+  text: string;
+};
+
+export type ItineraryPackage = {
+  id: string;
+  spotId: string;
+  resortId: string;
+  startDate: string;
+  days: ItineraryDay[];
+  priceBreakdown: PackagePriceLine[];
+  inclusions: string[];
+  reviews: PackageReview[];
+};
