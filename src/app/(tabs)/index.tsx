@@ -1,24 +1,25 @@
-import CategoryIcons from "@/components/home/CategoryIcons";
-import HeroBanner from "@/components/home/HeroBanner";
-import SectionHeader from "@/components/home/SectionHeader";
-import TourPackageCard from "@/components/home/TourPackageCard";
-import TouristSpotCard from "@/components/home/TouristSpotCard";
-import type { TouristSpot } from "@/data/types";
-import { getErrorMessage } from "@/services/api";
-import { fetchTouristSpots } from "@/services/touristSpots";
-import { useRouter } from "expo-router";
-import { useCallback, useEffect, useState } from "react";
+import CategoryIcons from '@/components/home/CategoryIcons';
+import HeroBanner from '@/components/home/HeroBanner';
+import SectionHeader from '@/components/home/SectionHeader';
+import TourPackageCard from '@/components/home/TourPackageCard';
+import TouristSpotCard from '@/components/home/TouristSpotCard';
+import type { TouristSpot } from '@/data/types';
+import { getErrorMessage } from '@/services/api';
+import { fetchTouristSpots } from '@/services/touristSpots';
+import { useRouter } from 'expo-router';
+import { useCallback, useEffect, useState } from 'react';
 import {
-  ActivityIndicator,
-  RefreshControl,
-  ScrollView,
-  StatusBar,
-  Text,
-  View,
-} from "react-native";
+    ActivityIndicator,
+    RefreshControl,
+    ScrollView,
+    StatusBar,
+    Text,
+    View,
+} from 'react-native';
 
 export default function Index() {
   const router = useRouter();
+
   const [spots, setSpots] = useState<TouristSpot[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -26,6 +27,7 @@ export default function Index() {
 
   const loadSpots = useCallback(async () => {
     setError(null);
+
     try {
       setSpots(await fetchTouristSpots());
     } catch (e) {
@@ -55,13 +57,17 @@ export default function Index() {
         </View>
       );
     }
+
     if (error) {
       return (
         <View className="mt-10 items-center px-6">
-          <Text className="text-center text-[13px] text-red-600">{error}</Text>
+          <Text className="text-center text-[13px] text-red-600">
+            {error}
+          </Text>
         </View>
       );
     }
+
     if (spots.length === 0) {
       return (
         <View className="mt-10 items-center px-6">
@@ -71,6 +77,7 @@ export default function Index() {
         </View>
       );
     }
+
     return (
       <>
         {/* Itinerary Packages */}
@@ -78,16 +85,20 @@ export default function Index() {
           <SectionHeader
             title="Itinerary Packages"
             action="View all"
-            onActionPress={() => router.push("/itinerary-packages")}
+            onActionPress={() => router.push('/itinerary-packages')}
           />
 
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
-            contentContainerClassName="pb-1">
+            contentContainerClassName="pb-1"
+          >
             {spots.map((spot) => (
               <View key={spot.id} className="mr-3.5 w-[280px]">
-                <TouristSpotCard spot={spot} className="w-full" />
+                <TouristSpotCard
+                  spot={spot}
+                  className="w-full"
+                />
               </View>
             ))}
           </ScrollView>
@@ -98,13 +109,14 @@ export default function Index() {
           <SectionHeader
             title="Tour Packages"
             action="View all"
-            onActionPress={() => router.push("/tour-package")}
+            onActionPress={() => router.push('/tour-package')}
           />
 
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
-            contentContainerClassName="pb-1">
+            contentContainerClassName="pb-1"
+          >
             {spots.map((spot) => (
               <View key={spot.id} className="mr-3.5 w-[280px]">
                 <TourPackageCard
@@ -129,14 +141,18 @@ export default function Index() {
       contentContainerClassName="pb-10"
       showsVerticalScrollIndicator={false}
       refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
-      }>
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={handleRefresh}
+        />
+      }
+    >
       <StatusBar barStyle="light-content" />
 
       {/* Hero Banner */}
       <HeroBanner
         image="https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1400&q=85"
-        headline={"Discover\nYour Next\nAdventure"}
+        headline={'Discover\nYour Next\nAdventure'}
         subtext="Explore breathing destinations, curated itinerary packages, and unforgettable experience."
       />
 
@@ -145,8 +161,8 @@ export default function Index() {
         <View className="-mt-10 z-10 rounded-2xl px-2 py-3.5 shadow-md shadow-black/10">
           <CategoryIcons
             onSelect={(item) => {
-              if (item.id === "hotels") {
-                router.push("/hotels");
+              if (item.id === 'hotels') {
+                router.push('/hotels');
               }
             }}
           />
