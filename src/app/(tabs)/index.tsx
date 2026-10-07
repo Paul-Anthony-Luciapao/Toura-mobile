@@ -1,7 +1,6 @@
 import CategoryIcons from '@/components/home/CategoryIcons';
 import HeroBanner from '@/components/home/HeroBanner';
 import SectionHeader from '@/components/home/SectionHeader';
-import TourPackageCard from '@/components/home/TourPackageCard';
 import TouristSpotCard from '@/components/home/TouristSpotCard';
 import { INITIAL_TOURIST_SPOTS } from '@/data/mockData';
 import { api } from '@/services/api';
@@ -91,12 +90,8 @@ export default function Index() {
                 key={spot.id}
                 className="mr-3.5 w-[280px]"
               >
-                <TourPackageCard
-                  item={{
-                    id: spot.id,
-                    title: spot.name,
-                    image: spot.image,
-                  }}
+                <TouristSpotCard
+                  spot={spot}
                   className="w-full"
                 />
               </View>
