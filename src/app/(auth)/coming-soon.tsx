@@ -20,7 +20,7 @@ export default function ComingSoonScreen() {
         {label} is coming soon
       </Text>
       <Text className="mt-2 text-center font-['Poppins_400Regular'] text-[13px] text-[#64748b]">
-        We're still building this part of Toura. Check back later.
+        We&apos;re still building this part of Toura. Check back later.
       </Text>
       <GradientButton
         label="Back to Log in as"

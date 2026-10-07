@@ -98,7 +98,7 @@ export default function LoginScreen() {
 
       <View className="mt-6 flex-row justify-center">
         <Text className="font-['Poppins_400Regular'] text-[12px] text-[#334155]">
-          Don't have an account?{" "}
+          Don&apos;t have an account?{" "}
         </Text>
         <Pressable onPress={() => router.push("/signup-role")} hitSlop={8}>
           <Text className="font-['Poppins_600SemiBold'] text-[12px] text-[#238276]">
