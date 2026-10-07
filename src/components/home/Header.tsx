@@ -17,12 +17,11 @@ export default function Header({ variant = "dark" }: Props) {
       className="flex-row items-center justify-between px-5"
       style={{
         paddingTop: insets.top + 8,
-      }}
-    >
+      }}>
       {/* Logo */}
       <Image
         source={require("../../../assets/logo/toura-logo.png")}
-        className="h-9 w-9"
+        className="h-10 w-10"
         contentFit="contain"
       />
 

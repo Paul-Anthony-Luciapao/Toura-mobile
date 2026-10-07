@@ -1,8 +1,8 @@
 <?php
 
+use App\Http\Middleware\EnsureUserHasRole;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
-use App\Http\Middleware\EnsureUserHasRole;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
 
@@ -15,13 +15,13 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
+            'admin' => \App\Http\Middleware\EnsureUserIsAdmin::class,
+            'owner' => \App\Http\Middleware\EnsureUserIsOwner::class,
             'role' => EnsureUserHasRole::class,
         ]);
 
-        // This is an API-only backend — there is no 'login' web route to
-        // redirect unauthenticated users to. Without this, Laravel's default
-        // Authenticate middleware tries to build a URL for a route named
-        // 'login', which doesn't exist, and crashes with a RouteNotFoundException
+        // API-only backend: there is no 'login' web route to redirect guests to.
+        // Without this, unauthenticated requests crash with RouteNotFoundException
         // instead of returning a clean 401.
         $middleware->redirectGuestsTo(fn () => null);
     })

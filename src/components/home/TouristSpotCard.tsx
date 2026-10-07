@@ -1,3 +1,4 @@
+import { formatCurrency, formatReviewCount } from "@/lib/formatters";
 import { colors } from "@/styles/global";
 import { Ionicons } from "@expo/vector-icons";
 import { Link } from "expo-router";
@@ -9,7 +10,7 @@ export type TouristSpotCardData = {
   municipality: string;
   image: string;
   rating: number;
-  reviewCount: string;
+  reviewCount: number;
   price: number;
 };
 
@@ -55,20 +56,16 @@ export default function TouristSpotCard({
         <View className="mt-2 flex-row items-center justify-between">
           {/* Rating */}
           <View className="flex-row items-center gap-[3px]">
-            <Ionicons
-              name="star"
-              size={13}
-              color={colors.primary}
-            />
+            <Ionicons name="star" size={13} color={colors.primary} />
 
             <Text className="font-poppins text-[12px] text-textMuted">
-              {spot.rating} ({spot.reviewCount})
+              {spot.rating} ({formatReviewCount(spot.reviewCount)})
             </Text>
           </View>
 
           {/* Price */}
           <Text className="font-poppins-bold text-[13px] text-textMain">
-            $ {spot.price.toLocaleString()}
+            {formatCurrency(spot.price)}
           </Text>
         </View>
       </View>
@@ -81,7 +78,10 @@ export default function TouristSpotCard({
 
   return (
     <Link
-      href={{ pathname: "/itinerary-packages/[id]", params: { id: spot.id } }}
+      href={{
+        pathname: "/itinerary-packages/[id]",
+        params: { id: spot.id },
+      }}
       asChild
     >
       <Pressable

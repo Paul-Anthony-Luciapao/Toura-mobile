@@ -13,6 +13,9 @@ class TouristSpot extends Model
         'description',
         'image',
         'tags',
+        'rating',
+        'review_count',
+        'price',
     ];
 
     protected function casts(): array
