@@ -98,20 +98,6 @@ const ItineraryPackagesScreen = () => {
             <View className="pb-5">
               <CategoryItineraries />
             </View>
-
-            {/* Results Header */}
-            <View className="mb-3 flex-row items-center justify-between">
-              <Text className="font-poppins-semibold text-[16px] text-textMain">
-                Destinations
-              </Text>
-
-              <Text className="font-poppins text-[12px] text-textMuted">
-                {filteredSpots.length}{" "}
-                {filteredSpots.length === 1
-                  ? "destination"
-                  : "destinations"}
-              </Text>
-            </View>
           </View>
         }
         ListEmptyComponent={

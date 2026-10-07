@@ -1,7 +1,8 @@
 import { formatCurrency, formatReviewCount } from "@/lib/formatters";
 import { colors } from "@/styles/global";
 import { Ionicons } from "@expo/vector-icons";
-import { Image, Text, View } from "react-native";
+import { Link } from "expo-router";
+import { Image, Pressable, Text, View } from "react-native";
 
 export type TouristSpotCardData = {
   id: string;
@@ -16,12 +17,19 @@ export type TouristSpotCardData = {
 type Props = Readonly<{
   spot: TouristSpotCardData;
   className?: string;
+  /** Set false to render the card without navigation (e.g. static previews). */
+  navigable?: boolean;
 }>;
 
-export default function TouristSpotCard({ spot, className = "" }: Props) {
-  return (
+export default function TouristSpotCard({
+  spot,
+  className = "",
+  navigable = true,
+}: Props) {
+  const content = (
     <View
-      className={`w-full overflow-hidden rounded-[18px] bg-white shadow-md shadow-black/10 ${className}`}>
+      className={`w-full overflow-hidden rounded-[18px] bg-white shadow-md shadow-black/10 ${className}`}
+    >
       {/* Image */}
       <Image
         source={{ uri: spot.image }}
@@ -34,7 +42,8 @@ export default function TouristSpotCard({ spot, className = "" }: Props) {
         {/* Name */}
         <Text
           className="font-poppins-semibold text-[15px] text-textMain"
-          numberOfLines={1}>
+          numberOfLines={1}
+        >
           {spot.name}
         </Text>
 
@@ -61,5 +70,25 @@ export default function TouristSpotCard({ spot, className = "" }: Props) {
         </View>
       </View>
     </View>
+  );
+
+  if (!navigable) {
+    return content;
+  }
+
+  return (
+    <Link
+      href={{
+        pathname: "/itinerary-packages/[id]",
+        params: { id: spot.id },
+      }}
+      asChild
+    >
+      <Pressable
+        className={`w-full overflow-hidden rounded-[18px] bg-white shadow-md shadow-black/10 active:opacity-70 ${className}`}
+      >
+        {content}
+      </Pressable>
+    </Link>
   );
 }

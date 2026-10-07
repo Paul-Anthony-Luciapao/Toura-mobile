@@ -1,12 +1,13 @@
 import SearchBar from "@/components/common/SearchBar";
-import { INITIAL_TOURIST_SPOTS } from "@/data/mockData";
+import { Dates, INITIAL_TOURIST_SPOTS } from "@/data/mockData";
 import { colors } from "@/styles/global";
 import CategoryItineraries from "@components/itineraries/CategoryItineraries";
-import ItineraryCards, { Dates } from "@components/itineraries/ItineraryCards";
+import ItineraryCards from "@components/itineraries/ItineraryCards";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import { StatusBar } from "expo-status-bar";
 import { useMemo, useState } from "react";
-import { FlatList, Pressable, Text, View } from "react-native";
+import { FlatList, Pressable, Text, View, } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 function EmptyState({ search }: Readonly<{ search: string }>) {
@@ -45,6 +46,8 @@ export default function ItineraryPackagesScreen() {
 
   return (
     <SafeAreaView className="flex-1" edges={["top"]}>
+      {/* Light screen background, so keep the status bar icons dark. */}
+      <StatusBar style="dark" />
       {/* Page Title */}
       <Text className="pt-3 text-center font-poppins-medium text-xl text-textMain">
         My Itineraries
