@@ -6,6 +6,7 @@ import {
     Poppins_600SemiBold,
     Poppins_700Bold,
 } from "@expo-google-fonts/poppins";
+
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
@@ -57,6 +58,14 @@ export default function RootLayout() {
           name="itinerary-packages/index"
           options={{
             headerShown: false,
+          }}
+        />
+
+        <Stack.Screen
+          name="itinerary-packages/[id]"
+          options={{
+            headerShown: false,
+            title: "Itinerary Package",
           }}
         />
       </Stack>

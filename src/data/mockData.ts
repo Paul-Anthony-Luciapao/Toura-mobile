@@ -4,11 +4,14 @@
  */
 
 import type {
-  Booking,
-  Notification,
-  Resort,
-  TouristSpot,
-  User,
+    Booking,
+    Driver,
+    Hotel,
+    Itineraries,
+    Notification,
+    Resort,
+    TouristSpot,
+    User,
 } from "./types";
 
 export const INITIAL_USERS: User[] = [
@@ -708,4 +711,212 @@ export const INITIAL_NOTIFICATIONS: Notification[] = [
     createdAt: hoursAgo(200),
     read: true,
   },
+];
+
+// dates for the mock booking calendar, used in the demo to show available dates and days of the week
+
+export const Dates = [
+  {
+    dateArrival: "2023-10-01",
+    dateDeparture: "2023-10-05",
+    daysOfWeek: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday"],
+  },
+  {
+    dateArrival: "2023-10-10",
+    dateDeparture: "2023-10-15",
+    daysOfWeek: [
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+      "Sunday",
+    ],
+  },
+  {
+    dateArrival: "2023-10-20",
+    dateDeparture: "2023-10-25",
+    daysOfWeek: [
+      "Friday",
+      "Saturday",
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+    ],
+  },
+  {
+    dateArrival: "2023-11-01",
+    dateDeparture: "2023-11-05",
+    daysOfWeek: ["Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+  },
+  {
+    dateArrival: "2023-11-10",
+    dateDeparture: "2023-11-15",
+    daysOfWeek: [
+      "Friday",
+      "Saturday",
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+    ],
+  },
+];
+
+export const daysOfWeek = [
+  {id: "0", name: "Sunday"},
+  {id: "1", name: "Monday"},
+  {id: "2", name: "Tuesday"},
+  {id: "3", name: "Wednesday"},
+  {id: "4", name: "Thursday"},
+  {id: "5", name: "Friday"},
+  {id: "6", name: "Saturday"},
+];
+
+export const DAY_DESCRIPTIONS = [
+  "Arrival in the Philippines",
+  "Underground River Tour Day",
+  "Transfer to Coron",
+  "Arrival in the Philippines",
+  "Departure",
+] as const;
+
+export const HOTEL_DESCRIPTION: Hotel[] = [
+  {
+    id: "hotel-1",
+    description:
+      "A peaceful tropical retreat surrounded by lush greenery and beautiful coastal views, offering comfortable rooms, warm Filipino hospitality, and easy access to nearby attractions.",
+  },
+  {
+    id: "hotel-2",
+    description:
+      "A modern beachfront escape designed for travelers who want to relax by the sea while enjoying comfortable accommodations, refreshing amenities, and stunning tropical sunsets.",
+  },
+  {
+    id: "hotel-3",
+    description:
+      "A charming island resort featuring spacious rooms, natural surroundings, and convenient access to crystal-clear waters, making it an ideal base for snorkeling, island hopping, and beach adventures.",
+  },
+  {
+    id: "hotel-4",
+    description:
+      "A cozy boutique hotel in the heart of Palawan, combining contemporary comfort with local character and providing guests with a relaxing stay close to restaurants, shops, and popular attractions.",
+  },
+  {
+    id: "hotel-5",
+    description:
+      "A secluded eco-friendly retreat surrounded by tropical forests and pristine beaches, perfect for travelers looking for tranquility, nature, and unforgettable outdoor experiences.",
+  },
+  {
+    id: "hotel-6",
+    description:
+      "A family-friendly resort offering spacious accommodations, recreational facilities, and convenient access to the beach, creating a comfortable and enjoyable stay for guests of all ages.",
+  },
+  {
+    id: "hotel-7",
+    description:
+      "A luxurious coastal hideaway with elegant rooms, private outdoor spaces, and breathtaking ocean views, perfect for romantic getaways, special occasions, and relaxing vacations.",
+  },
+  {
+    id: "hotel-8",
+    description:
+      "A laid-back beach resort where guests can enjoy peaceful mornings, golden sunsets, and easy access to swimming, kayaking, island tours, and other tropical activities.",
+  },
+  {
+    id: "resort-9",
+    description:
+      "A nature-inspired accommodation surrounded by palm trees, gardens, and tropical landscapes, offering a quiet atmosphere while keeping guests within reach of Palawan's most popular destinations.",
+  },
+  {
+    id: "hotel-10",
+    description:
+      "A welcoming Palawan resort that blends modern comforts with authentic island charm, featuring comfortable accommodations, friendly service, and an ideal location for exploring the area's beaches and natural wonders.",
+  },
+] as const;
+
+export const DRIVERS: readonly Driver[] = [
+  {
+    id: "driver-1",
+    name: "Mark Anthony Santos",
+    plateNumber: "ABC 1234",
+    car: "Toyota Vios",
+    mobileNumber: "+63 917 123 4567",
+  },
+  {
+    id: "driver-2",
+    name: "Juan Carlo Reyes",
+    plateNumber: "BCD 2345",
+    car: "Toyota Innova",
+    mobileNumber: "+63 918 234 5678",
+  },
+  {
+    id: "driver-3",
+    name: "Miguel Garcia",
+    plateNumber: "CDE 3456",
+    car: "Mitsubishi Xpander",
+    mobileNumber: "+63 919 345 6789",
+  },
+  {
+    id: "driver-4",
+    name: "Daniel Cruz",
+    plateNumber: "DEF 4567",
+    car: "Toyota Avanza",
+    mobileNumber: "+63 920 456 7890",
+  },
+  {
+    id: "driver-5",
+    name: "Rafael Mendoza",
+    plateNumber: "EFG 5678",
+    car: "Hyundai Staria",
+    mobileNumber: "+63 921 567 8901",
+  },
+  {
+    id: "driver-6",
+    name: "Paolo Villanueva",
+    plateNumber: "FGH 6789",
+    car: "Toyota HiAce",
+    mobileNumber: "+63 922 678 9012",
+  },
+  {
+    id: "driver-7",
+    name: "Andrei Navarro",
+    plateNumber: "GHI 7890",
+    car: "Suzuki Ertiga",
+    mobileNumber: "+63 923 789 0123",
+  },
+  {
+    id: "driver-8",
+    name: "Christian Bautista",
+    plateNumber: "HJK 8901",
+    car: "Toyota Innova",
+    mobileNumber: "+63 924 890 1234",
+  },
+  {
+    id: "driver-9",
+    name: "Kevin Dela Cruz",
+    plateNumber: "JKL 9012",
+    car: "Mitsubishi Adventure",
+    mobileNumber: "+63 925 901 2345",
+  },
+  {
+    id: "driver-10",
+    name: "Jerome Aquino",
+    plateNumber: "KLM 0123",
+    car: "Toyota Fortuner",
+    mobileNumber: "+63 926 012 3456",
+  },
+] as const;
+
+export const ItineraryPackages: Itineraries[] = [
+  { id: "01", price: "₱5,000", minicontent: ""},
+  { id: "02", price: "₱7,500", minicontent: ""},
+  { id: "03", price: "₱10,000", minicontent: ""},
+  { id: "04", price: "₱12,500", minicontent: ""},
+  { id: "05", price: "₱15,000", minicontent: ""},
+  { id: "06", price: "₱18,000", minicontent: ""},
+  { id: "07", price: "₱20,000", minicontent: ""},
+  { id: "08", price: "₱25,000", minicontent: ""},
+  { id: "09", price: "₱30,000", minicontent: ""},
+  { id: "10", price: "₱35,000", minicontent: ""},
 ];

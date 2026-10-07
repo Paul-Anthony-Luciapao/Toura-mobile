@@ -112,3 +112,21 @@ export type Notification = {
   read: boolean;
 };
 
+export type Driver = {
+  id: string;
+  name: string;
+  plateNumber: string;
+  car: string;
+  mobileNumber: string;
+};
+
+export type Hotel = {
+  id: string;
+  description: string;
+}
+
+export type Itineraries = {
+  id: string;
+  price: string;
+  minicontent: string;
+}
