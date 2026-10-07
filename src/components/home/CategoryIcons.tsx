@@ -1,6 +1,4 @@
-import { colors } from "@/styles/global";
 import { Ionicons } from "@expo/vector-icons";
-import { colors } from "@/styles/global";
 import { Pressable, Text, View } from "react-native";
 
 type CategoryIconItem = {
@@ -32,7 +30,7 @@ const PLACEHOLDER_CATEGORIES: CategoryIconItem[] = [
   },
   {
     id: "more",
-    label: "More",
+    label: "All",
     icon: "ellipsis-vertical",
   },
 ];

@@ -1,21 +1,13 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
-import { useRouter } from "expo-router";
-import { View } from "react-native";
+import { Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export type Props = Readonly<{
   variant?: "light" | "dark";
 }>;
 
-const GREETING: Record<string, string> = {
-  traveler: "Ready for your next trip",
-  owner: "Manage your resorts",
-  admin: "Here's today's overview",
-};
-
 export default function Header({ variant = "dark" }: Props) {
-  const router = useRouter();
   const insets = useSafeAreaInsets();
   const iconColor = variant === "light" ? "#ffffff" : "#0f172a";
 

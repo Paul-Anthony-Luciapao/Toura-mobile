@@ -146,6 +146,9 @@ function toSpot(raw: ApiSpot): TouristSpot {
     description: raw.description,
     image: firstImage(raw.image, raw.images),
     tags: raw.tags ?? [],
+    rating: 0,
+    reviewCount: 0,
+    price: 0,
   };
 }
 
@@ -156,7 +159,7 @@ function toSpotSummary(raw: ApiResort): SpotSummary {
     municipality: raw.municipality,
     image: firstImage(raw.cover_image, raw.images),
     rating: raw.rating,
-    reviewCount: String(raw.review_count),
+    reviewCount: raw.review_count,
     price: raw.base_price,
   };
 }

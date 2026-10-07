@@ -1,36 +1,14 @@
 import CategoryIcons from "@/components/home/CategoryIcons";
 import HeroBanner from "@/components/home/HeroBanner";
 import SectionHeader from "@/components/home/SectionHeader";
+import TourPackageCard from "@/components/home/TourPackageCard";
 import TouristSpotCard from "@/components/home/TouristSpotCard";
 import { INITIAL_TOURIST_SPOTS } from "@/data/mockData";
-import { api } from "@/services/api";
-import { useEffect } from "react";
 import { ScrollView, StatusBar, View } from "react-native";
+import { useRouter } from "expo-router";
 
 export default function Index() {
-  useEffect(() => {
-    const testLaravel = async () => {
-      try {
-        const response = await api.get("/test");
-
-        console.log(response.data);
-      } catch (error) {
-        console.error("Laravel API error:", error);
-      }
-    };
-
-    testLaravel();
-  }, []);
-
-  useFocusEffect(
-    useCallback(() => {
-      load();
-    }, [load]),
-  );
-
-  const openResort = (id: string) => {
-    router.push(`/resort/${id}`);
-  };
+  const router = useRouter();
 
   return (
     <ScrollView className="flex-1 bg-white" contentContainerClassName="pb-10">
@@ -44,7 +22,13 @@ export default function Index() {
 
       <View className="px-5">
         <View className="-mt-[26px]">
-          <CategoryIcons />
+          <CategoryIcons
+            onSelect={(item) => {
+              if (item.id === "more") {
+                router.push("/all-services");
+              }
+            }}
+          />
         </View>
 
         <View className="mt-7">
@@ -80,3 +64,4 @@ export default function Index() {
     </ScrollView>
   );
 }
+
