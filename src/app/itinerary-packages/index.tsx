@@ -6,17 +6,10 @@ import CategoryItineraries from "@components/itineraries/CategoryItineraries";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useMemo, useState } from "react";
-import {
-    FlatList,
-    Pressable,
-    Text,
-    View,
-} from "react-native";
+import { FlatList, Pressable, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-function EmptyState({
-  search,
-}: Readonly<{ search: string }>) {
+function EmptyState({ search }: Readonly<{ search: string }>) {
   return (
     <View className="items-center justify-center px-8 pt-20">
       <Text className="font-poppins-semibold text-[16px] text-textMain">
@@ -42,15 +35,12 @@ const ItineraryPackagesScreen = () => {
     return INITIAL_TOURIST_SPOTS.filter(
       (spot) =>
         spot.name.toLowerCase().includes(term) ||
-        spot.municipality.toLowerCase().includes(term)
+        spot.municipality.toLowerCase().includes(term),
     );
   }, [search]);
 
   return (
-    <SafeAreaView
-      className="flex-1 bg-background"
-      edges={["top"]}
-    >
+    <SafeAreaView className="flex-1 bg-background" edges={["top"]}>
       {/* Header */}
       <View className="px-4 pb-4 pt-3">
         {/* Title Row */}
@@ -58,13 +48,8 @@ const ItineraryPackagesScreen = () => {
           <Pressable
             onPress={() => router.back()}
             hitSlop={8}
-            className="absolute left-0 z-10 h-11 w-11 items-center justify-center rounded-full active:opacity-70"
-          >
-            <Ionicons
-              name="arrow-back"
-              size={24}
-              color={colors.text}
-            />
+            className="absolute left-0 z-10 h-11 w-11 items-center justify-center rounded-full active:opacity-70">
+            <Ionicons name="arrow-back" size={24} color={colors.text} />
           </Pressable>
 
           <Text className="font-poppins-semibold text-[20px] text-textMain">
@@ -98,31 +83,12 @@ const ItineraryPackagesScreen = () => {
             <View className="pb-5">
               <CategoryItineraries />
             </View>
-
-            {/* Results Header */}
-            <View className="mb-3 flex-row items-center justify-between">
-              <Text className="font-poppins-semibold text-[16px] text-textMain">
-                Destinations
-              </Text>
-
-              <Text className="font-poppins text-[12px] text-textMuted">
-                {filteredSpots.length}{" "}
-                {filteredSpots.length === 1
-                  ? "destination"
-                  : "destinations"}
-              </Text>
-            </View>
           </View>
         }
-        ListEmptyComponent={
-          <EmptyState search={search} />
-        }
+        ListEmptyComponent={<EmptyState search={search} />}
         renderItem={({ item }) => (
           <View className="mb-5 w-full">
-            <TouristSpotCard
-              spot={item}
-              className="w-full"
-            />
+            <TouristSpotCard spot={item} className="w-full" navigable />
           </View>
         )}
       />
