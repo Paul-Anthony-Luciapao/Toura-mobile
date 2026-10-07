@@ -4,14 +4,15 @@
  */
 
 import type {
-    Booking,
-    Driver,
-    Hotel,
-    Itineraries,
-    Notification,
-    Resort,
-    TouristSpot,
-    User,
+  Booking,
+  Driver,
+  Hotel,
+  Itineraries,
+  ItineraryPackage,
+  Notification,
+  Resort,
+  TouristSpot,
+  User,
 } from "./types";
 
 export const INITIAL_USERS: User[] = [
@@ -765,13 +766,13 @@ export const Dates = [
 ];
 
 export const daysOfWeek = [
-  {id: "0", name: "Sunday"},
-  {id: "1", name: "Monday"},
-  {id: "2", name: "Tuesday"},
-  {id: "3", name: "Wednesday"},
-  {id: "4", name: "Thursday"},
-  {id: "5", name: "Friday"},
-  {id: "6", name: "Saturday"},
+  { id: "0", name: "Sunday" },
+  { id: "1", name: "Monday" },
+  { id: "2", name: "Tuesday" },
+  { id: "3", name: "Wednesday" },
+  { id: "4", name: "Thursday" },
+  { id: "5", name: "Friday" },
+  { id: "6", name: "Saturday" },
 ];
 
 export const DAY_DESCRIPTIONS = [
@@ -909,14 +910,187 @@ export const DRIVERS: readonly Driver[] = [
 ] as const;
 
 export const ItineraryPackages: Itineraries[] = [
-  { id: "01", price: "₱5,000", minicontent: ""},
-  { id: "02", price: "₱7,500", minicontent: ""},
-  { id: "03", price: "₱10,000", minicontent: ""},
-  { id: "04", price: "₱12,500", minicontent: ""},
-  { id: "05", price: "₱15,000", minicontent: ""},
-  { id: "06", price: "₱18,000", minicontent: ""},
-  { id: "07", price: "₱20,000", minicontent: ""},
-  { id: "08", price: "₱25,000", minicontent: ""},
-  { id: "09", price: "₱30,000", minicontent: ""},
-  { id: "10", price: "₱35,000", minicontent: ""},
+  { id: "01", price: "₱5,000", minicontent: "" },
+  { id: "02", price: "₱7,500", minicontent: "" },
+  { id: "03", price: "₱10,000", minicontent: "" },
+  { id: "04", price: "₱12,500", minicontent: "" },
+  { id: "05", price: "₱15,000", minicontent: "" },
+  { id: "06", price: "₱18,000", minicontent: "" },
+  { id: "07", price: "₱20,000", minicontent: "" },
+  { id: "08", price: "₱25,000", minicontent: "" },
+  { id: "09", price: "₱30,000", minicontent: "" },
+  { id: "10", price: "₱35,000", minicontent: "" },
 ];
+
+// TODO: These itinerary schedules, prices, dates, and reviews are hardcoded demo data.
+const packageSpecs = [
+  {
+    spotId: "spot-1",
+    resortId: "resort-2",
+    startDate: "2026-10-10",
+    titles: [
+      "Arrive in Coron",
+      "Kayangan Lake",
+      "Coron town",
+      "Island hopping",
+      "Departure",
+    ],
+    inclusions: [
+      "Resort stay",
+      "Guided lake tour",
+      "Airport transfers",
+      "Local permits",
+    ],
+    review: {
+      id: "review-1",
+      name: "Marites",
+      rating: 4,
+      text: "The lake tour and clear day-by-day plan made this trip easy to enjoy.",
+    },
+  },
+  {
+    spotId: "spot-2",
+    resortId: "resort-1",
+    startDate: "2026-10-17",
+    titles: [
+      "Arrive in El Nido",
+      "Big Lagoon",
+      "Island beaches",
+      "Coastal day",
+      "Departure",
+    ],
+    inclusions: [
+      "Resort stay",
+      "Lagoon excursion",
+      "Boat transfers",
+      "Local permits",
+    ],
+    review: {
+      id: "review-2",
+      name: "Ana",
+      rating: 5,
+      text: "The lagoon day was a highlight, and the included transfers were helpful.",
+    },
+  },
+  {
+    spotId: "spot-3",
+    resortId: "resort-1",
+    startDate: "2026-10-24",
+    titles: [
+      "Arrive in El Nido",
+      "Nacpan Beach",
+      "Beach and town",
+      "Free exploration",
+      "Departure",
+    ],
+    inclusions: ["Resort stay", "Beach transfer", "Breakfast", "Local guide"],
+    review: {
+      id: "review-3",
+      name: "Paolo",
+      rating: 4,
+      text: "A relaxed schedule with enough time to enjoy the beach.",
+    },
+  },
+  {
+    spotId: "spot-4",
+    resortId: "resort-4",
+    startDate: "2026-10-31",
+    titles: [
+      "Arrive in Puerto Princesa",
+      "Underground River",
+      "Sabang coast",
+      "City tour",
+      "Departure",
+    ],
+    inclusions: ["Resort stay", "River tour", "Boat transfer", "Park permits"],
+    review: {
+      id: "review-4",
+      name: "Liza",
+      rating: 5,
+      text: "The river tour and pickup details were clear and convenient.",
+    },
+  },
+  {
+    spotId: "spot-5",
+    resortId: "resort-3",
+    startDate: "2026-11-07",
+    titles: [
+      "Arrive in San Vicente",
+      "Long Beach",
+      "Surf and coast",
+      "Free beach day",
+      "Departure",
+    ],
+    inclusions: [
+      "Resort stay",
+      "Beach transfer",
+      "Breakfast",
+      "Surfboard rental",
+    ],
+    review: {
+      id: "review-5",
+      name: "Nico",
+      rating: 4,
+      text: "A peaceful trip with a good balance of planned activities and free time.",
+    },
+  },
+  {
+    spotId: "spot-6",
+    resortId: "resort-2",
+    startDate: "2026-11-14",
+    titles: [
+      "Arrive in Coron",
+      "Twin Lagoon",
+      "Reef excursion",
+      "Coron town",
+      "Departure",
+    ],
+    inclusions: [
+      "Resort stay",
+      "Lagoon excursion",
+      "Boat transfers",
+      "Snorkel gear",
+    ],
+    review: {
+      id: "review-6",
+      name: "Bea",
+      rating: 5,
+      text: "The lagoon and snorkeling days were well organized.",
+    },
+  },
+] as const;
+
+export const INITIAL_ITINERARY_PACKAGES: ItineraryPackage[] = packageSpecs.map(
+  (spec) => {
+    const spot = INITIAL_TOURIST_SPOTS.find((item) => item.id === spec.spotId);
+    const resort = INITIAL_RESORTS.find((item) => item.id === spec.resortId);
+
+    if (!spot || !resort) {
+      throw new Error(`Missing mock data for itinerary ${spec.spotId}`);
+    }
+
+    return {
+      id: spec.spotId,
+      spotId: spec.spotId,
+      resortId: spec.resortId,
+      startDate: spec.startDate,
+      days: spec.titles.map((title, index) => ({
+        id: `day-${index + 1}`,
+        title,
+        notes: [
+          `${title} activities and timing are sample itinerary details.`,
+          "Confirm pickup times and operators before travel.",
+        ],
+      })),
+      // Demo estimate derived from existing mock prices; not a live quote.
+      priceBreakdown: [
+        { label: "Accommodation (4 nights)", amount: resort.basePrice * 4 },
+        { label: "Tours and activities", amount: spot.price * 4 },
+        { label: "Transfers", amount: 2400 },
+        { label: "Permits and fees", amount: 1200 },
+      ],
+      inclusions: [...spec.inclusions],
+      reviews: [{ ...spec.review }],
+    };
+  },
+);
