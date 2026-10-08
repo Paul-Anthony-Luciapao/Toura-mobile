@@ -153,4 +153,5 @@ export type ItineraryPackage = {
   priceBreakdown: PackagePriceLine[];
   inclusions: string[];
   reviews: PackageReview[];
+  destination?: string;
 };
