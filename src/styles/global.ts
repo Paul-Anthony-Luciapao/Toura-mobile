@@ -1,21 +1,42 @@
 export const colors = {
-  background: "#ffffff",
+  // Brand — coral
+  primary: "#E07856", // CTAs, active tab, links, accents
+  primaryHover: "#C9613E",
+  primaryPressed: "#A14E32",
+  primaryDeep: "#7A3B26", // strong emphasis, disabled
+  primaryDark: "#A14E32", // deep brand tone for small icons/badges
+  accentSoft: "#E48B70",
+  accentBorder: "#EDB29E",
+  accentFill: "#F6D8CC",
+  accentBadge: "#FBEDE8",
+
+  // Surfaces
+  background: "#F5EBD8", // warm page background
   surface: "#ffffff",
-  surfaceSoft: "#eaf5f2", // light mint - icon circles, search header bg
-  surfaceMuted: "#e2e8f0",
-  primary: "#0f766e", // teal - logo, active tab, links, star, price accents
-  primaryDark: "#115e59",
-  textSecondary: "#a0a0b0",
-  text: "#0f172a", // headings, prices
-  textSoft: "#334155",
-  textMuted: "#64748b", // card subtext, guest count
-  border: "#e2e8f0",
-  warning: "#f59e0b",
-  warningSoft: "#fff7ed",
-  accent: "#c2410c",
+  surfaceSoft: "#F6D8CC", // icon circles, chip fills
+  surfaceMuted: "#F0D9A8",
+  border: "#EDB29E",
+
+  // Gold
+  gold: "#F0D9A8",
+  goldHover: "#E8CC8B",
+
+  // Text
+  text: "#1B1F1E", // headings, prices
+  textSoft: "#2A2F2E",
+  textSecondary: "#6B716E",
+  textMuted: "#6B716E",
+  textSubtle: "#9AA09C",
+  onPrimary: "#ffffff",
+
+  // Status
+  warning: "#E8CC8B",
+  warningSoft: "#FBEDE8",
+  accent: "#C9613E",
 
   // hero-specific
-  heroOverlayTop: "rgba(15, 94, 140, 0.55)",
-  heroOverlayBottom: "rgba(11, 46, 74, 0.75)",
+  heroOverlayTop: "rgba(42, 47, 46, 0.55)",
+  heroOverlayBottom: "rgba(27, 31, 30, 0.75)",
+  scrim: "rgba(27, 31, 30, 0.75)",
   white: "#ffffff",
 };

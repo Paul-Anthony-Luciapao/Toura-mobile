@@ -1,20 +1,49 @@
-import type { Role, User } from "@/data/types";
+import type { Role } from "@/data/types";
 import { api } from "./api";
+
+export type AuthUser = {
+  id: string;
+  name: string;
+  email: string;
+  role: Role;
+  phone?: string;
+  avatar?: string;
+};
+
+export type AuthSession = {
+  token: string;
+  user: AuthUser;
+};
+
+type RawAuthUser = Omit<AuthUser, "id"> & { id: string | number };
+
+type SessionResponse = {
+  success: boolean;
+  message?: string;
+  token: string;
+  user: RawAuthUser;
+};
+
+type MeResponse = {
+  success: boolean;
+  user: RawAuthUser;
+};
+
+function toAuthUser(raw: RawAuthUser): AuthUser {
+  return { ...raw, id: String(raw.id) };
+}
 
 export async function loginRequest(
   email: string,
   password: string,
-  role?: Role,
-) {
-  const { data } = await api.post<{ user: User; token: string }>(
-    "/auth/login",
-    {
-      email,
-      password,
-      role,
-    },
-  );
-  return data;
+  _role?: Role,
+): Promise<AuthSession> {
+  const { data } = await api.post<SessionResponse>("/auth/login", {
+    email: email.trim(),
+    password,
+  });
+
+  return { token: data.token, user: toAuthUser(data.user) };
 }
 
 export async function registerRequest(input: {
@@ -22,23 +51,37 @@ export async function registerRequest(input: {
   email: string;
   password: string;
   phone?: string;
-}) {
-  const { data } = await api.post<{ user: User; token: string }>(
-    "/auth/register",
-    input,
-  );
-  return data;
+}): Promise<AuthSession> {
+  const { data } = await api.post<SessionResponse>("/auth/register", input);
+
+  return { token: data.token, user: toAuthUser(data.user) };
 }
 
-export async function fetchMe() {
-  const { data } = await api.get<{ user: User }>("/me");
-  return data.user;
+export async function fetchMe(): Promise<AuthUser> {
+  const { data } = await api.get<MeResponse>("/auth/me");
+
+  return toAuthUser(data.user);
 }
 
-export async function logoutRequest() {
-  await api.post("/auth/logout");
+export async function logoutRequest(): Promise<void> {
+  try {
+    await api.post("/auth/logout");
+  } catch {
+    // Clearing the local session is what actually signs the user out.
+  }
 }
 
-export async function deleteAccountRequest() {
+export async function deleteAccountRequest(): Promise<void> {
   await api.delete("/auth/account");
+}
+
+export function roleLabel(role: Role): string {
+  switch (role) {
+    case "admin":
+      return "Administrator";
+    case "owner":
+      return "Resort Owner";
+    default:
+      return "Traveler";
+  }
 }
