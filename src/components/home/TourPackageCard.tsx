@@ -22,19 +22,13 @@ export default function TourPackageCard({
       {/* Image */}
       <Image
         source={{ uri: item.image }}
-        resizeMode="cover"
-        className="h-[130px] w-full bg-slate-200"
+        className="h-[130px] w-full rounded-t-[18px] bg-slate-200"
       />
-
-      {/* Title */}
-      <View className="px-3 pb-3 pt-2">
-        <Text
-          className="font-poppins-semibold text-[14px] text-textMain"
-          numberOfLines={1}
-        >
-          {item.title}
-        </Text>
-      </View>
+      <Text
+        className="mt-2 text-[14px] font-semibold text-slate-900"
+        numberOfLines={1}>
+        {item.title}
+      </Text>
     </View>
   );
 }

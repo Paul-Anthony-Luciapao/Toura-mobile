@@ -1,16 +1,7 @@
 import { useAuth } from "@/context/AuthContext";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import {
-  Alert,
-  Pressable,
-  ScrollView,
-  StatusBar,
-  Text,
-  TextInput,
-  View,
-} from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { Alert, Pressable, ScrollView, Text, View } from "react-native";
 
 type OptionItem = {
   id: string;
@@ -26,57 +17,57 @@ const OPTIONS: OptionItem[] = [
     id: "bookings",
     label: "My bookings",
     icon: "clipboard-outline",
-    iconBg: "#F0F3F2",
-    iconColor: "#1F2937",
+    iconBg: "#FBEDE8",
+    iconColor: "#A14E32",
   },
   {
     id: "history",
     label: "Transaction History",
     icon: "receipt-outline",
-    iconBg: "#F0F3F2",
-    iconColor: "#1F2937",
+    iconBg: "#FBEDE8",
+    iconColor: "#A14E32",
   },
   {
     id: "saved",
     label: "Saved Destinations",
     icon: "heart-outline",
-    iconBg: "#F0F3F2",
-    iconColor: "#1F2937",
+    iconBg: "#FBEDE8",
+    iconColor: "#A14E32",
   },
   {
     id: "settings",
     label: "Settings",
     icon: "settings-outline",
-    iconBg: "#F0F3F2",
-    iconColor: "#1F2937",
+    iconBg: "#FBEDE8",
+    iconColor: "#A14E32",
   },
   {
     id: "about",
     label: "About",
     icon: "information-circle-outline",
-    iconBg: "#F0F3F2",
-    iconColor: "#1F2937",
+    iconBg: "#FBEDE8",
+    iconColor: "#A14E32",
   },
   {
     id: "help",
     label: "Help Center",
     icon: "help-circle-outline",
-    iconBg: "#F0F3F2",
-    iconColor: "#1F2937",
+    iconBg: "#FBEDE8",
+    iconColor: "#A14E32",
   },
   {
     id: "emergency",
     label: "Emergency",
     icon: "warning-outline",
-    iconBg: "#F0F3F2",
-    iconColor: "#1F2937",
+    iconBg: "#FBEDE8",
+    iconColor: "#A14E32",
   },
   {
     id: "rate",
     label: "Rate our app",
     icon: "thumbs-up-outline",
-    iconBg: "#F0F3F2",
-    iconColor: "#1F2937",
+    iconBg: "#FBEDE8",
+    iconColor: "#A14E32",
   },
   {
     id: "logout",
@@ -88,6 +79,11 @@ const OPTIONS: OptionItem[] = [
   },
 ];
 
+const LEGAL_LINKS = [
+  { id: "terms", label: "Terms & Conditions", path: "/legal/terms" },
+  { id: "privacy", label: "Data Privacy", path: "/legal/privacy" },
+] as const;
+
 export default function MoreOptionsScreen() {
   const router = useRouter();
   const { user, signOut } = useAuth();
@@ -97,9 +93,18 @@ export default function MoreOptionsScreen() {
     : OPTIONS.filter((option) => option.id !== "logout");
 
   const handleOptionPress = async (option: OptionItem) => {
+    if (option.id === "settings") {
+      router.push("/settings");
+      return;
+    }
+
     if (option.id === "logout") {
-      await signOut();
-      router.replace("/profile");
+      try {
+        await signOut();
+      } catch {
+        // Signing out locally is enough to leave this screen usable.
+      }
+      router.replace("/");
       return;
     }
 
@@ -107,91 +112,52 @@ export default function MoreOptionsScreen() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-[#F1F8F4]">
-      <StatusBar barStyle="dark-content" />
+    <View className="flex-1 bg-white px-5 pt-16">
+      <ScrollView
+        className="flex-1"
+        contentContainerClassName="pb-10"
+        showsVerticalScrollIndicator={false}>
+        <Text className="text-[20px] font-bold text-ink">More</Text>
 
-      <View className="flex-1">
-        <View className="px-[18px] pt-[10px]">
-          <View className="flex-row items-center justify-between gap-3">
+        <View className="mt-6 gap-3">
+          {visibleOptions.map((option) => (
             <Pressable
-              onPress={() => router.back()}
-              hitSlop={10}
-              accessibilityRole="button"
-              accessibilityLabel="Go back"
-              className="h-[42px] w-[42px] items-center justify-center">
-              <Ionicons name="chevron-back" size={30} color="#1F2937" />
+              key={option.id}
+              onPress={() => handleOptionPress(option)}
+              className="flex-row items-center gap-3 rounded-[14px] border border-coral-100 bg-white px-4 py-3.5">
+              <View
+                className="h-9 w-9 items-center justify-center rounded-[10px]"
+                style={{ backgroundColor: option.iconBg }}>
+                <Ionicons
+                  name={option.icon}
+                  size={18}
+                  color={option.iconColor}
+                />
+              </View>
+              <Text
+                className={`flex-1 text-[15px] font-medium ${
+                  option.highlight ? "text-[#E75C4F]" : "text-ink"
+                }`}>
+                {option.label}
+              </Text>
+              <Ionicons name="chevron-forward" size={16} color="#9AA09C" />
             </Pressable>
-
-            <View className="h-[42px] flex-1 flex-row items-center gap-2 rounded-full border border-[#DDEAE5] bg-white/40 px-[14px]">
-              <Ionicons name="search-outline" size={22} color="#64748B" />
-              <TextInput
-                placeholder="Search"
-                placeholderTextColor="#64748B"
-                className="flex-1 py-0 text-[15px] text-[#1F2937]"
-              />
-            </View>
-
-            <Pressable
-              onPress={() =>
-                Alert.alert("Notifications", "Notifications tapped")
-              }
-              hitSlop={10}
-              accessibilityRole="button"
-              accessibilityLabel="Notifications"
-              className="h-[40px] w-[40px] items-center justify-center rounded-full bg-white/40">
-              <Ionicons
-                name="notifications-outline"
-                size={22}
-                color="#1F2937"
-              />
-            </Pressable>
-          </View>
+          ))}
         </View>
 
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          contentContainerClassName="px-5 pb-10 pt-[22px]">
-          <Text className="text-[33px] font-bold tracking-[-0.8px] text-[#111827]">
-            More Options
-          </Text>
-
-          <View className="mt-[18px] gap-[12px]">
-            {visibleOptions.map((option) => (
-              <Pressable
-                key={option.id}
-                onPress={() => handleOptionPress(option)}
-                className={[
-                  "min-h-[62px] flex-row items-center rounded-[18px] border border-[#DDE7E2] px-4 py-3",
-                  option.highlight ? "bg-[#F9FAFB]" : "bg-[#F9FBFA]",
-                ].join(" ")}>
-                <View
-                  className="h-[36px] w-[36px] items-center justify-center rounded-full"
-                  style={{
-                    backgroundColor: option.iconBg,
-                    borderWidth: option.highlight ? 1 : 0,
-                    borderColor: option.highlight ? "#F5C5BF" : "transparent",
-                  }}>
-                  <Ionicons
-                    name={option.icon}
-                    size={22}
-                    color={option.iconColor}
-                  />
-                </View>
-
-                <Text
-                  className={[
-                    "ml-4 text-[18px]",
-                    option.highlight
-                      ? "font-semibold text-[#E75C4F]"
-                      : "font-normal text-[#1F2937]",
-                  ].join(" ")}>
-                  {option.label}
-                </Text>
-              </Pressable>
-            ))}
-          </View>
-        </ScrollView>
-      </View>
-    </SafeAreaView>
+        <View className="mt-6 gap-3">
+          {LEGAL_LINKS.map((link) => (
+            <Pressable
+              key={link.id}
+              onPress={() => router.push(link.path)}
+              className="rounded-[14px] bg-coral-50 px-4 py-3">
+              <Text className="text-[15px] font-medium text-ink">
+                {link.label}
+              </Text>
+            </Pressable>
+          ))}
+        </View>
+      </ScrollView>
+    </View>
   );
 }
