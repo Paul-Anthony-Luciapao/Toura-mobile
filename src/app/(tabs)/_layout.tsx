@@ -1,4 +1,3 @@
-import { colors } from "@/styles/global";
 import { Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 
@@ -37,7 +36,7 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="itinerary"
         options={{
-          title: "Itinerary",
+          title: "Itineraries",
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="clipboard-outline" size={24} color={color} />
           ),
