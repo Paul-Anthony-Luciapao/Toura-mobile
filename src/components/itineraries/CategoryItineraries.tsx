@@ -23,7 +23,7 @@ type Props = Readonly<{
   onSelect?: (item: CategoryItineraryPlaces) => void;
   /**
    * "plain" (default) is the original look used by the other screens.
-   * "pill" is the Tour Packages look: white pills, filled teal when selected.
+   * "pill" is the Itineraries look: white pills, filled teal when selected.
    */
   variant?: Variant;
 }>;

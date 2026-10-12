@@ -1,7 +1,6 @@
 import CategoryIcons from "@/components/home/CategoryIcons";
 import HeroBanner from "@/components/home/HeroBanner";
 import SectionHeader from "@/components/home/SectionHeader";
-import TourPackageCard from "@/components/home/TourPackageCard";
 import TouristSpotCard from "@/components/home/TouristSpotCard";
 import type { TouristSpot } from "@/data/types";
 import { getErrorMessage } from "@/services/api";
@@ -78,10 +77,10 @@ export default function Index() {
 
     return (
       <>
-        {/* Itinerary Packages */}
+        {/* Itineraries */}
         <View className="mt-5">
           <SectionHeader
-            title="Itinerary Packages"
+            title="Itineraries"
             action="View all"
             onActionPress={() => router.push("/itinerary-packages")}
           />
@@ -96,33 +95,6 @@ export default function Index() {
                   spot={spot}
                   className="w-full"
                   navigable={false}
-                />
-              </View>
-            ))}
-          </ScrollView>
-        </View>
-
-        {/* Tour Packages */}
-        <View className="mt-7">
-          <SectionHeader
-            title="Tour Packages"
-            action="View all"
-            onActionPress={() => router.push("/tour-package")}
-          />
-
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerClassName="pb-1">
-            {spots.map((spot) => (
-              <View key={spot.id} className="mr-3.5 w-[280px]">
-                <TourPackageCard
-                  item={{
-                    id: spot.id,
-                    title: spot.name,
-                    image: spot.image,
-                  }}
-                  className="w-full"
                 />
               </View>
             ))}

@@ -1288,7 +1288,7 @@ type PackageSpec = {
   spotId: string;
   resortId: string;
   startDate: string;
-  /** Matches the chip names on the Tour Packages screen. Defaults to "Palawan". */
+  /** Matches the chip names on the Itineraries screen. Defaults to "Palawan". */
   destination?: string;
   titles: readonly string[];
   inclusions: readonly string[];
