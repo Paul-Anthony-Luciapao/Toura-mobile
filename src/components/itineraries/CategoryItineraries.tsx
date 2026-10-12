@@ -56,28 +56,37 @@ const CategoryItineraries = ({
         const isSelected = selectedId === item.id;
 
         const chipClass = isPill
-          ? `rounded-full px-[10px] py-[3px] ${
-              isSelected ? "bg-[#4F9B8F]" : "bg-white shadow-sm shadow-black/5"
-            }`
-          : `rounded-full px-4 py-2 ${
-              isSelected ? "bg-primary" : "bg-transparent"
-            }`;
+          ? "rounded-full px-[10px] py-[3px] shadow-sm shadow-black/5"
+          : "rounded-full px-4 py-2";
 
         const textClass = isPill
-          ? `font-poppins-medium text-[12px] ${
-              isSelected ? "text-white" : "text-[#111729]"
-            }`
-          : `font-poppins-medium text-[11px] ${
-              isSelected ? "text-white" : "text-textMuted"
-            }`;
+          ? "font-poppins-medium text-[12px]"
+          : "font-poppins-medium text-[11px]";
+
+        const chipBackgroundColor = isSelected
+          ? isPill
+            ? "#4F9B8F"
+            : "#E07856"
+          : isPill
+            ? "#FFFFFF"
+            : "transparent";
+
+        const textColor = isSelected
+          ? "#FFFFFF"
+          : isPill
+            ? "#111729"
+            : "#6B716E";
 
         return (
           <Pressable
             key={item.id}
             onPress={() => handleSelect(item)}
             hitSlop={isPill ? { top: 6, bottom: 6 } : undefined}
-            className={chipClass}>
-            <Text className={textClass}>{item.label}</Text>
+            className={chipClass}
+            style={{ backgroundColor: chipBackgroundColor }}>
+            <Text className={textClass} style={{ color: textColor }}>
+              {item.label}
+            </Text>
           </Pressable>
         );
       })}
