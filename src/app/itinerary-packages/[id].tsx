@@ -19,6 +19,11 @@ import {
   View,
   useWindowDimensions,
 } from "react-native";
+import Animated, {
+  FadeInDown,
+  FadeOutUp,
+  LinearTransition,
+} from "react-native-reanimated";
 import {
   SafeAreaView,
   useSafeAreaInsets,
@@ -63,6 +68,8 @@ export default function CurrentItineraryPackage() {
     packageData?.days[0]?.id ?? null,
   );
   const [galleryIndex, setGalleryIndex] = useState(0);
+
+  const contentTransition = LinearTransition.duration(260);
 
   const gallery =
     spot && resort
@@ -171,11 +178,12 @@ export default function CurrentItineraryPackage() {
               <Text className="mt-5 font-poppins-semibold text-[1.50rem] leading-7 text-white">
                 {spot.municipality} Itinerary{"\n"}Packages
               </Text>
-              <Text className="self-end rounded-full bg-white/90 px-3 py-1 font-poppins text-[12px] text-textMain">
-                {galleryIndex + 1}/{gallery.length}
-              </Text>
+
               <Text className="mt-1 font-poppins text-[14px] text-white">
                 5 days · 4 nights
+              </Text>
+              <Text className="self-end rounded-full bg-white/90 px-3 py-1 font-poppins text-[12px] text-textMain">
+                {galleryIndex + 1}/{gallery.length}
               </Text>
             </View>
           </View>
@@ -210,8 +218,9 @@ export default function CurrentItineraryPackage() {
               const expanded = openDay === day.id;
 
               return (
-                <View
+                <Animated.View
                   key={day.id}
+                  layout={contentTransition}
                   className="mb-3 rounded-xl bg-surfaceSoft p-4">
                   <Pressable
                     onPress={() => setOpenDay(expanded ? null : day.id)}
@@ -237,7 +246,11 @@ export default function CurrentItineraryPackage() {
                   </Pressable>
 
                   {expanded && (
-                    <View className="mt-4 border-t border-white pt-3">
+                    <Animated.View
+                      entering={FadeInDown.duration(220)}
+                      exiting={FadeOutUp.duration(160)}
+                      layout={contentTransition}
+                      className="mt-4 border-t border-white pt-3">
                       {day.notes.map((note) => (
                         <Text
                           key={note}
@@ -274,16 +287,20 @@ export default function CurrentItineraryPackage() {
                           />
                         ))}
                       </ScrollView>
-                    </View>
+                    </Animated.View>
                   )}
-                </View>
+                </Animated.View>
               );
             })}
           </View>
         )}
 
         {activeTab === "inclusion" && (
-          <View className="m-4 rounded-xl bg-surfaceSoft p-4">
+          <Animated.View
+            entering={FadeInDown.duration(220)}
+            exiting={FadeOutUp.duration(160)}
+            layout={contentTransition}
+            className="m-4 rounded-xl bg-surfaceSoft p-4">
             <Text className="font-poppins-semibold text-[19px] text-textMain">
               Package Price
             </Text>
@@ -314,7 +331,7 @@ export default function CurrentItineraryPackage() {
                 {item}
               </Text>
             ))}
-          </View>
+          </Animated.View>
         )}
 
         {activeTab === "reviews" && (
