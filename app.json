@@ -8,7 +8,8 @@
     "scheme": "touramobile",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "icon": "./assets/logo/toura-logo.png"
+      "icon": "./assets/logo/toura-logo.png",
+      "bundleIdentifier": "com.jbalmarez.Toura-mobile"
     },
     "android": {
       "adaptiveIcon": {
