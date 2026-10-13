@@ -1,7 +1,7 @@
 import {
   INITIAL_ITINERARY_PACKAGES,
-  INITIAL_RESORTS,
-  INITIAL_TOURIST_SPOTS,
+  PACKAGE_RESORTS,
+  PACKAGE_SPOTS,
 } from "@/data/mockData";
 import { formatCurrency, formatReviewCount } from "@/lib/formatters";
 import { colors } from "@/styles/global";
@@ -55,10 +55,10 @@ export default function CurrentItineraryPackage() {
   const packageData = INITIAL_ITINERARY_PACKAGES.find(
     (item) => item.id === packageId,
   );
-  const spot = INITIAL_TOURIST_SPOTS.find(
+  const spot = PACKAGE_SPOTS.find(
     (item) => item.id === packageData?.spotId,
   );
-  const resort = INITIAL_RESORTS.find(
+  const resort = PACKAGE_RESORTS.find(
     (item) => item.id === packageData?.resortId,
   );
 
