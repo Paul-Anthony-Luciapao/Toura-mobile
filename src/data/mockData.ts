@@ -4,16 +4,24 @@
  */
 
 import type {
+  Amenities,
   Booking,
   Driver,
   Hotel,
+  ID,
   Itineraries,
+  ItineraryDates,
   ItineraryPackage,
   Notification,
+  PaymentMethod,
   Resort,
   TouristSpot,
   User,
 } from "./types";
+import { Ionicons } from "@expo/vector-icons";
+import JCBIcon from "@/assets/payments/jcb_emblem_logo.svg";
+import MasterIcon from "@/assets/payments/master.svg";
+import VisaIcon from "@/assets/payments/visa.svg";
 
 export const INITIAL_USERS: User[] = [
   {
@@ -716,15 +724,20 @@ export const INITIAL_NOTIFICATIONS: Notification[] = [
 
 // dates for the mock booking calendar, used in the demo to show available dates and days of the week
 
-export const Dates = [
+export const Dates: ItineraryDates[] = [
   {
     dateArrival: "2023-10-01",
     dateDeparture: "2023-10-05",
+    arrivalTime: "09:00",
+    departureTime: "17:00",
     daysOfWeek: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday"],
+    timePicker: { hourCycle: 12, minuteInterval: 1 },
   },
   {
     dateArrival: "2023-10-10",
     dateDeparture: "2023-10-15",
+    arrivalTime: "09:00",
+    departureTime: "17:00",
     daysOfWeek: [
       "Tuesday",
       "Wednesday",
@@ -733,10 +746,13 @@ export const Dates = [
       "Saturday",
       "Sunday",
     ],
+    timePicker: { hourCycle: 12, minuteInterval: 1 },
   },
   {
     dateArrival: "2023-10-20",
     dateDeparture: "2023-10-25",
+    arrivalTime: "09:00",
+    departureTime: "17:00",
     daysOfWeek: [
       "Friday",
       "Saturday",
@@ -745,15 +761,21 @@ export const Dates = [
       "Tuesday",
       "Wednesday",
     ],
+    timePicker: { hourCycle: 12, minuteInterval: 1 },
   },
   {
     dateArrival: "2023-11-01",
     dateDeparture: "2023-11-05",
+    arrivalTime: "09:00",
+    departureTime: "17:00",
     daysOfWeek: ["Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+    timePicker: { hourCycle: 12, minuteInterval: 1 },
   },
   {
     dateArrival: "2023-11-10",
     dateDeparture: "2023-11-15",
+    arrivalTime: "09:00",
+    departureTime: "17:00",
     daysOfWeek: [
       "Friday",
       "Saturday",
@@ -762,6 +784,7 @@ export const Dates = [
       "Tuesday",
       "Wednesday",
     ],
+    timePicker: { hourCycle: 12, minuteInterval: 1 },
   },
 ];
 
@@ -920,6 +943,32 @@ export const ItineraryPackages: Itineraries[] = [
   { id: "08", price: "₱25,000", minicontent: "" },
   { id: "09", price: "₱30,000", minicontent: "" },
   { id: "10", price: "₱35,000", minicontent: "" },
+];
+
+export const ID_TYPES: ID[] = [
+  { id: 1, name: "Philippine National ID" },
+  { id: 2, name: "Driver's License" },
+  { id: 3, name: "Passport" },
+  { id: 4, name: "UMID" },
+  { id: 5, name: "Postal ID" },
+  { id: 6, name: "Other" },
+];
+
+export const PAYMENT_METHODS: PaymentMethod[] = [
+  { id: "ewallet", name: "E-Wallet", icon: Ionicons, iconName: "wallet-outline", iconType: "ionicon" },
+  { id: "card", name: "Master Card", icon: MasterIcon, iconType: "svg" },
+  { id: "jcb", name: "JCB", icon: JCBIcon, iconType: "svg" },
+  { id: "visa", name: "Visa", icon: VisaIcon, iconType: "svg" },
+];
+
+export const amenities: Amenities[] = [
+  { name: "Wi-Fi", icon: "wifi-outline" },
+  { name: "Restaurant", icon: "restaurant-outline" },
+  { name: "Beach Access", icon: "umbrella-outline" },
+  { name: "Breakfast", icon: "cafe-outline" },
+  { name: "Pool", icon: "water-outline" },
+  { name: "Airport Transfer", icon: "airplane-outline" },
+  { name: "No Smoking", icon: "ban-outline" },
 ];
 
 // TODO: These itinerary schedules, prices, dates, and reviews are hardcoded demo data.
