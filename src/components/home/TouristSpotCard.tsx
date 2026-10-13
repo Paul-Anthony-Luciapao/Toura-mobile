@@ -64,7 +64,7 @@ export default function TouristSpotCard({
           </View>
 
           {/* Price */}
-          <Text className="font-poppins-bold text-[13px] text-textMain">
+          <Text className="font-poppins-semibold text-[13px] text-textMain">
             {formatCurrency(spot.price)}
           </Text>
         </View>

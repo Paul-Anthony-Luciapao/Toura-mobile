@@ -14,7 +14,7 @@ export default function SectionHeader({
   onActionPress,
 }: Props) {
   return (
-    <View className="mb-[14px] flex-row items-center justify-between px-0 pt-4 pb-3">
+    <View className="mb-2 flex-row items-center justify-between px-0 pt-4 pb-3">
       <View>
         <Text className="font-poppins-bold text-[22px] text-textMain">
           {title}

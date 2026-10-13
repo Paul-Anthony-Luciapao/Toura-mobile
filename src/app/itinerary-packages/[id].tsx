@@ -378,12 +378,7 @@ export default function CurrentItineraryPackage() {
           </Pressable>
         ) : (
           <Pressable
-            onPress={() =>
-              Alert.alert(
-                "Demo only",
-                "Live availability is not connected yet.",
-              )
-            }
+            onPress={() => router.push(`/itinerary-packages/${packageId}/availability`)}
             className="items-center rounded-xl bg-[#ff7f73] py-3">
             <Text className="font-poppins-semibold text-white">
               Check Availability
