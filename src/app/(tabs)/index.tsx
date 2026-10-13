@@ -2,7 +2,13 @@ import CategoryIcons from "@/components/home/CategoryIcons";
 import HeroBanner from "@/components/home/HeroBanner";
 import SectionHeader from "@/components/home/SectionHeader";
 import TouristSpotCard from "@/components/home/TouristSpotCard";
-import type { TouristSpot } from "@/data/types";
+import TourPackageCard from "@/app/itinerary-packages/TourPackageCard";
+import {
+  INITIAL_ITINERARY_PACKAGES,
+  PACKAGE_RESORTS,
+  PACKAGE_SPOTS,
+} from "@/data/mockData";
+import type { ItineraryPackage, TouristSpot } from "@/data/types";
 import { getErrorMessage } from "@/services/api";
 import { fetchTouristSpots } from "@/services/touristSpots";
 import { useRouter } from "expo-router";
@@ -16,10 +22,34 @@ import {
   View,
 } from "react-native";
 
+const HOME_PACKAGES = INITIAL_ITINERARY_PACKAGES.map((pkg) => {
+  const spot = PACKAGE_SPOTS.find((item) => item.id === pkg.spotId);
+  const resort = PACKAGE_RESORTS.find((item) => item.id === pkg.resortId);
+
+  if (!spot || !resort) {
+    throw new Error(`Missing mock data for itinerary ${pkg.spotId}`);
+  }
+
+  return { pkg, spot, resort };
+});
+
+const getPackageTotal = (pkg: ItineraryPackage) =>
+  pkg.priceBreakdown.reduce((total, line) => total + line.amount, 0);
+
+const MOST_POPULAR_PACKAGE_ID = HOME_PACKAGES.reduce<{
+  id: string;
+  count: number;
+} | null>((best, { pkg, spot }) => {
+  return !best || spot.reviewCount > best.count
+    ? { id: pkg.id, count: spot.reviewCount }
+    : best;
+}, null)?.id;
+
 export default function Index() {
   const router = useRouter();
 
   const [spots, setSpots] = useState<TouristSpot[]>([]);
+  const [favoritePackageIds, setFavoritePackageIds] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -134,6 +164,59 @@ export default function Index() {
         </View>
 
         {renderContent()}
+
+        {/* Tour Packages */}
+        <View className="mt-7">
+          <SectionHeader
+            title="Tour Packages"
+            action="View all"
+            onActionPress={() => router.push("/itinerary-packages")}
+          />
+
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerClassName="pb-1">
+            {HOME_PACKAGES.map(({ pkg, spot, resort }) => {
+              const bedCount = resort.accommodations[0]?.bedCount;
+              const detailParts = [
+                bedCount
+                  ? `${bedCount} ${bedCount === 1 ? "Bed" : "Beds"}`
+                  : null,
+                "Free breakfast",
+              ].filter(Boolean);
+
+              return (
+                <View key={pkg.id} className="mr-3.5 w-[280px]">
+                  <TourPackageCard
+                    title={`${spot.name} Itinerary Package`}
+                    image={spot.image}
+                    rating={spot.rating}
+                    reviewCount={spot.reviewCount}
+                    detail={`· ${detailParts.join(" · ")}`}
+                    days={pkg.days.length}
+                    price={getPackageTotal(pkg)}
+                    isPopular={pkg.id === MOST_POPULAR_PACKAGE_ID}
+                    isFavorite={favoritePackageIds.includes(pkg.id)}
+                    onToggleFavorite={() =>
+                      setFavoritePackageIds((current) =>
+                        current.includes(pkg.id)
+                          ? current.filter((id) => id !== pkg.id)
+                          : [...current, pkg.id],
+                      )
+                    }
+                    onPress={() =>
+                      router.push({
+                        pathname: "/itinerary-packages/[id]",
+                        params: { id: pkg.id },
+                      })
+                    }
+                  />
+                </View>
+              );
+            })}
+          </ScrollView>
+        </View>
       </View>
     </ScrollView>
   );
