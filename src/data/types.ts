@@ -1,3 +1,8 @@
+import { Ionicons } from "@expo/vector-icons";
+import type { ComponentProps, ComponentType } from "react";
+import type { ImageSourcePropType } from "react-native";
+import type { SvgProps } from "react-native-svg";
+
 export type Role = "traveler" | "owner" | "admin";
 
 export type User = {
@@ -214,4 +219,70 @@ export type ItineraryPackage = {
   inclusions: string[];
   reviews: PackageReview[];
   destination?: string;
+};
+
+export type TimePickerSettings = Readonly<{
+  hourCycle: 12 | 24;
+  minuteInterval: 1 | 5 | 10 | 15 | 30;
+}>;
+
+export type ItineraryDates = Readonly<{
+  dateArrival: string;
+  dateDeparture: string;
+  arrivalTime: string;
+  departureTime: string;
+  daysOfWeek: string[];
+  timePicker: TimePickerSettings;
+}>;
+
+export type ButtonProps = Readonly<{
+  title: string;
+  onPress?: () => void;
+  width?: string;
+  height?: string;
+  backgroundColor?: string;
+  textColor?: string;
+  textSize?: string;
+  className?: string;
+  textClassName?: string;
+  gradient?: boolean;
+}>;
+
+export type Guest = {
+  id: string;
+  firstName: string;
+  lastName: string;
+  dateOfBirth: Date | null;
+  phone: string;
+  email: string;
+};
+
+export type ID = { id: number; name: string };
+
+export type IoniconsName = ComponentProps<typeof Ionicons>["name"];
+
+type PaymentMethodBase = {
+  id: string;
+  name: string;
+  description?: string;
+};
+
+export type PaymentMethod =
+  | (PaymentMethodBase & {
+      iconType: "ionicon";
+      icon: typeof Ionicons;
+      iconName: IoniconsName;
+    })
+  | (PaymentMethodBase & {
+      iconType: "svg";
+      icon: ComponentType<SvgProps>;
+    })
+  | (PaymentMethodBase & {
+      iconType: "image";
+      image: ImageSourcePropType;
+    });
+
+export type Amenities = {
+  name: string;
+  icon: ComponentProps<typeof Ionicons>["name"];
 };
