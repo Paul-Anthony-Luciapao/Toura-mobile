@@ -1,23 +1,43 @@
+import type { ButtonProps } from "@/data/types";
 import { Ionicons } from "@expo/vector-icons";
 import { Pressable, Text } from "react-native";
-
-type ButtonProps = Readonly<{
-  onPress?: () => void;
-  title: string;
-}>;
 
 export default function Button({
   title,
   onPress,
+  width = "w-full",
+  height = "py-[14px]",
+  backgroundColor = "bg-primary",
+  textColor = "text-white",
+  textSize = "text-[15px]",
+  className = "",
+  textClassName = "",
 }: ButtonProps) {
   return (
     <Pressable
       onPress={onPress}
       accessibilityRole="button"
       accessibilityLabel={title}
-      className="w-[370px] items-center justify-center rounded-[14px] bg-primary px-[18px] py-[14px] active:opacity-80"
+      className={`
+        ${width}
+        ${height}
+        ${backgroundColor}
+        items-center
+        justify-center
+        rounded-[14px]
+        px-[18px]
+        active:opacity-80
+        ${className}
+      `}
     >
-      <Text className="font-poppins-semibold text-[15px] text-white">
+      <Text
+        className={`
+          font-poppins-semibold
+          ${textSize}
+          ${textColor}
+          ${textClassName}
+        `}
+      >
         {title}
       </Text>
     </Pressable>
@@ -28,10 +48,6 @@ type SeeMoreButtonProps = Readonly<{
   onPress?: () => void;
 }>;
 
-/**
- * Lightweight "See more" action — green label with a down-arrow on the
- * right, intentionally distinct from the solid primary Button.
- */
 export function SeeMoreButton({ onPress }: SeeMoreButtonProps) {
   return (
     <Pressable
