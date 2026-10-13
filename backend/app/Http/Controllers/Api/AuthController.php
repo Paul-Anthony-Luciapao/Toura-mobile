@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Password as PasswordBroker;
 
 class AuthController extends Controller
 {
@@ -102,4 +103,66 @@ public function deleteAccount(Request $request): JsonResponse
             'token' => $user->createToken('toura-mobile')->plainTextToken,
         ], $status);
     }
+
+
+public function forgotPassword(Request $request): JsonResponse
+{
+    $request->merge([
+        'email' => Str::lower(trim((string) $request->input('email'))),
+    ]);
+
+    $data = $request->validate([
+        'email' => ['required', 'string', 'email', 'max:255'],
+    ]);
+
+    PasswordBroker::sendResetLink([
+        'email' => $data['email'],
+    ]);
+
+    // Same response whether or not this email belongs to an account.
+    return response()->json([
+        'message' => 'If an account exists for that email, a password reset link has been sent.',
+    ]);
+}
+
+public function resetPassword(Request $request): JsonResponse
+{
+    $request->merge([
+        'email' => Str::lower(trim((string) $request->input('email'))),
+    ]);
+
+    $data = $request->validate([
+        'email' => ['required', 'string', 'email', 'max:255'],
+        'token' => ['required', 'string'],
+        'password' => [
+            'required',
+            'string',
+            'confirmed',
+            Password::min(8),
+        ],
+    ]);
+
+    $status = PasswordBroker::reset(
+        $data,
+        function (User $user, string $password): void {
+            $user->forceFill([
+                'password' => $password,
+                'remember_token' => Str::random(60),
+            ])->save();
+
+            // Invalidate every existing login token after a password reset.
+            $user->tokens()->delete();
+        },
+    );
+
+    if ($status === PasswordBroker::PASSWORD_RESET) {
+        return response()->json([
+            'message' => 'Your password has been reset. You can now log in.',
+        ]);
+    }
+
+    return response()->json([
+        'message' => 'This reset link is invalid or has expired.',
+    ], 422);
+}
 }

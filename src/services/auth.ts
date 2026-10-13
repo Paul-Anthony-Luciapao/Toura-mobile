@@ -85,3 +85,21 @@ export function roleLabel(role: Role): string {
       return "Traveler";
   }
 }
+
+export async function requestPasswordReset(email: string): Promise<void> {
+  await api.post("/auth/forgot-password", {
+    email: email.trim(),
+  });
+}
+
+export async function resetPassword(input: {
+  email: string;
+  token: string;
+  password: string;
+  password_confirmation: string;
+}): Promise<void> {
+  await api.post("/auth/reset-password", {
+    ...input,
+    email: input.email.trim(),
+  });
+}

@@ -35,4 +35,9 @@ return [
         ],
     ],
 
+    'frontend_reset_url' => env(
+    'FRONTEND_RESET_URL',
+    'touramobile://reset-password',
+),
+
 ];

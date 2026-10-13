@@ -76,7 +76,7 @@ export default function LoginScreen() {
           </Text>
         </Pressable>
 
-        <Pressable hitSlop={8}>
+        <Pressable hitSlop={8} onPress={() => router.push("/forgot-password")}>
           <Text className="font-['Poppins_500Medium'] text-[12px] text-[#238276]">
             Forgot password
           </Text>
