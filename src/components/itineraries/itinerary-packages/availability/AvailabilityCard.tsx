@@ -1,87 +1,66 @@
-import { colors } from "@/styles/global";
+import type { TimePickerSettings } from "@/data/types";
 import { Ionicons } from "@expo/vector-icons";
-import React, { useState } from "react";
-import { Text, TextInput, View } from "react-native";
+import React from "react";
+import { ScrollView, Text, View } from "react-native";
+import DateInput from "./DateInput";
+import TimeInput from "./TimeInput";
 
-export default function AvailabilityCard() {
-  const [focusedInput, setFocusedInput] = useState<string | null>(null);
+type Props = Readonly<{
+  arrivalDate: Date;
+  arrivalTime: Date;
+  departureDate: Date;
+  departureTime: Date;
+  timePickerSettings: TimePickerSettings;
+  onArrivalDateChange: (value: Date) => void;
+  onArrivalTimeChange: (value: Date) => void;
+  onDepartureDateChange: (value: Date) => void;
+  onDepartureTimeChange: (value: Date) => void;
+}>;
 
-  const inputBorder = (inputName: string) =>
-    focusedInput === inputName ? "border-primary" : "border-slate-200";
-
+export default function AvailabilityCard({
+  arrivalDate,
+  arrivalTime,
+  departureDate,
+  departureTime,
+  timePickerSettings,
+  onArrivalDateChange,
+  onArrivalTimeChange,
+  onDepartureDateChange,
+  onDepartureTimeChange,
+}: Props) {
   return (
-    <View className="border border-slate-200 rounded-xl bg-white m-4 px-4 py-4 shadow">
-      {/* Arrival */}
-      <View className="flex-row items-center pl-2 mb-3">
+    <ScrollView className="m-4 rounded-xl border border-slate-200 bg-white px-4 py-4 shadow">
+      <View className="mb-3 flex-row items-center pl-2">
         <Ionicons name="airplane-outline" size={24} />
-        <Text className="font-poppins-md text-xl ml-4">Arrival</Text>
+        <Text className="ml-4 font-poppins-md text-xl">Arrival</Text>
       </View>
 
       <Text className="mb-1">Date</Text>
+      <DateInput value={arrivalDate} onChange={onArrivalDateChange} />
 
-      <View
-        className={`flex-row items-center rounded-xl border pl-4 mb-4 ${inputBorder("arrivalDate")}`}
-      >
-        <Ionicons name="calendar-outline" size={24} color={colors.primary} />
-        <TextInput
-          placeholder="DD/MM/YYYY"
-          placeholderTextColor="black"
-          className="ml-3 flex-1"
-          onFocus={() => setFocusedInput("arrivalDate")}
-          onBlur={() => setFocusedInput(null)}
-        />
-      </View>
+      <Text className="mb-1 mt-3">Time</Text>
+      <TimeInput
+        value={arrivalTime}
+        settings={timePickerSettings}
+        onChange={onArrivalTimeChange}
+      />
 
-      <Text className="mb-1">Time</Text>
+      <View className="my-4 border-t border-slate-200" />
 
-      <View
-        className={`flex-row items-center rounded-xl border pl-4 mb-4 ${inputBorder("arrivalTime")}`}
-      >
-        <Ionicons name="time-outline" size={24} color={colors.primary} />
-        <TextInput
-          placeholder="UTC 00:00"
-          placeholderTextColor="black"
-          className="ml-3 flex-1"
-          onFocus={() => setFocusedInput("arrivalTime")}
-          onBlur={() => setFocusedInput(null)}
-        />
-      </View>
-
-      {/* Departure */}
-      <View className="flex-row pb-4">
+      <View className="mb-3 flex-row items-center pl-2">
         <Ionicons name="airplane-outline" size={24} />
-        <Text className="font-poppins-md text-xl ml-4">Departure</Text>
+        <Text className="ml-4 font-poppins-md text-xl">Departure</Text>
       </View>
 
       <Text className="mb-1">Date</Text>
+      <DateInput value={departureDate} onChange={onDepartureDateChange} />
 
-      <View
-        className={`flex-row items-center rounded-xl border pl-4 mb-4 ${inputBorder("departureDate")}`}
-      >
-        <Ionicons name="calendar-outline" size={24} color={colors.primary} />
-        <TextInput
-          placeholder="DD/MM/YYYY"
-          placeholderTextColor="black"
-          className="ml-3 flex-1"
-          onFocus={() => setFocusedInput("departureDate")}
-          onBlur={() => setFocusedInput(null)}
-        />
-      </View>
-
-      <Text className="mb-1">Time</Text>
-
-      <View
-        className={`flex-row items-center rounded-xl border pl-4 mb-4 ${inputBorder("departureTime")}`}
-      >
-        <Ionicons name="time-outline" size={24} color={colors.primary} />
-        <TextInput
-          placeholder="UTC 00:00"
-          placeholderTextColor="black"
-          className="ml-3 flex-1"
-          onFocus={() => setFocusedInput("departureTime")}
-          onBlur={() => setFocusedInput(null)}
-        />
-      </View>
-    </View>
+      <Text className="mb-1 mt-3">Time</Text>
+      <TimeInput
+        value={departureTime}
+        settings={timePickerSettings}
+        onChange={onDepartureTimeChange}
+      />
+    </ScrollView>
   );
 }

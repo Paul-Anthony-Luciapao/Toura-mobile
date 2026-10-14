@@ -56,8 +56,7 @@ export default function DateInput({ value, onChange }: Props) {
         visible={showPicker}
         transparent
         animationType="fade"
-        onRequestClose={() => setShowPicker(false)}
-      >
+        onRequestClose={() => setShowPicker(false)}>
         <View className="flex-1 items-center justify-center px-5">
           <Pressable
             accessibilityRole="button"
@@ -69,6 +68,7 @@ export default function DateInput({ value, onChange }: Props) {
             <Calendar
               current={formatLocalDate(value)}
               onDayPress={handleDateChange}
+              minDate={formatLocalDate(new Date())}
               markedDates={{
                 [formatLocalDate(value)]: {
                   selected: true,
