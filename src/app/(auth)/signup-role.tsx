@@ -3,7 +3,7 @@ import { router } from "expo-router";
 import { Pressable, Text, View } from "react-native";
 
 export default function SignUpRoleScreen() {
-  const handleSelect = (role: Exclude<Role, "admin">) => {
+  const handleSelect = (role: Exclude<Role, "guest">) => {
     router.push({
       pathname: "/consent",
       params: { role },

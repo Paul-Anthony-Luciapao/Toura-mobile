@@ -11,7 +11,7 @@ class EnsureUserHasRole
     /**
      * Allow the request through only if the authenticated user has one of
      * the given roles. Use on routes as: ->middleware('role:owner')
-     * or ->middleware('role:owner,admin').
+     * or ->middleware('role:owner').
      */
     public function handle(Request $request, Closure $next, string ...$roles): Response
     {

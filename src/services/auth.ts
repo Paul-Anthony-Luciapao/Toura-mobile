@@ -36,11 +36,12 @@ function toAuthUser(raw: RawAuthUser): AuthUser {
 export async function loginRequest(
   email: string,
   password: string,
-  _role?: Role,
+  role?: Role,
 ): Promise<AuthSession> {
   const { data } = await api.post<SessionResponse>("/auth/login", {
     email: email.trim(),
     password,
+    role,
   });
 
   return { token: data.token, user: toAuthUser(data.user) };
@@ -76,14 +77,11 @@ export async function deleteAccountRequest(): Promise<void> {
 }
 
 export function roleLabel(role: Role): string {
-  switch (role) {
-    case "admin":
-      return "Administrator";
-    case "owner":
-      return "Resort Owner";
-    default:
-      return "Traveler";
+  if (role === "owner") {
+    return "Resort Owner";
   }
+
+  return "Traveler";
 }
 
 export async function requestPasswordReset(email: string): Promise<void> {

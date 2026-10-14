@@ -42,7 +42,7 @@ class AuthController extends Controller
         $data = $request->validate([
             'email' => ['required', 'string', 'email'],
             'password' => ['required', 'string'],
-            'role' => ['nullable', 'string', 'in:traveler,owner,admin'],
+            'role' => ['nullable', 'string', 'in:traveler,owner'],
         ]);
 
         $user = User::where('email', $data['email'])->first();
@@ -51,6 +51,12 @@ class AuthController extends Controller
             throw ValidationException::withMessages([
                 'email' => ['These credentials do not match our records.'],
             ]);
+        }
+
+        if (! in_array($user->role, ['traveler', 'owner'], true)) {
+            return response()->json([
+            'message' => 'This account type is not supported.',
+        ], 403);
         }
 
         if ($user->status !== 'active') {
