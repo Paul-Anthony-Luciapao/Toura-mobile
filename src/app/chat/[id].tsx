@@ -1,6 +1,6 @@
 import ChatAvatar from "@/components/chat/ChatAvatar";
 import MessageBubble from "@/components/chat/MessageBubble";
-import { useAuth } from "@/context/auth";
+import { useAuth } from "@/context/AuthContext";
 import type { ChatMessage, Conversation } from "@/data/types";
 import { formatDayLabel } from "@/lib/formatters";
 import { randomUUID } from "@/lib/uuid";
@@ -90,31 +90,34 @@ export default function ChatThread() {
     }
   }, [id]);
 
-  const applyIncoming = useCallback((incoming: ChatMessage[]) => {
-    if (incoming.length === 0) return;
+  const applyIncoming = useCallback(
+    (incoming: ChatMessage[]) => {
+      if (incoming.length === 0) return;
 
-    setMessages((prev) => {
-      const known = new Set(prev.map((m) => m.id));
-      const merged = [...prev];
-      for (const message of incoming) {
-        if (!known.has(message.id)) merged.push(message);
-      }
-      return merged.sort((a, b) => {
-        const rankA = Number.isFinite(Number(a.id))
-          ? Number(a.id)
-          : Number.MAX_SAFE_INTEGER;
-        const rankB = Number.isFinite(Number(b.id))
-          ? Number(b.id)
-          : Number.MAX_SAFE_INTEGER;
-        return rankA - rankB;
+      setMessages((prev) => {
+        const known = new Set(prev.map((m) => m.id));
+        const merged = [...prev];
+        for (const message of incoming) {
+          if (!known.has(message.id)) merged.push(message);
+        }
+        return merged.sort((a, b) => {
+          const rankA = Number.isFinite(Number(a.id))
+            ? Number(a.id)
+            : Number.MAX_SAFE_INTEGER;
+          const rankB = Number.isFinite(Number(b.id))
+            ? Number(b.id)
+            : Number.MAX_SAFE_INTEGER;
+          return rankA - rankB;
+        });
       });
-    });
 
-    const hasIncoming = incoming.some(
-      (m) => m.senderId != null && String(m.senderId) !== String(user?.id),
-    );
-    if (hasIncoming) void markRead();
-  }, [markRead, user?.id]);
+      const hasIncoming = incoming.some(
+        (m) => m.senderId != null && String(m.senderId) !== String(user?.id),
+      );
+      if (hasIncoming) void markRead();
+    },
+    [markRead, user?.id],
+  );
 
   const poll = useCallback(async () => {
     if (typeof id !== "string" || !cursorRef.current) return;
@@ -218,7 +221,11 @@ export default function ChatThread() {
           <Ionicons name="chevron-back" size={26} color={colors.text} />
         </Pressable>
 
-        <ChatAvatar name={otherParty?.name} uri={otherParty?.avatar} size={42} />
+        <ChatAvatar
+          name={otherParty?.name}
+          uri={otherParty?.avatar}
+          size={42}
+        />
 
         <View className="flex-1">
           <Text className="text-[16px] font-bold text-ink" numberOfLines={1}>
@@ -260,9 +267,7 @@ export default function ChatThread() {
             const { contentOffset, contentSize, layoutMeasurement } =
               e.nativeEvent;
             const distanceFromEnd =
-              contentSize.height -
-              layoutMeasurement.height -
-              contentOffset.y;
+              contentSize.height - layoutMeasurement.height - contentOffset.y;
             autoScrollRef.current = distanceFromEnd < 90;
           }}
           scrollEventThrottle={16}
