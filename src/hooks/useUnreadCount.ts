@@ -1,4 +1,4 @@
-import { useAuth } from "@/context/auth";
+import { useAuth } from "@/context/AuthContext";
 import { fetchUnreadCount } from "@/services/chat";
 import { useEffect, useState } from "react";
 

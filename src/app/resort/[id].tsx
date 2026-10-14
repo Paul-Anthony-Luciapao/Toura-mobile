@@ -1,4 +1,5 @@
-import { useAuth } from "@/context/auth";
+import { useAuth } from "@/context/AuthContext";
+import { Ionicons } from "@expo/vector-icons";
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import { useCallback, useState } from "react";
 import {
@@ -10,7 +11,6 @@ import {
   Text,
   View,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
 import PrimaryButton from "../../components/common/PrimaryButton";
 import type { Resort } from "../../data/types";
 import { formatCurrency } from "../../lib/formatters";
