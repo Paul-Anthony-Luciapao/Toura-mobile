@@ -6,7 +6,7 @@ import PaymentCard from "@components/itineraries/PaymentCard";
 import { Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
 import React from "react";
-import { Pressable, ScrollView, Text, View } from "react-native";
+import { Alert, Pressable, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Payment() {
@@ -63,9 +63,12 @@ export default function Payment() {
       <View className="mt-auto pb-6">
         <Buttons
           title="Continue"
-          onPress={() => {
-            router.push(`/itinerary-packages/${packageId}/payment`);
-          }}
+          onPress={() =>
+            Alert.alert(
+              "Booking unavailable",
+              "Payment processing is not set up yet. No booking or payment has been submitted.",
+            )
+          }
           width="w-[225px]"
           className="self-center w-[355px]"
         />
