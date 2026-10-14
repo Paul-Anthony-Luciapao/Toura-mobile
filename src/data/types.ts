@@ -3,7 +3,7 @@ import type { ComponentProps, ComponentType } from "react";
 import type { ImageSourcePropType } from "react-native";
 import type { SvgProps } from "react-native-svg";
 
-export type Role = "traveler" | "owner" | "admin";
+export type Role = "traveler" | "owner";
 
 export type User = {
   id: string;

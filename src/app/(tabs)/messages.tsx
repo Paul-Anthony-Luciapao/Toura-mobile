@@ -1,20 +1,19 @@
 import { Ionicons } from "@expo/vector-icons";
-import { useFocusEffect, useRouter } from "expo-router";
+import { LinearGradient } from "expo-linear-gradient";
 import {
   FlatList,
+  Image,
   Pressable,
   Text,
   TextInput,
   View,
-  Image,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { LinearGradient } from "expo-linear-gradient";
 
 const MOCK_CONVERSATIONS = [
   {
     id: "1",
-    name: "Toura - Admin",
+    name: "Toura Guest",
     avatar: "https://i.pravatar.cc/150?u=toura",
     lastMessage: "Hi there! 👋 Welcome to...",
     time: "1:00PM",
@@ -57,7 +56,7 @@ export default function Messages() {
         colors={["rgba(59, 162, 154, 0.15)", "rgba(255, 255, 255, 0)"]}
         style={{ position: "absolute", top: 0, left: 0, right: 0, height: 120 }}
       />
-      
+
       <View className="px-5 mt-4 z-10">
         <View className="flex-row items-center border border-gray-200 rounded-full px-4 py-2.5 bg-white">
           <Ionicons name="search" size={20} color="#1F2937" />
@@ -70,8 +69,12 @@ export default function Messages() {
       </View>
 
       <View className="flex-row items-center justify-between px-5 mt-6 mb-3">
-        <Text className="text-[17px] font-poppins-medium text-ink">Messages</Text>
-        <Text className="text-[15px] font-poppins text-[#3BA29A]">Requests</Text>
+        <Text className="text-[17px] font-poppins-medium text-ink">
+          Messages
+        </Text>
+        <Text className="text-[15px] font-poppins text-[#3BA29A]">
+          Requests
+        </Text>
       </View>
 
       <FlatList
@@ -110,7 +113,11 @@ export default function Messages() {
             <View className="items-end justify-start h-full pt-1">
               <View className="flex-row items-center">
                 {item.read && (
-                  <Ionicons name="checkmark-done-outline" size={16} color="#3BA29A" />
+                  <Ionicons
+                    name="checkmark-done-outline"
+                    size={16}
+                    color="#3BA29A"
+                  />
                 )}
                 <Text className="text-[11px] text-gray-500 ml-1 font-poppins">
                   {item.time}
@@ -123,4 +130,3 @@ export default function Messages() {
     </View>
   );
 }
-

@@ -25,8 +25,6 @@ class UserSeeder extends Seeder
                 'avatar' => 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=300&q=80'],
             ['name' => 'Danilo Villanueva', 'email' => 'danilo@longbeach.ph', 'role' => 'owner', 'phone' => '+63 930 555 7712', 'created_at' => '2025-10-05',
                 'avatar' => 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=300&q=80'],
-            ['name' => 'Toura Admin', 'email' => 'admin@toura.ph', 'role' => 'admin', 'phone' => '+63 917 000 0001', 'created_at' => '2025-01-01',
-                'avatar' => 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=300&q=80'],
         ];
 
         foreach ($users as $data) {

@@ -3,6 +3,10 @@
  * Geographic focus: Palawan, Philippines
  */
 
+import JCBIcon from "@/assets/payments/jcb_emblem_logo.svg";
+import MasterIcon from "@/assets/payments/master.svg";
+import VisaIcon from "@/assets/payments/visa.svg";
+import { Ionicons } from "@expo/vector-icons";
 import type {
   Amenities,
   Booking,
@@ -18,10 +22,6 @@ import type {
   TouristSpot,
   User,
 } from "./types";
-import { Ionicons } from "@expo/vector-icons";
-import JCBIcon from "@/assets/payments/jcb_emblem_logo.svg";
-import MasterIcon from "@/assets/payments/master.svg";
-import VisaIcon from "@/assets/payments/visa.svg";
 
 export const INITIAL_USERS: User[] = [
   {
@@ -69,17 +69,6 @@ export const INITIAL_USERS: User[] = [
     phone: "+63 930 555 7712",
     resortId: "resort-3",
     joinedAt: "2025-10-05",
-    status: "active",
-  },
-  {
-    id: "user-admin",
-    name: "Toura Admin",
-    email: "admin@toura.ph",
-    role: "admin",
-    avatar:
-      "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=300&q=80",
-    phone: "+63 917 000 0001",
-    joinedAt: "2025-01-01",
     status: "active",
   },
 ];
@@ -955,7 +944,13 @@ export const ID_TYPES: ID[] = [
 ];
 
 export const PAYMENT_METHODS: PaymentMethod[] = [
-  { id: "ewallet", name: "E-Wallet", icon: Ionicons, iconName: "wallet-outline", iconType: "ionicon" },
+  {
+    id: "ewallet",
+    name: "E-Wallet",
+    icon: Ionicons,
+    iconName: "wallet-outline",
+    iconType: "ionicon",
+  },
   { id: "card", name: "Master Card", icon: MasterIcon, iconType: "svg" },
   { id: "jcb", name: "JCB", icon: JCBIcon, iconType: "svg" },
   { id: "visa", name: "Visa", icon: VisaIcon, iconType: "svg" },

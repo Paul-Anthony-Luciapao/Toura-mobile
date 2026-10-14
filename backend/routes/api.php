@@ -37,7 +37,7 @@ Route::prefix('v1')->group(function () {
 
         Route::apiResource('bookings', BookingController::class)->except(['destroy']);
 
-        // Tourist spot management (tighten to admin later if needed)
+        // Tourist spot management
         Route::apiResource('tourist-spots', TouristSpotController::class)
             ->only(['store', 'update', 'destroy']);
 

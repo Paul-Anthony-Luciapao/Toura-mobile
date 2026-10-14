@@ -6,7 +6,6 @@ import { Text, View } from "react-native";
 const LABELS: Record<string, string> = {
   guest: "Guest browsing",
   owner: "Owner portal",
-  admin: "Admin portal",
 };
 
 export default function ComingSoonScreen() {

@@ -3,11 +3,11 @@ import { fetchUnreadCount } from "@/services/chat";
 import { useEffect, useState } from "react";
 
 export function useUnreadCount(intervalMs = 8000) {
-  const { token, user } = useAuth();
+  const { token } = useAuth();
   const [count, setCount] = useState(0);
 
   useEffect(() => {
-    if (!token || user?.role === "admin") {
+    if (!token) {
       return;
     }
 
@@ -18,7 +18,7 @@ export function useUnreadCount(intervalMs = 8000) {
         const total = await fetchUnreadCount();
         if (active) setCount(total);
       } catch {
-        // transient error — keep the last known value
+        // Transient error — keep the last known value.
       }
     };
 
@@ -29,9 +29,9 @@ export function useUnreadCount(intervalMs = 8000) {
       active = false;
       clearInterval(timer);
     };
-  }, [token, user?.role, intervalMs]);
+  }, [token, intervalMs]);
 
-  if (!token || user?.role === "admin") {
+  if (!token) {
     return 0;
   }
 

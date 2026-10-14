@@ -3,14 +3,14 @@ import { colors } from "@/styles/global";
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
 import {
-    Alert,
-    KeyboardAvoidingView,
-    Modal,
-    Platform,
-    Pressable,
-    Text,
-    TextInput,
-    View,
+  Alert,
+  KeyboardAvoidingView,
+  Modal,
+  Platform,
+  Pressable,
+  Text,
+  TextInput,
+  View,
 } from "react-native";
 
 type GuestField = keyof Omit<Guest, "id">;
@@ -24,14 +24,10 @@ type ReviewProps = {
   ) => void;
 };
 
-export default function Review({
-  guests,
-  onUpdateGuest,
-}: ReviewProps) {
+export default function Review({ guests, onUpdateGuest }: ReviewProps) {
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [selectedGuestId, setSelectedGuestId] = useState("");
-  const [selectedField, setSelectedField] =
-    useState<GuestField | null>(null);
+  const [selectedField, setSelectedField] = useState<GuestField | null>(null);
   const [draftValue, setDraftValue] = useState("");
 
   const fieldLabels: Record<GuestField, string> = {
@@ -49,9 +45,7 @@ export default function Review({
     setSelectedField(field);
 
     if (field === "dateOfBirth") {
-      setDraftValue(
-        currentValue ? formatDate(currentValue as Date) : "",
-      );
+      setDraftValue(currentValue ? formatDate(currentValue as Date) : "");
     } else {
       setDraftValue(String(currentValue ?? ""));
     }
@@ -90,10 +84,7 @@ export default function Review({
       const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
       if (!emailPattern.test(value)) {
-        Alert.alert(
-          "Invalid email",
-          "Please enter a valid email address.",
-        );
+        Alert.alert("Invalid email", "Please enter a valid email address.");
         return;
       }
     }
@@ -116,18 +107,11 @@ export default function Review({
       }
 
       if (parsedDate > new Date()) {
-        Alert.alert(
-          "Invalid date",
-          "Date of birth cannot be in the future.",
-        );
+        Alert.alert("Invalid date", "Date of birth cannot be in the future.");
         return;
       }
 
-      onUpdateGuest(
-        selectedGuestId,
-        "dateOfBirth",
-        parsedDate,
-      );
+      onUpdateGuest(selectedGuestId, "dateOfBirth", parsedDate);
 
       closeDrawer();
       return;
@@ -148,10 +132,7 @@ export default function Review({
       </Text>
 
       {guests.map((guest, index) => (
-        <View
-          key={guest.id}
-          className="mt-5 rounded-2xl bg-white p-5"
-        >
+        <View key={guest.id} className="mt-5 rounded-2xl bg-white p-5">
           <Text className="mb-5 font-poppins-semibold text-xl text-textMain">
             Guest {index + 1}
           </Text>
@@ -170,11 +151,7 @@ export default function Review({
 
           <GuestDetail
             label="Date of Birth"
-            value={
-              guest.dateOfBirth
-                ? formatDate(guest.dateOfBirth)
-                : ""
-            }
+            value={guest.dateOfBirth ? formatDate(guest.dateOfBirth) : ""}
             onEdit={() => openDrawer(guest, "dateOfBirth")}
           />
 
@@ -205,8 +182,7 @@ export default function Review({
         transparent
         animationType="slide"
         statusBarTranslucent
-        onRequestClose={closeDrawer}
-      >
+        onRequestClose={closeDrawer}>
         <View className="flex-1 justify-end">
           {/* Dark backdrop */}
           <Pressable
@@ -216,8 +192,7 @@ export default function Review({
           />
 
           <KeyboardAvoidingView
-            behavior={Platform.OS === "ios" ? "padding" : undefined}
-          >
+            behavior={Platform.OS === "ios" ? "padding" : undefined}>
             {/* Bottom drawer */}
             <View className="rounded-t-[28px] bg-white px-5 pb-8 pt-3">
               <View className="mb-5 items-center">
@@ -227,7 +202,8 @@ export default function Review({
               <View className="mb-6 flex-row items-center justify-between">
                 <View className="flex-1">
                   <Text className="font-poppins-semibold text-xl text-textMain">
-                    Edit {selectedField ? fieldLabels[selectedField] : "Details"}
+                    Edit{" "}
+                    {selectedField ? fieldLabels[selectedField] : "Details"}
                   </Text>
 
                   <Text className="mt-1 font-poppins text-sm text-slate-500">
@@ -240,13 +216,8 @@ export default function Review({
                   hitSlop={10}
                   accessibilityRole="button"
                   accessibilityLabel="Close drawer"
-                  className="ml-3 h-10 w-10 items-center justify-center rounded-full bg-slate-100"
-                >
-                  <Ionicons
-                    name="close"
-                    size={22}
-                    color={colors.primary}
-                  />
+                  className="ml-3 h-10 w-10 items-center justify-center rounded-full bg-slate-100">
+                  <Ionicons name="close" size={22} color={colors.primary} />
                 </Pressable>
               </View>
 
@@ -277,9 +248,7 @@ export default function Review({
                         ? "numbers-and-punctuation"
                         : "default"
                 }
-                autoCapitalize={
-                  selectedField === "email" ? "none" : "words"
-                }
+                autoCapitalize={selectedField === "email" ? "none" : "words"}
                 className="rounded-xl border border-slate-300 bg-slate-50 px-4 py-4 font-poppins text-base text-textMain"
               />
 
@@ -292,8 +261,7 @@ export default function Review({
               <View className="mt-6 flex-row gap-3">
                 <Pressable
                   onPress={closeDrawer}
-                  className="flex-1 items-center justify-center rounded-xl border border-slate-300 py-4"
-                >
+                  className="flex-1 items-center justify-center rounded-xl border border-slate-300 py-4">
                   <Text className="font-poppins-semibold text-base text-textMain">
                     Cancel
                   </Text>
@@ -301,13 +269,8 @@ export default function Review({
 
                 <Pressable
                   onPress={saveChanges}
-                  className="flex-1 flex-row items-center justify-center gap-2 rounded-xl bg-primary py-4"
-                >
-                  <Ionicons
-                    name="checkmark"
-                    size={20}
-                    color="#FFFFFF"
-                  />
+                  className="flex-1 flex-row items-center justify-center gap-2 rounded-xl bg-primary py-4">
+                  <Ionicons name="checkmark" size={20} color="#FFFFFF" />
 
                   <Text className="font-poppins-semibold text-base text-white">
                     Confirm
@@ -333,15 +296,12 @@ function GuestDetail({
 }) {
   return (
     <View className="mb-4">
-      <Text className="mb-2 font-poppins text-sm text-slate-500">
-        {label}
-      </Text>
+      <Text className="mb-2 font-poppins text-sm text-slate-500">{label}</Text>
 
       <View className="flex-row items-center rounded-xl border border-slate-300 bg-slate-50">
         <Text
           numberOfLines={1}
-          className="flex-1 px-4 py-3 font-poppins text-base text-textMain"
-        >
+          className="flex-1 px-4 py-3 font-poppins text-base text-textMain">
           {value || "Not provided"}
         </Text>
 
@@ -350,17 +310,10 @@ function GuestDetail({
           hitSlop={8}
           accessibilityRole="button"
           accessibilityLabel={`Edit ${label}`}
-          className="flex-row items-center gap-1 px-3 py-3"
-        >
-          <Ionicons
-            name="pencil-outline"
-            size={18}
-            color={colors.primary}
-          />
+          className="flex-row items-center gap-1 px-3 py-3">
+          <Ionicons name="pencil-outline" size={18} color={colors.primary} />
 
-          <Text className="font-poppins-medium text-sm text-primary">
-            Edit
-          </Text>
+          <Text className="font-poppins-medium text-sm text-primary">Edit</Text>
         </Pressable>
       </View>
     </View>
@@ -368,8 +321,7 @@ function GuestDetail({
 }
 
 function formatDate(value: Date | string): string {
-  const date =
-    typeof value === "string" ? parseDate(value) : value;
+  const date = typeof value === "string" ? parseDate(value) : value;
 
   if (!date || Number.isNaN(date.getTime())) {
     return typeof value === "string" ? value : "";

@@ -1,11 +1,12 @@
 import AuthLayout from "@/components/auth/AuthLayout";
 import GradientButton from "@/components/common/GradientButton";
+import type { Role } from "@/data/types";
 import { router } from "expo-router";
 import { View } from "react-native";
 
 export default function RoleSelectScreen() {
-  const goToConsent = (role: "traveler" | "guest" | "owner" | "admin") =>
-    router.push({ pathname: "/consent", params: { role } });
+  const goToLogin = (role: Role) =>
+    router.push({ pathname: "/login", params: { role } });
 
   return (
     <AuthLayout title="Log in as">
@@ -13,22 +14,12 @@ export default function RoleSelectScreen() {
         <GradientButton
           label="User"
           className="w-[220px]"
-          onPress={() => goToConsent("traveler")}
-        />
-        <GradientButton
-          label="Guest"
-          className="w-[220px]"
-          onPress={() => goToConsent("guest")}
+          onPress={() => goToLogin("traveler")}
         />
         <GradientButton
           label="Owner"
           className="w-[220px]"
-          onPress={() => goToConsent("owner")}
-        />
-        <GradientButton
-          label="Admin"
-          className="w-[220px]"
-          onPress={() => goToConsent("admin")}
+          onPress={() => goToLogin("owner")}
         />
       </View>
     </AuthLayout>
