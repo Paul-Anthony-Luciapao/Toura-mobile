@@ -9,11 +9,33 @@ import { Pressable, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function VerificationScreen() {
-  const { id } = useLocalSearchParams<{
+  const {
+    id,
+    arrivalDate,
+    arrivalTime,
+    departureDate,
+    departureTime,
+  } = useLocalSearchParams<{
     id?: string | string[];
+    arrivalDate?: string | string[];
+    arrivalTime?: string | string[];
+    departureDate?: string | string[];
+    departureTime?: string | string[];
   }>();
 
   const packageId = Array.isArray(id) ? id[0] : id;
+  const arrivalDateParam = Array.isArray(arrivalDate)
+    ? arrivalDate[0]
+    : arrivalDate;
+  const arrivalTimeParam = Array.isArray(arrivalTime)
+    ? arrivalTime[0]
+    : arrivalTime;
+  const departureDateParam = Array.isArray(departureDate)
+    ? departureDate[0]
+    : departureDate;
+  const departureTimeParam = Array.isArray(departureTime)
+    ? departureTime[0]
+    : departureTime;
 
   const index = INITIAL_TOURIST_SPOTS.findIndex(
     (spot) => String(spot.id) === String(packageId),
@@ -21,7 +43,7 @@ export default function VerificationScreen() {
 
   const itinerary = INITIAL_TOURIST_SPOTS[index];
 
-  if (!itinerary) {
+  if (!packageId || !itinerary) {
     return (
       <SafeAreaView className="flex-1 items-center justify-center bg-background">
         <Text className="font-poppins-semibold text-[16px] text-textMain">
@@ -63,9 +85,16 @@ export default function VerificationScreen() {
           <Button
             title="Confirm and Proceed"
             onPress={() => {
-              router.push(
-                `/itinerary-packages/${packageId}/guest`,
-              );
+              router.push({
+                pathname: "/itinerary-packages/[id]/guest",
+                params: {
+                  id: packageId,
+                  arrivalDate: arrivalDateParam,
+                  arrivalTime: arrivalTimeParam,
+                  departureDate: departureDateParam,
+                  departureTime: departureTimeParam,
+                },
+              });
             }}
             width="w-[225px]"
             className="mt-5 self-center"

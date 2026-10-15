@@ -26,6 +26,9 @@ const BOOKING_STEPS = new Set([
   "guest",
   "review",
   "payment",
+  "card-details",
+  "otp",
+  "success",
 ]);
 
 function AuthRouteGuard() {

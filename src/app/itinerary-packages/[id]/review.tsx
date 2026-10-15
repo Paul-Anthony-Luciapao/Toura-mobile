@@ -20,12 +20,35 @@ const createGuest = (): Guest => ({
 });
 
 export default function ReviewScreen() {
-  const { id, guests: guestsParam } = useLocalSearchParams<{
+  const {
+    id,
+    guests: guestsParam,
+    arrivalDate,
+    arrivalTime,
+    departureDate,
+    departureTime,
+  } = useLocalSearchParams<{
     id?: string | string[];
     guests?: string | string[];
+    arrivalDate?: string | string[];
+    arrivalTime?: string | string[];
+    departureDate?: string | string[];
+    departureTime?: string | string[];
   }>();
 
   const packageId = Array.isArray(id) ? id[0] : id;
+  const arrivalDateParam = Array.isArray(arrivalDate)
+    ? arrivalDate[0]
+    : arrivalDate;
+  const arrivalTimeParam = Array.isArray(arrivalTime)
+    ? arrivalTime[0]
+    : arrivalTime;
+  const departureDateParam = Array.isArray(departureDate)
+    ? departureDate[0]
+    : departureDate;
+  const departureTimeParam = Array.isArray(departureTime)
+    ? departureTime[0]
+    : departureTime;
 
   const serializedGuests = Array.isArray(guestsParam)
     ? guestsParam[0]
@@ -63,7 +86,7 @@ export default function ReviewScreen() {
     );
   };
 
-  if (!itinerary) {
+  if (!packageId || !itinerary) {
     return (
       <SafeAreaView className="flex-1 items-center justify-center bg-background">
         <Text className="font-poppins-semibold text-[16px] text-textMain">
@@ -96,7 +119,17 @@ export default function ReviewScreen() {
         <Buttons
           title="Confirm and Proceed"
           onPress={() => {
-            router.push(`/itinerary-packages/${packageId}/payment`);
+            router.push({
+              pathname: "/itinerary-packages/[id]/payment",
+              params: {
+                id: packageId,
+                guestCount: String(guests.length),
+                arrivalDate: arrivalDateParam,
+                arrivalTime: arrivalTimeParam,
+                departureDate: departureDateParam,
+                departureTime: departureTimeParam,
+              },
+            });
           }}
           width="w-[225px]"
           className="mt-5 self-center"
