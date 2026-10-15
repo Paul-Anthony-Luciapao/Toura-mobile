@@ -1,16 +1,17 @@
+import type { Guest } from "@/data/types";
 import { Ionicons } from "@expo/vector-icons";
 import DateTimePicker, {
-    DateTimePickerEvent,
+  type DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
 import React, { useState } from "react";
 import {
-    Pressable,
-    Text,
-    TextInput,
-    View,
+  Modal,
+  Platform,
+  Pressable,
+  Text,
+  TextInput,
+  View,
 } from "react-native";
-
-import type { Guest } from "@/data/types";
 
 type GuestCardProps = {
   guest: Guest;
@@ -28,6 +29,9 @@ export default function GuestCard({
 }: GuestCardProps) {
   const [focusedInput, setFocusedInput] = useState<string | null>(null);
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [draftDate, setDraftDate] = useState(
+    () => guest.dateOfBirth ?? new Date(),
+  );
 
   const formatDate = (date: Date | null): string => {
     if (!date) return "";
@@ -39,26 +43,45 @@ export default function GuestCard({
     });
   };
 
-  const handleDateChange = (
+  const openDatePicker = () => {
+    setDraftDate(guest.dateOfBirth ?? new Date());
+    setFocusedInput("dateOfBirth");
+    setShowDatePicker(true);
+  };
+
+  const closeDatePicker = () => {
+    setShowDatePicker(false);
+    setFocusedInput(null);
+  };
+
+  const handleAndroidDateChange = (
     event: DateTimePickerEvent,
     selectedDate?: Date,
   ) => {
     setShowDatePicker(false);
     setFocusedInput(null);
 
-    // Android can fire this when the user cancels.
-    if (event.type === "dismissed") {
-      return;
-    }
-
-    if (selectedDate) {
+    if (event.type === "set" && selectedDate) {
       onChange("dateOfBirth", selectedDate);
     }
   };
 
+  const handleIOSDateChange = (
+    _event: DateTimePickerEvent,
+    selectedDate?: Date,
+  ) => {
+    if (selectedDate) {
+      setDraftDate(selectedDate);
+    }
+  };
+
+  const confirmIOSDate = () => {
+    onChange("dateOfBirth", draftDate);
+    closeDatePicker();
+  };
+
   return (
     <View className="mb-5 rounded-xl border border-slate-200">
-      {/* Guest Header */}
       <View className="flex-row p-4">
         <Text className="mr-4 font-poppins-semibold text-xl">
           Guest {guestNumber}
@@ -71,13 +94,9 @@ export default function GuestCard({
         )}
       </View>
 
-      {/* Guest Details */}
       <View className="px-4 pb-4">
-        {/* First Name */}
         <View className="mb-5">
-          <Text className="mb-2 font-poppins-semibold">
-            First name
-          </Text>
+          <Text className="mb-2 font-poppins-semibold">First name</Text>
 
           <TextInput
             value={guest.firstName}
@@ -96,11 +115,8 @@ export default function GuestCard({
           />
         </View>
 
-        {/* Last Name */}
         <View className="mb-5">
-          <Text className="mb-2 font-poppins-semibold">
-            Last name
-          </Text>
+          <Text className="mb-2 font-poppins-semibold">Last name</Text>
 
           <TextInput
             value={guest.lastName}
@@ -119,40 +135,28 @@ export default function GuestCard({
           />
         </View>
 
-        {/* Date of Birth */}
         <View className="mb-5">
-          <Text className="mb-2 font-poppins-semibold">
-            Date of birth
-          </Text>
+          <Text className="mb-2 font-poppins-semibold">Date of birth</Text>
 
           <Pressable
-            onPress={() => {
-              setFocusedInput("dateOfBirth");
-              setShowDatePicker(true);
-            }}
+            accessibilityRole="button"
+            accessibilityLabel="Select date of birth"
+            onPress={openDatePicker}
             className={`flex-row items-center rounded-xl px-4 py-3 ${
               focusedInput === "dateOfBirth"
                 ? "border border-primary"
                 : "border border-slate-200"
-            }`}
-          >
+            }`}>
             <Ionicons
               name="calendar-outline"
               size={20}
-              color={
-                focusedInput === "dateOfBirth"
-                  ? "#FFA69B"
-                  : "#94a3b8"
-              }
+              color={focusedInput === "dateOfBirth" ? "#FFA69B" : "#94a3b8"}
             />
 
             <Text
               className={`ml-3 flex-1 font-poppins ${
-                guest.dateOfBirth
-                  ? "text-slate-900"
-                  : "text-slate-400"
-              }`}
-            >
+                guest.dateOfBirth ? "text-slate-900" : "text-slate-400"
+              }`}>
               {guest.dateOfBirth
                 ? formatDate(guest.dateOfBirth)
                 : "Select date of birth"}
@@ -161,52 +165,86 @@ export default function GuestCard({
             <Ionicons
               name="chevron-down"
               size={20}
-              color={
-                focusedInput === "dateOfBirth"
-                  ? "#FFA69B"
-                  : "#94a3b8"
-              }
+              color={focusedInput === "dateOfBirth" ? "#FFA69B" : "#94a3b8"}
             />
           </Pressable>
 
-          {showDatePicker && (
+          {showDatePicker && Platform.OS === "android" && (
             <DateTimePicker
               value={guest.dateOfBirth ?? new Date()}
               mode="date"
               display="default"
               maximumDate={new Date()}
-              onChange={handleDateChange}
+              onChange={handleAndroidDateChange}
             />
+          )}
+
+          {Platform.OS === "ios" && (
+            <Modal
+              visible={showDatePicker}
+              transparent
+              animationType="fade"
+              onRequestClose={closeDatePicker}>
+              <View className="flex-1 items-center justify-center px-5">
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityLabel="Close date picker"
+                  className="absolute inset-0 bg-black/40"
+                  onPress={closeDatePicker}
+                />
+
+                <View className="w-full max-w-md items-center rounded-2xl bg-white p-4">
+                  <DateTimePicker
+                    value={draftDate}
+                    mode="date"
+                    display="spinner"
+                    maximumDate={new Date()}
+                    onChange={handleIOSDateChange}
+                  />
+
+                  <View className="mt-2 w-full flex-row justify-end gap-3">
+                    <Pressable
+                      accessibilityRole="button"
+                      onPress={closeDatePicker}
+                      className="rounded-lg px-4 py-2">
+                      <Text className="font-poppins-medium text-sm text-textMuted">
+                        Cancel
+                      </Text>
+                    </Pressable>
+
+                    <Pressable
+                      accessibilityRole="button"
+                      onPress={confirmIOSDate}
+                      className="rounded-lg bg-primary px-4 py-2">
+                      <Text className="font-poppins-medium text-sm text-white">
+                        Done
+                      </Text>
+                    </Pressable>
+                  </View>
+                </View>
+              </View>
+            </Modal>
           )}
         </View>
 
-        {/* Contact Information */}
         <View className="pt-2">
           <Text className="mb-4 font-poppins-semibold text-lg">
             Contact Information
           </Text>
 
-          {/* Phone Number */}
           <View className="mb-5">
-            <Text className="mb-2 font-poppins-semibold">
-              Phone number
-            </Text>
+            <Text className="mb-2 font-poppins-semibold">Phone number</Text>
 
             <View
               className={`flex-row items-center rounded-xl px-4 py-3 ${
                 focusedInput === "phone"
                   ? "border border-primary"
                   : "border border-slate-200"
-              }`}
-            >
+              }`}>
               <Ionicons
                 name="call-outline"
                 size={20}
-                color={
-                  focusedInput === "phone"
-                    ? "#FFA69B"
-                    : "#94a3b8"
-                }
+                color={focusedInput === "phone" ? "#FFA69B" : "#94a3b8"}
               />
 
               <TextInput
@@ -222,27 +260,19 @@ export default function GuestCard({
             </View>
           </View>
 
-          {/* Email */}
           <View>
-            <Text className="mb-2 font-poppins-semibold">
-              Email
-            </Text>
+            <Text className="mb-2 font-poppins-semibold">Email</Text>
 
             <View
               className={`flex-row items-center rounded-xl px-4 py-3 ${
                 focusedInput === "email"
                   ? "border border-primary"
                   : "border border-slate-200"
-              }`}
-            >
+              }`}>
               <Ionicons
                 name="mail-outline"
                 size={20}
-                color={
-                  focusedInput === "email"
-                    ? "#FFA69B"
-                    : "#94a3b8"
-                }
+                color={focusedInput === "email" ? "#FFA69B" : "#94a3b8"}
               />
 
               <TextInput
