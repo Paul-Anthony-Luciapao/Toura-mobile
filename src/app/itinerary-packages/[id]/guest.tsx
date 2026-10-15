@@ -91,8 +91,9 @@ export default function GuestScreen() {
     }
 
     router.push({
-      pathname: `/itinerary-package'/${packageId}` as any,
+      pathname: "/itinerary-packages/[id]/review",
       params: {
+        id: packageId,
         guests: JSON.stringify(guests),
       },
     });
