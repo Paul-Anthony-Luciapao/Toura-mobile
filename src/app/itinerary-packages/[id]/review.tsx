@@ -20,17 +20,36 @@ const createGuest = (): Guest => ({
 });
 
 export default function ReviewScreen() {
-  const { id } = useLocalSearchParams<{
+  const { id, guests: guestsParam } = useLocalSearchParams<{
     id?: string | string[];
+    guests?: string | string[];
   }>();
 
   const packageId = Array.isArray(id) ? id[0] : id;
+
+  const serializedGuests = Array.isArray(guestsParam)
+    ? guestsParam[0]
+    : guestsParam;
 
   const itinerary = INITIAL_TOURIST_SPOTS.find(
     (spot) => String(spot.id) === String(packageId),
   );
 
-  const [guests, setGuests] = useState<Guest[]>([createGuest()]);
+  const [guests, setGuests] = useState<Guest[]>(() => {
+    if (!serializedGuests) {
+      return [createGuest()];
+    }
+
+    const parsedGuests = JSON.parse(serializedGuests) as (Omit<
+      Guest,
+      "dateOfBirth"
+    > & { dateOfBirth: string | null })[];
+
+    return parsedGuests.map((guest) => ({
+      ...guest,
+      dateOfBirth: guest.dateOfBirth ? new Date(guest.dateOfBirth) : null,
+    }));
+  });
 
   const updateGuest = (
     guestId: string,
@@ -59,8 +78,7 @@ export default function ReviewScreen() {
       <ScrollView
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
-        contentContainerClassName="pb-10"
-      >
+        contentContainerClassName="pb-10">
         <ItineraryHero itinerary={itinerary} />
 
         <Pressable
@@ -68,8 +86,7 @@ export default function ReviewScreen() {
           hitSlop={8}
           accessibilityRole="button"
           accessibilityLabel="Go back"
-          className="absolute left-4 top-4 z-10 h-11 w-11 items-center justify-center rounded-full bg-black/30 active:opacity-70"
-        >
+          className="absolute left-4 top-4 z-10 h-11 w-11 items-center justify-center rounded-full bg-black/30 active:opacity-70">
           <Ionicons name="arrow-back" size={24} color={colors.white} />
         </Pressable>
 
