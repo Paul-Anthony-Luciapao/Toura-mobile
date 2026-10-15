@@ -20,11 +20,33 @@ const createGuest = (): Guest => ({
 });
 
 export default function GuestScreen() {
-  const { id } = useLocalSearchParams<{
+  const {
+    id,
+    arrivalDate,
+    arrivalTime,
+    departureDate,
+    departureTime,
+  } = useLocalSearchParams<{
     id?: string | string[];
+    arrivalDate?: string | string[];
+    arrivalTime?: string | string[];
+    departureDate?: string | string[];
+    departureTime?: string | string[];
   }>();
 
   const packageId = Array.isArray(id) ? id[0] : id;
+  const arrivalDateParam = Array.isArray(arrivalDate)
+    ? arrivalDate[0]
+    : arrivalDate;
+  const arrivalTimeParam = Array.isArray(arrivalTime)
+    ? arrivalTime[0]
+    : arrivalTime;
+  const departureDateParam = Array.isArray(departureDate)
+    ? departureDate[0]
+    : departureDate;
+  const departureTimeParam = Array.isArray(departureTime)
+    ? departureTime[0]
+    : departureTime;
 
   const index = INITIAL_TOURIST_SPOTS.findIndex(
     (spot) => String(spot.id) === String(packageId),
@@ -60,7 +82,7 @@ export default function GuestScreen() {
     );
   };
 
-  if (!itinerary) {
+  if (!packageId || !itinerary) {
     return (
       <SafeAreaView className="flex-1 items-center justify-center bg-background">
         <Text className="font-poppins-semibold text-[16px] text-textMain">
@@ -95,6 +117,10 @@ export default function GuestScreen() {
       params: {
         id: packageId,
         guests: JSON.stringify(guests),
+        arrivalDate: arrivalDateParam,
+        arrivalTime: arrivalTimeParam,
+        departureDate: departureDateParam,
+        departureTime: departureTimeParam,
       },
     });
   };
