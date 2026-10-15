@@ -7,12 +7,7 @@ import ItineraryHero from "@components/itineraries/ItineraryHero";
 import { Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
-import {
-    Pressable,
-    ScrollView,
-    Text,
-    View,
-} from "react-native";
+import { Alert, Pressable, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const createGuest = (): Guest => ({
@@ -45,10 +40,7 @@ export default function GuestScreen() {
   ]);
 
   const addGuest = () => {
-    setGuests((currentGuests) => [
-      ...currentGuests,
-      createGuest(),
-    ]);
+    setGuests((currentGuests) => [...currentGuests, createGuest()]);
   };
 
   const updateGuest = (
@@ -78,27 +70,49 @@ export default function GuestScreen() {
     );
   }
 
+  const handleContinue = () => {
+    const errors = guests.flatMap((guest, index) => {
+      const missing: string[] = [];
+      if (!guest.firstName.trim()) missing.push("first name");
+      if (!guest.lastName.trim()) missing.push("last name");
+      if (!guest.dateOfBirth) missing.push("date of birth");
+
+      if (!guest.phone.trim() && !guest.email.trim()) {
+        missing.push("phone number or email");
+      }
+      return missing.length
+        ? [`Guest ${index + 1}: please enter ${missing.join(", ")}.`]
+        : [];
+    });
+
+    if (errors.length > 0) {
+      Alert.alert("Required guest information", errors.join("\n"));
+      return;
+    }
+
+    router.push({
+      pathname: `/itinerary-package'/${packageId}` as any,
+      params: {
+        guests: JSON.stringify(guests),
+      },
+    });
+  };
+
   return (
     <SafeAreaView className="flex-1 bg-background">
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerClassName="pb-10"
-      >
+        contentContainerClassName="pb-10">
         <ItineraryHero itinerary={itinerary} />
 
         {/* Back button */}
         <Pressable
-            onPress={() => router.back()}
-            hitSlop={8}
-            accessibilityRole="button"
-            accessibilityLabel="Go back"
-            className="absolute left-4 top-4 z-10 h-11 w-11 items-center justify-center rounded-full bg-black/30 active:opacity-70"
-          >
-            <Ionicons
-              name="arrow-back"
-              size={24}
-              color={colors.white}
-            />
+          onPress={() => router.back()}
+          hitSlop={8}
+          accessibilityRole="button"
+          accessibilityLabel="Go back"
+          className="absolute left-4 top-4 z-10 h-11 w-11 items-center justify-center rounded-full bg-black/30 active:opacity-70">
+          <Ionicons name="arrow-back" size={24} color={colors.white} />
         </Pressable>
 
         <View className="-mt-5 rounded-t-[30px] bg-white px-5 pt-6">
@@ -118,22 +132,15 @@ export default function GuestScreen() {
               key={guest.id}
               guestNumber={index + 1}
               guest={guest}
-              onChange={(field, value) =>
-                updateGuest(guest.id, field, value)
-              }
+              onChange={(field, value) => updateGuest(guest.id, field, value)}
             />
           ))}
 
           {/* Add Guest */}
           <Pressable
             onPress={addGuest}
-            className="flex-row items-center justify-center rounded-xl border border-dashed border-primary py-4"
-          >
-            <Ionicons
-              name="add-circle-outline"
-              size={21}
-              color="#FFA69B"
-            />
+            className="flex-row items-center justify-center rounded-xl border border-dashed border-primary py-4">
+            <Ionicons name="add-circle-outline" size={21} color="#FFA69B" />
 
             <Text className="ml-2 font-poppins-semibold text-primary">
               Add another guest
@@ -143,14 +150,7 @@ export default function GuestScreen() {
           {/* Confirm and Proceed */}
           <Button
             title="Confirm and Proceed"
-            onPress={() => {
-              router.push({
-                pathname: `/itinerary-packages/${packageId}/review` as any,
-                params: {
-                  guests: JSON.stringify(guests),
-                },
-              });
-            }}
+            onPress={handleContinue}
             width="w-[360px]"
             className="mt-2 self-center"
           />
