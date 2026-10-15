@@ -1,5 +1,5 @@
 import Buttons from "@/components/buttons/Buttons";
-import { PAYMENT_METHODS, INITIAL_TOURIST_SPOTS } from "@/data/mockData";
+import { INITIAL_TOURIST_SPOTS, PAYMENT_METHODS } from "@/data/mockData";
 import type { PaymentMethod } from "@/data/types";
 import { colors } from "@/styles/global";
 import ItineraryHero from "@components/itineraries/ItineraryHero";
@@ -24,9 +24,7 @@ function getParam(value?: string | string[]) {
   return Array.isArray(value) ? value[0] : value;
 }
 
-function PaymentMethodIcon({
-  method,
-}: Readonly<{ method: PaymentMethod }>) {
+function PaymentMethodIcon({ method }: Readonly<{ method: PaymentMethod }>) {
   if (method.iconType === "ionicon") {
     const Icon = method.icon;
     return <Icon name={method.iconName} size={23} color={colors.primary} />;
@@ -121,8 +119,7 @@ export default function Payment() {
     <View
       className={`h-6 w-6 items-center justify-center rounded-full border ${
         checked ? "border-primary" : "border-slate-200"
-      } bg-white`}
-    >
+      } bg-white`}>
       {checked && <View className="h-3 w-3 rounded-full bg-primary" />}
     </View>
   );
@@ -132,8 +129,7 @@ export default function Payment() {
       <ScrollView
         className="flex-1"
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 24 }}
-      >
+        contentContainerStyle={{ paddingBottom: 24 }}>
         <ItineraryHero itinerary={itinerary} />
 
         <Pressable
@@ -141,8 +137,7 @@ export default function Payment() {
           hitSlop={8}
           accessibilityRole="button"
           accessibilityLabel="Go back"
-          className="absolute left-4 top-4 z-10 h-11 w-11 items-center justify-center rounded-full bg-black/30 active:opacity-70"
-        >
+          className="absolute left-4 top-4 z-10 h-11 w-11 items-center justify-center rounded-full bg-black/30 active:opacity-70">
           <Ionicons name="arrow-back" size={24} color={colors.white} />
         </Pressable>
 
@@ -152,14 +147,15 @@ export default function Payment() {
           </Text>
 
           <View className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-            {PAYMENT_METHODS.map((method) => {
-              const isWallet = method.id === "ewallet";
-              const isSelected = isWallet
-                ? selectedMethod === "gcash" || selectedMethod === "paymaya"
-                : selectedMethod === method.id;
+            <View className="gap-5">
+              {PAYMENT_METHODS.map((method) => {
+                const isWallet = method.id === "ewallet";
+                const isSelected = isWallet
+                  ? selectedMethod === "gcash" || selectedMethod === "paymaya"
+                  : selectedMethod === method.id;
 
-              return (
-                <View key={method.id} className="mb-3 last:mb-0">
+                return (
+                  <View key={method.id}>
                   <Pressable
                     accessibilityRole="radio"
                     accessibilityState={{ checked: isSelected }}
@@ -180,8 +176,7 @@ export default function Payment() {
                         setWalletExpanded(false);
                       }
                     }}
-                    className="h-12 flex-row items-center rounded-xl bg-teal-50 px-4"
-                  >
+                    className="h-11 flex-row items-center rounded-xl bg-teal-50 px-4">
                     <View className="w-10 items-start justify-center">
                       <PaymentMethodIcon method={method} />
                     </View>
@@ -202,12 +197,10 @@ export default function Payment() {
                             accessibilityRole="radio"
                             accessibilityState={{ checked: walletSelected }}
                             onPress={() => setSelectedMethod(wallet.id)}
-                            className="h-12 flex-row items-center rounded-xl border border-teal-100 bg-white px-4"
-                          >
+                            className="h-11 flex-row items-center rounded-xl border border-teal-100 bg-white px-4">
                             <View
                               className="mr-3 h-7 w-7 items-center justify-center rounded-md"
-                              style={{ backgroundColor: wallet.color }}
-                            >
+                              style={{ backgroundColor: wallet.color }}>
                               <Text className="font-poppins-semibold text-sm text-white">
                                 {wallet.initials}
                               </Text>
@@ -221,9 +214,10 @@ export default function Payment() {
                       })}
                     </View>
                   )}
-                </View>
-              );
-            })}
+                  </View>
+                );
+              })}
+            </View>
           </View>
         </View>
       </ScrollView>

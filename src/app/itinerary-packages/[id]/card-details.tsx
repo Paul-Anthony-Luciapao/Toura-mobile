@@ -50,7 +50,9 @@ function formatCardNumber(value: string) {
 
 function formatExpiry(value: string) {
   const digits = value.replace(/\D/g, "").slice(0, 4);
-  return digits.length > 2 ? `${digits.slice(0, 2)}/${digits.slice(2)}` : digits;
+  return digits.length > 2
+    ? `${digits.slice(0, 2)}/${digits.slice(2)}`
+    : digits;
 }
 
 function CardMethodLogo({
@@ -185,8 +187,7 @@ export default function CardDetailsScreen() {
         className="flex-1"
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
-        contentContainerStyle={{ paddingBottom: 24 }}
-      >
+        contentContainerStyle={{ paddingBottom: 24 }}>
         <ItineraryHero itinerary={itinerary} />
 
         <Pressable
@@ -194,8 +195,7 @@ export default function CardDetailsScreen() {
           hitSlop={8}
           accessibilityRole="button"
           accessibilityLabel="Go back"
-          className="absolute left-4 top-4 z-10 h-11 w-11 items-center justify-center rounded-full bg-black/30 active:opacity-70"
-        >
+          className="absolute left-4 top-4 z-10 h-11 w-11 items-center justify-center rounded-full bg-black/30 active:opacity-70">
           <Ionicons name="arrow-back" size={24} color={colors.white} />
         </Pressable>
 
@@ -229,16 +229,14 @@ export default function CardDetailsScreen() {
                     numberOfLines={1}
                     className={`flex-1 font-poppins text-sm ${
                       value ? "text-textMain" : "text-slate-400"
-                    }`}
-                  >
+                    }`}>
                     {visibleValue}
                   </Text>
                   <Pressable
                     accessibilityRole="button"
                     accessibilityLabel={`Edit ${field.label}`}
                     onPress={() => openEditor(field.key)}
-                    className="ml-3 flex-row items-center gap-1 p-1"
-                  >
+                    className="ml-3 flex-row items-center gap-1 p-1">
                     <Text className="font-poppins-medium text-sm text-primary">
                       Edit
                     </Text>
@@ -264,8 +262,7 @@ export default function CardDetailsScreen() {
         transparent
         animationType="slide"
         statusBarTranslucent
-        onRequestClose={closeEditor}
-      >
+        onRequestClose={closeEditor}>
         <View className="flex-1 justify-end">
           <Pressable
             accessibilityRole="button"
@@ -274,14 +271,14 @@ export default function CardDetailsScreen() {
             onPress={closeEditor}
           />
           <KeyboardAvoidingView
-            behavior={Platform.OS === "ios" ? "padding" : undefined}
-          >
+            behavior={Platform.OS === "ios" ? "padding" : undefined}>
             <View className="rounded-t-[28px] bg-white px-5 pb-8 pt-4">
               <View className="mb-5 items-center">
                 <View className="h-1.5 w-12 rounded-full bg-slate-300" />
               </View>
               <Text className="mb-4 text-center font-poppins-semibold text-lg text-textMain">
-                Edit {CARD_FIELDS.find((field) => field.key === editingField)?.label}
+                Edit{" "}
+                {CARD_FIELDS.find((field) => field.key === editingField)?.label}
               </Text>
               <TextInput
                 autoFocus
@@ -316,16 +313,14 @@ export default function CardDetailsScreen() {
               <View className="mt-6 flex-row gap-3">
                 <Pressable
                   onPress={closeEditor}
-                  className="flex-1 items-center justify-center rounded-xl border border-slate-300 py-4"
-                >
+                  className="flex-1 items-center justify-center rounded-xl border border-slate-300 py-4">
                   <Text className="font-poppins-semibold text-textMain">
                     Cancel
                   </Text>
                 </Pressable>
                 <Pressable
                   onPress={saveEditedField}
-                  className="flex-1 items-center justify-center rounded-xl bg-primary py-4"
-                >
+                  className="flex-1 items-center justify-center rounded-xl bg-primary py-4">
                   <Text className="font-poppins-semibold text-white">
                     Confirm
                   </Text>
