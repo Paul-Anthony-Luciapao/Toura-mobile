@@ -3,6 +3,8 @@
 use App\Http\Controllers\Api\AccommodationController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BookingController;
+use App\Http\Controllers\Api\ItineraryBookingController;
+use App\Http\Controllers\Api\ItineraryPackageController;
 use App\Http\Controllers\Api\OfferController;
 use App\Http\Controllers\Api\ResortController;
 use App\Http\Controllers\Api\TouristSpotController;
@@ -18,7 +20,7 @@ Route::prefix('v1')->group(function () {
     Route::post('/auth/forgot-password', [AuthController::class, 'forgotPassword'])
         ->middleware('throttle:3,1');
     Route::post('/auth/reset-password', [AuthController::class, 'resetPassword'])
-     ->middleware('throttle:5,1');
+        ->middleware('throttle:5,1');
 
     // Public browsing
     Route::get('/resorts', [ResortController::class, 'index']);
@@ -28,6 +30,8 @@ Route::prefix('v1')->group(function () {
     Route::get('/offers', [OfferController::class, 'index']);
     Route::get('/offers/{offer}', [OfferController::class, 'show']);
     Route::apiResource('tourist-spots', TouristSpotController::class)->only(['index', 'show']);
+    Route::get('/itinerary-packages', [ItineraryPackageController::class, 'index']);
+    Route::get('/itinerary-packages/{id}', [ItineraryPackageController::class, 'show']);
 
     // Any logged-in user
     Route::middleware('auth:sanctum')->group(function () {
@@ -48,6 +52,10 @@ Route::prefix('v1')->group(function () {
         Route::post('/offers', [OfferController::class, 'store']);
         Route::match(['put', 'patch'], '/offers/{offer}', [OfferController::class, 'update']);
         Route::delete('/offers/{offer}', [OfferController::class, 'destroy']);
+
+        Route::post('/itinerary-bookings', [ItineraryBookingController::class, 'store']);
+        Route::get('/itinerary-bookings', [ItineraryBookingController::class, 'index']);
+        Route::get('/itinerary-bookings/{booking}', [ItineraryBookingController::class, 'show']);
     });
 
     // Owner-only resort management

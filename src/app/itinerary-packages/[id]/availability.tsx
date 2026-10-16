@@ -1,5 +1,5 @@
 import Button from "@/components/buttons/Buttons";
-import { INITIAL_TOURIST_SPOTS } from "@/data/mockData";
+import { PACKAGE_SPOTS } from "@/data/mockData";
 import type { TimePickerSettings } from "@/data/types";
 import { colors } from "@/styles/global";
 import AvailabilityCard from "@components/itineraries/itinerary-packages/availability/AvailabilityCard";
@@ -26,10 +26,10 @@ export default function AvailabilityScreen() {
 
   const packageId = Array.isArray(id) ? id[0] : id;
 
-  const index = INITIAL_TOURIST_SPOTS.findIndex(
+  const index = PACKAGE_SPOTS.findIndex(
     (spot) => String(spot.id) === String(packageId),
   );
-  const itinerary = INITIAL_TOURIST_SPOTS[index];
+  const itinerary = PACKAGE_SPOTS[index];
 
   if (!packageId || !itinerary) {
     return (

@@ -1,4 +1,4 @@
-import { INITIAL_TOURIST_SPOTS } from "@/data/mockData";
+import { PACKAGE_SPOTS } from "@/data/mockData";
 import type { Guest } from "@/data/types";
 import { colors } from "@/styles/global";
 import Button from "@components/buttons/Buttons";
@@ -43,11 +43,11 @@ export default function GuestScreen() {
     ? departureTime[0]
     : departureTime;
 
-  const index = INITIAL_TOURIST_SPOTS.findIndex(
+  const index = PACKAGE_SPOTS.findIndex(
     (spot) => String(spot.id) === String(packageId),
   );
 
-  const itinerary = INITIAL_TOURIST_SPOTS[index];
+  const itinerary = PACKAGE_SPOTS[index];
 
   const [guests, setGuests] = useState<Guest[]>([
     {

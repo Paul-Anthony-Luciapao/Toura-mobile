@@ -1,4 +1,4 @@
-import { INITIAL_TOURIST_SPOTS } from "@/data/mockData";
+import { PACKAGE_SPOTS } from "@/data/mockData";
 import type { Guest } from "@/data/types";
 import { colors } from "@/styles/global";
 import Buttons from "@components/buttons/Buttons";
@@ -6,9 +6,80 @@ import ItineraryHero from "@components/itineraries/ItineraryHero";
 import Review from "@components/itineraries/itinerary-packages/Review";
 import { Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
-import { useState } from "react";
-import { Pressable, ScrollView, Text } from "react-native";
+import { useEffect, useRef, useState } from "react";
+import { Alert, Pressable, ScrollView, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { getErrorMessage } from "@/services/api";
+import { createItineraryBooking } from "@/services/itineraryBookings";
+
+type SerializedGuest = Omit<Guest, "dateOfBirth"> & {
+  dateOfBirth: string | null;
+};
+
+function isSerializedGuest(value: unknown): value is SerializedGuest {
+  if (typeof value !== "object" || value === null) return false;
+
+  const guest = value as Record<string, unknown>;
+  return (
+    typeof guest.id === "string" &&
+    typeof guest.firstName === "string" &&
+    typeof guest.lastName === "string" &&
+    (typeof guest.dateOfBirth === "string" || guest.dateOfBirth === null) &&
+    typeof guest.phone === "string" &&
+    typeof guest.email === "string"
+  );
+}
+
+function parseSerializedGuests(serialized?: string): {
+  guests: Guest[];
+  failed: boolean;
+} {
+  if (!serialized) return { guests: [createGuest()], failed: false };
+
+  try {
+    const parsed: unknown = JSON.parse(serialized);
+    if (
+      !Array.isArray(parsed) ||
+      parsed.length === 0 ||
+      !parsed.every(isSerializedGuest)
+    ) {
+      throw new Error("Invalid guest data.");
+    }
+
+    const guests = parsed.map((guest) => {
+      const dateOfBirth = guest.dateOfBirth ? new Date(guest.dateOfBirth) : null;
+      if (dateOfBirth && Number.isNaN(dateOfBirth.getTime())) {
+        throw new Error("Invalid guest date of birth.");
+      }
+
+      return { ...guest, dateOfBirth };
+    });
+
+    return { guests, failed: false };
+  } catch {
+    return { guests: [createGuest()], failed: true };
+  }
+}
+
+function toLocalDate(value: string): string | null {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return null;
+
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+function toLocalTime(value?: string): string | null {
+  if (!value) return null;
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return null;
+
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+  return `${hours}:${minutes}`;
+}
 
 const createGuest = (): Guest => ({
   id: `${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
@@ -54,25 +125,23 @@ export default function ReviewScreen() {
     ? guestsParam[0]
     : guestsParam;
 
-  const itinerary = INITIAL_TOURIST_SPOTS.find(
+  const itinerary = PACKAGE_SPOTS.find(
     (spot) => String(spot.id) === String(packageId),
   );
 
-  const [guests, setGuests] = useState<Guest[]>(() => {
-    if (!serializedGuests) {
-      return [createGuest()];
+  const [guestData] = useState(() => parseSerializedGuests(serializedGuests));
+  const [guests, setGuests] = useState<Guest[]>(guestData.guests);
+  const [submitting, setSubmitting] = useState(false);
+  const submissionInProgress = useRef(false);
+
+  useEffect(() => {
+    if (guestData.failed) {
+      Alert.alert(
+        "Guest details could not be restored",
+        "Please review and re-enter the guest information.",
+      );
     }
-
-    const parsedGuests = JSON.parse(serializedGuests) as (Omit<
-      Guest,
-      "dateOfBirth"
-    > & { dateOfBirth: string | null })[];
-
-    return parsedGuests.map((guest) => ({
-      ...guest,
-      dateOfBirth: guest.dateOfBirth ? new Date(guest.dateOfBirth) : null,
-    }));
-  });
+  }, [guestData.failed]);
 
   const updateGuest = (
     guestId: string,
@@ -96,6 +165,84 @@ export default function ReviewScreen() {
     );
   }
 
+  const handleContinue = async () => {
+    if (submissionInProgress.current) return;
+
+    const invalidGuest = guests.some(
+      (guest) =>
+        !guest.firstName.trim() ||
+        !guest.lastName.trim() ||
+        !guest.dateOfBirth ||
+        (!guest.phone.trim() && !guest.email.trim()),
+    );
+    if (invalidGuest) {
+      Alert.alert(
+        "Guest information required",
+        "Enter each guest's first and last name, date of birth, and either a phone number or email.",
+      );
+      return;
+    }
+
+    const arrivalDateValue = arrivalDateParam
+      ? toLocalDate(arrivalDateParam)
+      : null;
+    const departureDateValue = departureDateParam
+      ? toLocalDate(departureDateParam)
+      : null;
+    if (
+      !arrivalDateValue ||
+      !departureDateValue ||
+      departureDateValue <= arrivalDateValue
+    ) {
+      Alert.alert(
+        "Invalid travel dates",
+        "Choose a valid departure date after your arrival date.",
+      );
+      return;
+    }
+
+    submissionInProgress.current = true;
+    setSubmitting(true);
+    try {
+      const booking = await createItineraryBooking({
+        itinerary_package_id: packageId,
+        arrival_date: arrivalDateValue,
+        arrival_time: toLocalTime(arrivalTimeParam),
+        departure_date: departureDateValue,
+        departure_time: toLocalTime(departureTimeParam),
+        guests: guests.map((guest) => ({
+          first_name: guest.firstName.trim(),
+          last_name: guest.lastName.trim(),
+          date_of_birth: guest.dateOfBirth
+            ? toLocalDate(guest.dateOfBirth.toISOString())
+            : null,
+          phone: guest.phone.trim() || null,
+          email: guest.email.trim() || null,
+        })),
+      });
+
+      router.push({
+        pathname: "/itinerary-packages/[id]/payment",
+        params: {
+          id: packageId,
+          bookingId: String(booking.id),
+          bookingReference: booking.booking_reference,
+          totalPrice: booking.total_price,
+          guestCount: String(guests.length),
+          arrivalDate: arrivalDateParam,
+          arrivalTime: arrivalTimeParam,
+          departureDate: departureDateParam,
+          departureTime: departureTimeParam,
+        },
+      });
+    } catch (error) {
+      Alert.alert("Could not create itinerary booking", getErrorMessage(error));
+    } finally {
+      submissionInProgress.current = false;
+      setSubmitting(false);
+    }
+  };
+
   return (
     <SafeAreaView className="flex-1 bg-background">
       <ScrollView
@@ -117,20 +264,8 @@ export default function ReviewScreen() {
 
         {/* Confirm and proceed */}
         <Buttons
-          title="Confirm and Proceed"
-          onPress={() => {
-            router.push({
-              pathname: "/itinerary-packages/[id]/payment",
-              params: {
-                id: packageId,
-                guestCount: String(guests.length),
-                arrivalDate: arrivalDateParam,
-                arrivalTime: arrivalTimeParam,
-                departureDate: departureDateParam,
-                departureTime: departureTimeParam,
-              },
-            });
-          }}
+          title={submitting ? "Saving booking..." : "Confirm and Proceed"}
+          onPress={() => void handleContinue()}
           width="w-[225px]"
           className="mt-5 self-center"
         />

@@ -1,5 +1,5 @@
 import Buttons from "@/components/buttons/Buttons";
-import { INITIAL_TOURIST_SPOTS } from "@/data/mockData";
+import { PACKAGE_SPOTS } from "@/data/mockData";
 import { colors } from "@/styles/global";
 import ItineraryHero from "@components/itineraries/ItineraryHero";
 import { Ionicons } from "@expo/vector-icons";
@@ -22,6 +22,9 @@ function getParam(value?: string | string[]) {
 export default function OtpScreen() {
   const params = useLocalSearchParams<{
     id?: string | string[];
+    bookingId?: string | string[];
+    bookingReference?: string | string[];
+    totalPrice?: string | string[];
     guestCount?: string | string[];
     arrivalDate?: string | string[];
     arrivalTime?: string | string[];
@@ -33,7 +36,7 @@ export default function OtpScreen() {
   }>();
 
   const packageId = getParam(params.id);
-  const itinerary = INITIAL_TOURIST_SPOTS.find(
+  const itinerary = PACKAGE_SPOTS.find(
     (spot) => String(spot.id) === String(packageId),
   );
   const [code, setCode] = useState("");
@@ -58,6 +61,9 @@ export default function OtpScreen() {
       pathname: "/itinerary-packages/[id]/success",
       params: {
         id: packageId,
+        bookingId: getParam(params.bookingId),
+        bookingReference: getParam(params.bookingReference),
+        totalPrice: getParam(params.totalPrice),
         guestCount: getParam(params.guestCount) ?? "1",
         arrivalDate: getParam(params.arrivalDate),
         arrivalTime: getParam(params.arrivalTime),

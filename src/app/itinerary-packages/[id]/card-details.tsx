@@ -1,5 +1,5 @@
 import Buttons from "@/components/buttons/Buttons";
-import { INITIAL_TOURIST_SPOTS, PAYMENT_METHODS } from "@/data/mockData";
+import { PACKAGE_SPOTS, PAYMENT_METHODS } from "@/data/mockData";
 import type { PaymentMethod } from "@/data/types";
 import { colors } from "@/styles/global";
 import ItineraryHero from "@components/itineraries/ItineraryHero";
@@ -76,6 +76,9 @@ function CardMethodLogo({
 export default function CardDetailsScreen() {
   const params = useLocalSearchParams<{
     id?: string | string[];
+    bookingId?: string | string[];
+    bookingReference?: string | string[];
+    totalPrice?: string | string[];
     guestCount?: string | string[];
     arrivalDate?: string | string[];
     arrivalTime?: string | string[];
@@ -88,7 +91,7 @@ export default function CardDetailsScreen() {
   const packageId = getParam(params.id);
   const paymentMethodId = getParam(params.paymentMethod);
   const paymentMethodName = getParam(params.paymentMethodName) ?? "Card";
-  const itinerary = INITIAL_TOURIST_SPOTS.find(
+  const itinerary = PACKAGE_SPOTS.find(
     (spot) => String(spot.id) === String(packageId),
   );
   const selectedMethod = PAYMENT_METHODS.find(
@@ -169,6 +172,9 @@ export default function CardDetailsScreen() {
       pathname: "/itinerary-packages/[id]/otp",
       params: {
         id: packageId,
+        bookingId: getParam(params.bookingId),
+        bookingReference: getParam(params.bookingReference),
+        totalPrice: getParam(params.totalPrice),
         guestCount: getParam(params.guestCount) ?? "1",
         arrivalDate: getParam(params.arrivalDate),
         arrivalTime: getParam(params.arrivalTime),
