@@ -20,12 +20,14 @@ type GuestCardProps = {
     field: keyof Omit<Guest, "id">,
     value: string | Date | null,
   ) => void;
+  onRemove?: () => void;
 };
 
 export default function GuestCard({
   guest,
   guestNumber,
   onChange,
+  onRemove,
 }: GuestCardProps) {
   const [focusedInput, setFocusedInput] = useState<string | null>(null);
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -82,15 +84,29 @@ export default function GuestCard({
 
   return (
     <View className="mb-5 rounded-xl border border-slate-200">
-      <View className="flex-row p-4">
-        <Text className="mr-4 font-poppins-semibold text-xl">
-          Guest {guestNumber}
-        </Text>
-
-        {guestNumber === 1 && (
-          <Text className="w-[110px] rounded-xl border border-slate-50 bg-slate-100 pl-1 font-poppins text-primary">
-            Primary Guest
+      <View className="flex-row items-center justify-between p-4">
+        <View className="flex-row items-center">
+          <Text className="mr-4 font-poppins-semibold text-xl">
+            Guest {guestNumber}
           </Text>
+
+          {guestNumber === 1 && (
+            <Text className="w-[110px] rounded-xl border border-slate-50 bg-slate-100 pl-1 font-poppins text-primary">
+              Primary Guest
+            </Text>
+          )}
+        </View>
+
+        {guestNumber > 1 && onRemove && (
+          <Pressable
+            onPress={onRemove}
+            hitSlop={8}
+            accessibilityRole="button"
+            accessibilityLabel={`Remove guest ${guestNumber}`}
+            className="flex-row items-center rounded-lg px-2 py-1">
+            <Ionicons name="trash-outline" size={18} color="#ef4444" />
+            <Text className="ml-1 font-poppins text-red-500">Remove</Text>
+          </Pressable>
         )}
       </View>
 
