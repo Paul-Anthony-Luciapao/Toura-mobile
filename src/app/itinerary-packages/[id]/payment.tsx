@@ -1,5 +1,5 @@
 import Buttons from "@/components/buttons/Buttons";
-import { INITIAL_TOURIST_SPOTS, PAYMENT_METHODS } from "@/data/mockData";
+import { PACKAGE_SPOTS, PAYMENT_METHODS } from "@/data/mockData";
 import type { PaymentMethod } from "@/data/types";
 import { colors } from "@/styles/global";
 import ItineraryHero from "@components/itineraries/ItineraryHero";
@@ -41,6 +41,9 @@ function PaymentMethodIcon({ method }: Readonly<{ method: PaymentMethod }>) {
 export default function Payment() {
   const params = useLocalSearchParams<{
     id?: string | string[];
+    bookingId?: string | string[];
+    bookingReference?: string | string[];
+    totalPrice?: string | string[];
     guestCount?: string | string[];
     arrivalDate?: string | string[];
     arrivalTime?: string | string[];
@@ -49,7 +52,7 @@ export default function Payment() {
   }>();
 
   const packageId = getParam(params.id);
-  const itinerary = INITIAL_TOURIST_SPOTS.find(
+  const itinerary = PACKAGE_SPOTS.find(
     (spot) => String(spot.id) === String(packageId),
   );
   const [selectedMethod, setSelectedMethod] = useState<SelectedMethod>(null);
@@ -70,6 +73,9 @@ export default function Payment() {
       pathname: "/itinerary-packages/[id]/otp",
       params: {
         id: packageId,
+        bookingId: getParam(params.bookingId),
+        bookingReference: getParam(params.bookingReference),
+        totalPrice: getParam(params.totalPrice),
         guestCount: getParam(params.guestCount) ?? "1",
         arrivalDate: getParam(params.arrivalDate),
         arrivalTime: getParam(params.arrivalTime),
@@ -103,6 +109,9 @@ export default function Payment() {
         pathname: "/itinerary-packages/[id]/card-details",
         params: {
           id: packageId,
+          bookingId: getParam(params.bookingId),
+          bookingReference: getParam(params.bookingReference),
+          totalPrice: getParam(params.totalPrice),
           guestCount: getParam(params.guestCount) ?? "1",
           arrivalDate: getParam(params.arrivalDate),
           arrivalTime: getParam(params.arrivalTime),

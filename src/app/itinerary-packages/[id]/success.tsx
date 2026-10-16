@@ -1,4 +1,4 @@
-import { INITIAL_TOURIST_SPOTS } from "@/data/mockData";
+import { PACKAGE_SPOTS } from "@/data/mockData";
 import { colors } from "@/styles/global";
 import { Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
@@ -40,6 +40,9 @@ function ReceiptRow({
 export default function PaymentSuccessScreen() {
   const params = useLocalSearchParams<{
     id?: string | string[];
+    bookingId?: string | string[];
+    bookingReference?: string | string[];
+    totalPrice?: string | string[];
     guestCount?: string | string[];
     arrivalDate?: string | string[];
     departureDate?: string | string[];
@@ -49,7 +52,7 @@ export default function PaymentSuccessScreen() {
   }>();
 
   const packageId = getParam(params.id);
-  const itinerary = INITIAL_TOURIST_SPOTS.find(
+  const itinerary = PACKAGE_SPOTS.find(
     (spot) => String(spot.id) === String(packageId),
   );
 
@@ -64,6 +67,8 @@ export default function PaymentSuccessScreen() {
   }
 
   const guestCount = Math.max(1, Number(getParam(params.guestCount)) || 1);
+  const bookingReference = getParam(params.bookingReference);
+  const totalPrice = Number(getParam(params.totalPrice));
   const dateRange = `${formatDate(getParam(params.arrivalDate))} – ${formatDate(
     getParam(params.departureDate),
   )}`;
@@ -116,6 +121,10 @@ export default function PaymentSuccessScreen() {
               />
             </View>
 
+            <ReceiptRow
+              label="Booking reference"
+              value={bookingReference ?? "Not available"}
+            />
             <ReceiptRow label="Demo transaction ID" value="DEMO-123456" />
             <ReceiptRow
               label="Date"
@@ -127,7 +136,11 @@ export default function PaymentSuccessScreen() {
             />
             <ReceiptRow
               label="Amount"
-              value={`₱${itinerary.price.toLocaleString("en-PH")}`}
+              value={
+                Number.isFinite(totalPrice) && totalPrice > 0
+                  ? `₱${totalPrice.toLocaleString("en-PH")}`
+                  : "Not available"
+              }
             />
             <ReceiptRow
               label="Paid via"
