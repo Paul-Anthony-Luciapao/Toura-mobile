@@ -20,19 +20,14 @@ const createGuest = (): Guest => ({
 });
 
 export default function GuestScreen() {
-  const {
-    id,
-    arrivalDate,
-    arrivalTime,
-    departureDate,
-    departureTime,
-  } = useLocalSearchParams<{
-    id?: string | string[];
-    arrivalDate?: string | string[];
-    arrivalTime?: string | string[];
-    departureDate?: string | string[];
-    departureTime?: string | string[];
-  }>();
+  const { id, arrivalDate, arrivalTime, departureDate, departureTime } =
+    useLocalSearchParams<{
+      id?: string | string[];
+      arrivalDate?: string | string[];
+      arrivalTime?: string | string[];
+      departureDate?: string | string[];
+      departureTime?: string | string[];
+    }>();
 
   const packageId = Array.isArray(id) ? id[0] : id;
   const arrivalDateParam = Array.isArray(arrivalDate)
@@ -80,6 +75,16 @@ export default function GuestScreen() {
           : guest,
       ),
     );
+  };
+
+  const removeGuest = (guestId: string) => {
+    setGuests((currentGuests) => {
+      if (guestId === "primary" || currentGuests.length <= 1) {
+        return currentGuests;
+      }
+
+      return currentGuests.filter((guest) => guest.id !== guestId);
+    });
   };
 
   if (!packageId || !itinerary) {
@@ -160,6 +165,7 @@ export default function GuestScreen() {
               guestNumber={index + 1}
               guest={guest}
               onChange={(field, value) => updateGuest(guest.id, field, value)}
+              onRemove={() => removeGuest(guest.id)}
             />
           ))}
 
