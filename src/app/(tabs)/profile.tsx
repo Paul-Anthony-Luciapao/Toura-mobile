@@ -285,6 +285,15 @@ export default function Profile() {
             </View>
           </View>
         </View>
+        <Pressable
+          accessibilityRole="button"
+          onPress={() => router.push("/my-itineraries")}
+          className="mt-4 items-center rounded-xl px-4 py-3"
+          style={{ backgroundColor: COLORS.teal }}>
+          <Text className="font-poppins-semibold text-white">
+            View my itinerary
+          </Text>
+        </Pressable>
       </ScrollView>
     </View>
   );

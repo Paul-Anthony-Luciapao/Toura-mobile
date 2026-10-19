@@ -109,4 +109,11 @@ class ItineraryBookingController extends Controller
     {
         return ItineraryBooking::query()->where('user_id', $request->user()->id);
     }
+
+    public function destroy(Request $request, ItineraryBooking $booking): JsonResponse
+    {
+        abort_unless($booking->user_id === $request->user()->id, 404);
+        $booking->delete();
+        return response()->json(['message' => 'Itinerary deleted.']);
+    }
 }

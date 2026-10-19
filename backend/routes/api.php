@@ -56,6 +56,8 @@ Route::prefix('v1')->group(function () {
         Route::post('/itinerary-bookings', [ItineraryBookingController::class, 'store']);
         Route::get('/itinerary-bookings', [ItineraryBookingController::class, 'index']);
         Route::get('/itinerary-bookings/{booking}', [ItineraryBookingController::class, 'show']);
+        Route::delete('/itinerary-bookings/{booking}',[ItineraryBookingController::class, 'destroy']
+);
     });
 
     // Owner-only resort management
