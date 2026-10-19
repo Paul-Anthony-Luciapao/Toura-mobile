@@ -35,3 +35,47 @@ export async function createItineraryBooking(
   );
   return data;
 }
+
+export type ItineraryBooking = ItineraryBookingResponse & {
+  arrival_date: string;
+  arrival_time: string | null;
+  departure_date: string;
+  departure_time: string | null;
+  created_at: string;
+  itinerary_package: {
+    id: string;
+    title: string;
+    image: string | null;
+    destination: string | null;
+    days: { id: string; title: string; notes: string[] }[];
+    inclusions: string[];
+  };
+  guests: {
+    id: number;
+    first_name: string;
+    last_name: string;
+    date_of_birth: string;
+    phone: string | null;
+    email: string | null;
+  }[];
+};
+
+export async function fetchMyItineraryBookings(): Promise<ItineraryBooking[]> {
+  const { data } = await api.get<ItineraryBooking[]>("/itinerary-bookings");
+  return data;
+}
+
+export async function fetchItineraryBooking(
+  bookingId: string | number,
+): Promise<ItineraryBooking> {
+  const { data } = await api.get<ItineraryBooking>(
+    `/itinerary-bookings/${bookingId}`,
+  );
+  return data;
+}
+
+export async function deleteItineraryBooking(
+  bookingId: string | number,
+): Promise<void> {
+  await api.delete(`/itinerary-bookings/${bookingId}`);
+}
