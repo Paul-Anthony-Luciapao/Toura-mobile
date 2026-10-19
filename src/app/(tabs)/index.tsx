@@ -1,8 +1,8 @@
+import TourPackageCard from "@/app/itinerary-packages/TourPackageCard";
 import CategoryIcons from "@/components/home/CategoryIcons";
 import HeroBanner from "@/components/home/HeroBanner";
 import SectionHeader from "@/components/home/SectionHeader";
 import TouristSpotCard from "@/components/home/TouristSpotCard";
-import TourPackageCard from "@/app/itinerary-packages/TourPackageCard";
 import {
   INITIAL_ITINERARY_PACKAGES,
   PACKAGE_RESORTS,
@@ -158,6 +158,8 @@ export default function Index() {
             onSelect={(item) => {
               if (item.id === "hotels") {
                 router.push("/hotels");
+              } else if (item.id === "esims") {
+                router.push("/esim");
               }
             }}
           />

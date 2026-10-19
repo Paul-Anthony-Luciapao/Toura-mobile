@@ -94,6 +94,7 @@ export default function RootLayout() {
             <Stack.Screen name="(tabs)" />
             <Stack.Screen name="settings" />
             <Stack.Screen name="hotels" />
+            <Stack.Screen name="esim" />
             <Stack.Screen
               name="resort/[id]"
               options={{ headerShown: true, title: "Resort" }}
