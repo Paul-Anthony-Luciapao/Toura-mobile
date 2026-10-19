@@ -137,6 +137,54 @@ function ItineraryCard({
   );
 }
 
+function LoadingState() {
+  return (
+    <View className="flex-1 items-center justify-center">
+      <ActivityIndicator size="large" color={colors.primary} />
+      <Text className="mt-3 font-poppins text-sm text-slate-500">
+        Loading your itineraries...
+      </Text>
+    </View>
+  );
+}
+
+function ErrorState({
+  message,
+  onRetry,
+}: Readonly<{ message: string; onRetry: () => void }>) {
+  return (
+    <View className="flex-1 items-center justify-center px-8">
+      <Ionicons name="cloud-offline-outline" size={42} color={colors.primary} />
+      <Text className="mt-4 text-center font-poppins-semibold text-base text-textMain">
+        Could not load your itineraries
+      </Text>
+      <Text className="mt-2 text-center font-poppins text-sm text-slate-500">
+        {message}
+      </Text>
+      <Pressable
+        accessibilityRole="button"
+        onPress={onRetry}
+        className="mt-5 rounded-xl bg-primary px-6 py-3">
+        <Text className="font-poppins-semibold text-white">Try again</Text>
+      </Pressable>
+    </View>
+  );
+}
+
+function EmptyState() {
+  return (
+    <View className="flex-1 items-center justify-center px-8">
+      <Ionicons name="map-outline" size={48} color={colors.primary} />
+      <Text className="mt-4 text-center font-poppins-semibold text-base text-textMain">
+        No itineraries yet
+      </Text>
+      <Text className="mt-2 text-center font-poppins text-sm text-slate-500">
+        Itineraries you create will appear here.
+      </Text>
+    </View>
+  );
+}
+
 export default function MyItinerariesScreen() {
   const router = useRouter();
   const [bookings, setBookings] = useState<ItineraryBooking[]>([]);
@@ -163,6 +211,42 @@ export default function MyItinerariesScreen() {
     }, [loadBookings]),
   );
 
+  const renderContent = () => {
+    if (loading) {
+      return <LoadingState />;
+    }
+
+    if (error) {
+      return <ErrorState message={error} onRetry={() => void loadBookings()} />;
+    }
+
+    return (
+      <FlatList
+        data={bookings}
+        keyExtractor={(booking) => String(booking.id)}
+        contentContainerStyle={{
+          paddingHorizontal: 16,
+          paddingTop: 20,
+          paddingBottom: 32,
+          flexGrow: bookings.length === 0 ? 1 : undefined,
+        }}
+        showsVerticalScrollIndicator={false}
+        ListEmptyComponent={<EmptyState />}
+        renderItem={({ item }) => (
+          <ItineraryCard
+            booking={item}
+            onPress={() =>
+              router.push({
+                pathname: "/my-itineraries/[bookingId]",
+                params: { bookingId: String(item.id) },
+              })
+            }
+          />
+        )}
+      />
+    );
+  };
+
   return (
     <SafeAreaView className="flex-1 bg-background" edges={["top"]}>
       <View className="flex-row items-center justify-center border-b border-slate-100 px-5 py-4">
@@ -180,68 +264,7 @@ export default function MyItinerariesScreen() {
         </Text>
       </View>
 
-      {loading ? (
-        <View className="flex-1 items-center justify-center">
-          <ActivityIndicator size="large" color={colors.primary} />
-          <Text className="mt-3 font-poppins text-sm text-slate-500">
-            Loading your itineraries...
-          </Text>
-        </View>
-      ) : error ? (
-        <View className="flex-1 items-center justify-center px-8">
-          <Ionicons
-            name="cloud-offline-outline"
-            size={42}
-            color={colors.primary}
-          />
-          <Text className="mt-4 text-center font-poppins-semibold text-base text-textMain">
-            Could not load your itineraries
-          </Text>
-          <Text className="mt-2 text-center font-poppins text-sm text-slate-500">
-            {error}
-          </Text>
-          <Pressable
-            accessibilityRole="button"
-            onPress={() => void loadBookings()}
-            className="mt-5 rounded-xl bg-primary px-6 py-3">
-            <Text className="font-poppins-semibold text-white">Try again</Text>
-          </Pressable>
-        </View>
-      ) : (
-        <FlatList
-          data={bookings}
-          keyExtractor={(booking) => String(booking.id)}
-          contentContainerStyle={{
-            paddingHorizontal: 16,
-            paddingTop: 20,
-            paddingBottom: 32,
-            flexGrow: bookings.length === 0 ? 1 : undefined,
-          }}
-          showsVerticalScrollIndicator={false}
-          ListEmptyComponent={
-            <View className="flex-1 items-center justify-center px-8">
-              <Ionicons name="map-outline" size={48} color={colors.primary} />
-              <Text className="mt-4 text-center font-poppins-semibold text-base text-textMain">
-                No itineraries yet
-              </Text>
-              <Text className="mt-2 text-center font-poppins text-sm text-slate-500">
-                Itineraries you create will appear here.
-              </Text>
-            </View>
-          }
-          renderItem={({ item }) => (
-            <ItineraryCard
-              booking={item}
-              onPress={() =>
-                router.push({
-                  pathname: "/my-itineraries/[bookingId]",
-                  params: { bookingId: String(item.id) },
-                })
-              }
-            />
-          )}
-        />
-      )}
+      {renderContent()}
     </SafeAreaView>
   );
 }
