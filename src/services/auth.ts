@@ -59,7 +59,7 @@ export async function registerRequest(input: {
 }
 
 export async function fetchMe(): Promise<AuthUser> {
-  const { data } = await api.get<MeResponse>("/auth/me");
+  const { data } = await api.get<MeResponse>("/me");
 
   return toAuthUser(data.user);
 }
