@@ -23,7 +23,10 @@ import {
   type ReactNode,
 } from "react";
 
-type SignInOptions = { role?: Role; remember?: boolean };
+type SignInOptions = {
+  role?: Role;
+  remember?: boolean;
+};
 
 type SignUpInput = {
   name: string;
@@ -41,7 +44,10 @@ type AuthState = {
     password: string,
     options?: SignInOptions,
   ) => Promise<void>;
-  signUp: (input: SignUpInput, options?: { remember?: boolean }) => Promise<void>;
+  signUp: (
+    input: SignUpInput,
+    options?: { remember?: boolean },
+  ) => Promise<void>;
   signOut: () => Promise<void>;
   deleteAccount: () => Promise<void>;
 };
@@ -57,13 +63,14 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    (async () => {
+    async function initializeAuth(): Promise<void> {
       try {
         let stored = await tokenStorage.get();
 
-        // Pick up a session saved by the previous storage layer.
+        // Migrate a session saved by the previous storage layer.
         if (!stored) {
           const legacy = await getStoredItem(LEGACY_TOKEN_KEY);
+
           if (legacy) {
             stored = legacy;
             await tokenStorage.set(legacy);
@@ -75,11 +82,12 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
           setToken(stored);
 
           const cached = await getStoredItem(LEGACY_USER_KEY);
+
           if (cached) {
             try {
               setUser(JSON.parse(cached) as AuthUser);
             } catch {
-              // ignore malformed cache
+              // Ignore malformed cached user data.
             }
           }
 
@@ -90,13 +98,19 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
           await tokenStorage.clear();
           await removeStoredItem(LEGACY_TOKEN_KEY);
           await removeStoredItem(LEGACY_USER_KEY);
+
+          setAuthToken(null);
           setToken(null);
           setUser(null);
+        } else {
+          console.error("Authentication initialization failed:", error);
         }
       } finally {
         setLoading(false);
       }
-    })();
+    }
+
+    void initializeAuth();
   }, []);
 
   const signIn: AuthState["signIn"] = async (email, password, options = {}) => {
@@ -133,22 +147,27 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
     }
   };
 
-  const signOut = async () => {
-    try {
-      await logoutRequest();
-    } catch {
-      // Ignore server errors; clear local session anyway.
-    }
-
+  const clearLocalSession = async (): Promise<void> => {
     await tokenStorage.clear();
     await removeStoredItem(LEGACY_TOKEN_KEY);
     await removeStoredItem(LEGACY_USER_KEY);
+
     setAuthToken(null);
     setToken(null);
     setUser(null);
   };
 
-  const deleteAccount = async () => {
+  const signOut: AuthState["signOut"] = async () => {
+    try {
+      await logoutRequest();
+    } catch {
+      // Ignore server errors; clear the local session anyway.
+    }
+
+    await clearLocalSession();
+  };
+
+  const deleteAccount: AuthState["deleteAccount"] = async () => {
     try {
       await deleteAccountRequest();
     } catch (error) {
@@ -156,12 +175,7 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
       throw error;
     }
 
-    await tokenStorage.clear();
-    await removeStoredItem(LEGACY_TOKEN_KEY);
-    await removeStoredItem(LEGACY_USER_KEY);
-    setAuthToken(null);
-    setToken(null);
-    setUser(null);
+    await clearLocalSession();
   };
 
   const value: AuthState = {
@@ -174,13 +188,15 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
     deleteAccount,
   };
 
-  return (
-    <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
-export function useAuth() {
+export function useAuth(): AuthState {
   const ctx = useContext(AuthContext);
-  if (!ctx) throw new Error("useAuth must be used inside <AuthProvider>");
+
+  if (!ctx) {
+    throw new Error("useAuth must be used inside <AuthProvider>");
+  }
+
   return ctx;
 }
