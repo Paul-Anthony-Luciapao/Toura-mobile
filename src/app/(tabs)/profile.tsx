@@ -51,6 +51,20 @@ const destinations = [
   },
 ];
 
+const FALLBACK_NAME = "Marites Santos";
+const FALLBACK_HANDLE = "@marites99";
+
+// AuthUser has no username field, so the handle comes from the email,
+// e.g. "Jon.Doe+x@gmail.com" -> "@jon.doex"
+function getHandle(email?: string) {
+  const local = email
+    ?.split("@")[0]
+    ?.toLowerCase()
+    .replace(/[^a-z0-9._]/g, "");
+
+  return local ? `@${local}` : FALLBACK_HANDLE;
+}
+
 export default function Profile() {
   const router = useRouter();
   const { user } = useAuth();
@@ -93,6 +107,8 @@ export default function Profile() {
     );
   }
 
+  const displayName = user.name?.trim() || FALLBACK_NAME;
+  const handle = getHandle(user.email);
   const sheetTop = s(310); // where the white sheet starts (Figma y = 310)
 
   return (
@@ -175,7 +191,7 @@ export default function Profile() {
               <Text
                 numberOfLines={1}
                 className="shrink text-[20px] font-poppins-bold text-[#172033]">
-                Marites Santos
+                {displayName}
               </Text>
               <View
                 className="h-6 w-6 items-center justify-center rounded-full"
@@ -184,7 +200,7 @@ export default function Profile() {
               </View>
             </View>
             <Text className="text-[15px] font-poppins text-[#334155]">
-              @marites99
+              {handle}
             </Text>
           </View>
         </View>
@@ -223,7 +239,7 @@ export default function Profile() {
             />
             <View>
               <Text className="text-[18px] font-poppins-semibold text-[#172033]">
-                Marites Santos
+                {displayName}
               </Text>
               <View className="flex-row items-center gap-2">
                 <Text className="text-[14px] font-poppins text-[#64748B]">
