@@ -7,8 +7,13 @@ import ItineraryHero from "@components/itineraries/ItineraryHero";
 import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useState } from "react";
-import { Pressable, ScrollView, Text, View } from "react-native";
+import { Alert, Pressable, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+
+const toLocalDate = (date: Date) =>
+  `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(
+    date.getDate(),
+  ).padStart(2, "0")}`;
 
 export default function AvailabilityScreen() {
   const router = useRouter();
@@ -42,6 +47,27 @@ export default function AvailabilityScreen() {
       </SafeAreaView>
     );
   }
+
+  const handleContinue = () => {
+    if (toLocalDate(departureDate) <= toLocalDate(arrivalDate)) {
+      Alert.alert(
+        "Invalid travel dates",
+        "Choose a valid departure date after your arrival date.",
+      );
+      return;
+    }
+
+    router.push({
+      pathname: "/itinerary-packages/[id]/verification",
+      params: {
+        id: packageId,
+        arrivalDate: arrivalDate.toISOString(),
+        arrivalTime: arrivalTime.toISOString(),
+        departureDate: departureDate.toISOString(),
+        departureTime: departureTime.toISOString(),
+      },
+    });
+  };
 
   return (
     <SafeAreaView className="flex-1 bg-background" edges={["top", "bottom"]}>
@@ -94,18 +120,7 @@ export default function AvailabilityScreen() {
       <View className="bg-background px-4 py-3">
         <Button
           title="Continue"
-          onPress={() =>
-            router.push({
-              pathname: "/itinerary-packages/[id]/verification",
-              params: {
-                id: packageId,
-                arrivalDate: arrivalDate.toISOString(),
-                arrivalTime: arrivalTime.toISOString(),
-                departureDate: departureDate.toISOString(),
-                departureTime: departureTime.toISOString(),
-              },
-            })
-          }
+          onPress={handleContinue}
           className="w-full"
         />
       </View>
