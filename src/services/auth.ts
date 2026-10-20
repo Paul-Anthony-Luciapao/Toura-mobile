@@ -6,7 +6,7 @@ export type AuthUser = {
   name: string;
   email: string;
   role: Role;
-  phone?: string;
+  phone: string | null;
   avatar?: string;
 };
 
@@ -51,7 +51,7 @@ export async function registerRequest(input: {
   name: string;
   email: string;
   password: string;
-  phone?: string;
+  phone: string;
 }): Promise<AuthSession> {
   const { data } = await api.post<SessionResponse>("/auth/register", input);
 
