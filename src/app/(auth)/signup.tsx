@@ -8,7 +8,7 @@ import { useState } from "react";
 import { Pressable, Text, View } from "react-native";
 
 type FieldErrors = Partial<
-  Record<"name" | "email" | "password" | "confirmPassword", string>
+  Record<"name" | "email" | "phone" | "password" | "confirmPassword", string>
 >;
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -23,6 +23,7 @@ export default function SignUpScreen() {
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [formError, setFormError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [phone, setPhone] = useState("");
 
   function validate(): boolean {
     const errors: FieldErrors = {};
@@ -32,6 +33,9 @@ export default function SignUpScreen() {
     }
     if (!EMAIL_PATTERN.test(email.trim())) {
       errors.email = "Enter a valid email address.";
+    }
+    if (!phone.trim()) {
+      errors.phone = "Enter your phone number.";
     }
     if (password.length < 8) {
       errors.password = "Password must be at least 8 characters.";
@@ -51,7 +55,12 @@ export default function SignUpScreen() {
     setSubmitting(true);
     try {
       await signUp(
-        { name: name.trim(), email: email.trim(), password },
+        {
+          name: name.trim(),
+          email: email.trim(),
+          phone: phone.trim(),
+          password,
+        },
         { remember: true },
       );
       router.replace("/(tabs)");
@@ -84,6 +93,15 @@ export default function SignUpScreen() {
           autoCorrect={false}
           textContentType="emailAddress"
           error={fieldErrors.email}
+        />
+        <AuthTextField
+          icon="call-outline"
+          placeholder="Phone number"
+          value={phone}
+          onChangeText={setPhone}
+          keyboardType="phone-pad"
+          textContentType="telephoneNumber"
+          error={fieldErrors.phone}
         />
         <AuthTextField
           icon="lock-closed-outline"
