@@ -25,18 +25,24 @@ export default function Settings() {
   const [busy, setBusy] = useState(false);
 
   const handleLogout = async () => {
+    // Disable account actions while the logout request is in progress.
     setBusy(true);
     try {
       await signOut();
+
+      // Return to the profile screen after the session has been cleared.
       router.replace("/profile");
     } catch {
+      // Inform the user if the logout operation fails.
       Alert.alert("Error", "Could not log out. Please try again.");
     } finally {
+      // Restore account actions regardless of whether logout succeeds or fails.
       setBusy(false);
     }
   };
 
   const confirmDeleteAccount = () => {
+    // Require explicit confirmation before performing an irreversible action.
     Alert.alert(
       "Delete account",
       "This action is permanent. Are you sure you want to delete your account?",
@@ -46,13 +52,18 @@ export default function Settings() {
           text: "Delete",
           style: "destructive",
           onPress: async () => {
+            // Prevent overlapping account operations while deletion is processing.
             setBusy(true);
             try {
               await deleteAccount();
+
+              // Return to the app's root screen after the account is deleted.
               router.replace("/");
             } catch {
+              // Keep the user informed if account deletion cannot be completed.
               Alert.alert("Error", "Could not delete the account.");
             } finally {
+              // Re-enable account actions after the deletion attempt finishes.
               setBusy(false);
             }
           },
@@ -61,6 +72,7 @@ export default function Settings() {
     );
   };
 
+  // Wait for the authentication context to resolve before choosing which UI to display.
   if (loading) {
     return (
       <SafeAreaView
@@ -81,6 +93,7 @@ export default function Settings() {
 
       <View className="flex-row items-center gap-3 py-3">
         <Pressable
+          // Return to the previous screen without creating a new route.
           onPress={() => router.back()}
           accessibilityRole="button"
           accessibilityLabel="Go back"
@@ -93,6 +106,7 @@ export default function Settings() {
         </Text>
       </View>
 
+      {/* Show sign-in options when no authenticated user is available. */}
       {!user ? (
         <View className="mt-8 gap-4">
           <Text className="font-poppins text-[#334155]">
@@ -121,6 +135,7 @@ export default function Settings() {
           <Text className="mt-2 font-poppins text-[#334155]">{user.email}</Text>
 
           <Pressable
+            // Prevent another account operation while logout or deletion is processing.
             disabled={busy}
             onPress={handleLogout}
             className="mt-7 min-h-14 flex-row items-center justify-between rounded-xl px-4"

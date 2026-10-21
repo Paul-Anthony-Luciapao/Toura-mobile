@@ -1,232 +1,167 @@
 # Toura Mobile
 
-Toura is a full-stack travel app made of:
-
-- React Native + Expo frontend in the root project
-- Laravel backend in the `backend/` folder
-
-This guide explains how to install dependencies, configure environment variables, and run the app locally.
+Toura is a full-stack travel app with a React Native and Expo frontend and a Laravel API backend.
 
 ## Prerequisites
 
-Before starting, make sure you have the following installed:
-
-- Node.js 20+
-- npm
-- Expo CLI (optional, but recommended)
-- PHP 8.2+
-- Composer
+- Node.js 20 or later and npm
+- PHP 8.3 or later and Composer
 - Git
-- Android Studio / Xcode (only if you want to run emulators)
+- Android Studio or Xcode if you plan to use an emulator or simulator
 
-## 1) Clone the repository
+The frontend uses Expo SDK 57. Use the Expo CLI through `npx expo`; a global Expo CLI installation is not required.
+
+## Clone and install
 
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/Paul-Anthony-Luciapao/Toura-mobile.git
 cd Toura-mobile
-```
-
-## 2) Install frontend dependencies
-
-From the project root:
-
-```bash
 npm install
 ```
 
-If you want to install Expo CLI globally:
-
-```bash
-npm install -g expo-cli
-```
-
-## 3) Install backend dependencies
-
-This project includes a Laravel backend inside the `backend/` folder.
+Install the Laravel dependencies:
 
 ```bash
 cd backend
 composer install
 ```
 
-## 4) Configure the Laravel environment
+## Configure the backend
 
-Copy the example env file:
+From the `backend/` directory, create the local environment file and application key:
 
 ```bash
 cp .env.example .env
-```
-
-Then generate the app key:
-
-```bash
 php artisan key:generate
 ```
 
-For the current setup, the backend is configured to use SQLite by default in `.env.example`, so no database host setup is required unless you want to switch to MySQL/PostgreSQL.
-
-Run database migrations:
+The example environment uses SQLite. Create its database file if it does not exist, then run the migrations:
 
 ```bash
+touch database/database.sqlite
 php artisan migrate
 ```
 
-If needed, seed the database:
+Optionally seed the database with the included development data:
 
 ```bash
 php artisan db:seed
 ```
 
-## 5) Start the backend
-
-From `backend/`:
+Start the API from `backend/`:
 
 ```bash
 php artisan serve
 ```
 
-This usually runs the API at:
-
-```text
-http://127.0.0.1:8000
-```
-
-The Expo app is configured to call the Laravel API at:
-
-```text
-http://127.0.0.1:8000/api
-```
-
-If you are testing from a physical device, replace `127.0.0.1` with your machine's local IP address in `src/services/api.ts`.
-
-## 6) Start the Expo app
-
-Open a new terminal in the project root and run:
+By default, Laravel serves at `http://127.0.0.1:8000`. You can check that it is reachable with:
 
 ```bash
-npm start
+curl http://127.0.0.1:8000/api/test
 ```
 
-Or directly:
+## Configure the frontend API URL
+
+The frontend reads `EXPO_PUBLIC_API_URL` from a root-level `.env` file. Copy the example and set its value to the address where the backend can be reached:
 
 ```bash
-npx expo start
+cd ..
+cp .env.example .env
 ```
 
-Then choose one of the following:
+```dotenv
+EXPO_PUBLIC_API_URL=http://127.0.0.1:8000/api
+```
 
-- Android emulator
-- iOS simulator
-- Expo Go on a physical device
-- Web preview
+The app adds `/v1` automatically, so do not include it in this value. `EXPO_PUBLIC_` values are embedded in the client bundle; do not put secrets in them.
 
-## 7) Common startup flow
+Choose a host address that is reachable from the frontend:
 
-To run both apps together, use two terminals:
+- iOS simulator or web on the same computer: `http://127.0.0.1:8000/api`
+- Android emulator: `http://10.0.2.2:8000/api`
+- Physical device: `http://<your-computer-lan-ip>:8000/api`
 
-Terminal 1 - backend:
+For a physical device, connect it and the computer to the same network. If you change the environment file while Expo is running, restart the development server and clear its cache with `npx expo start --clear`.
+
+## Run the app
+
+Run the backend and frontend in separate terminals.
+
+Terminal 1:
 
 ```bash
 cd backend
 php artisan serve
 ```
 
-Terminal 2 - frontend:
+Terminal 2, from the repository root:
 
 ```bash
-cd ..
 npm start
 ```
 
-## 8) Troubleshooting
+Use the Expo terminal to open the app in a development build, simulator/emulator, or supported web target.
 
-### Expo app cannot connect to Laravel
+## Useful commands
 
-Check that Laravel is running and the API URL matches your environment.
+Frontend (repository root):
 
-Open `src/services/api.ts` and verify:
-
-```ts
-baseURL: "http://127.0.0.1:8000/api";
+```bash
+npm start
+npx expo start --android
+npx expo start --ios
+npx expo start --web
+npm run lint
 ```
 
-For physical devices, use something like:
+Backend (`backend/`):
 
-```ts
-baseURL: "http://192.168.1.10:8000/api";
+```bash
+php artisan migrate
+php artisan db:seed
+php artisan test
+php artisan serve
 ```
 
-### Composer install fails
+## Troubleshooting
 
-Make sure PHP and Composer are installed correctly:
+### The app cannot connect to Laravel
+
+Confirm the backend is running and that `EXPO_PUBLIC_API_URL` uses a host reachable from the device or emulator. Do not edit `src/services/api.ts` to change the local server address; configure the root `.env` file instead. Restart Expo after changing environment values.
+
+### Composer reports a PHP version conflict
+
+The Laravel backend requires PHP 8.3 or later. Check the PHP version used by your terminal with:
 
 ```bash
 php -v
 composer -V
 ```
 
-### Laravel database issue
+### Laravel cannot open the SQLite database
 
-Check that the database file is writable and the `.env` file has a valid database configuration.
+Make sure `backend/.env` uses the SQLite connection and that `backend/database/database.sqlite` exists and is writable. Re-run the migrations after creating the file.
 
-## 9) Useful commands
-
-Frontend:
-
-```bash
-npm install
-npm start
-npx expo start --android
-npx expo start --ios
-npx expo start --web
-```
-
-Backend:
-
-```bash
-cd backend
-composer install
-cp .env.example .env
-php artisan key:generate
-php artisan migrate
-php artisan db:seed
-php artisan serve
-```
-
-## 10) Project structure
+## Project structure
 
 ```text
 Toura-mobile/
-├── app.json
-├── assets/
 ├── backend/
 │   ├── app/
-│   ├── bootstrap/
-│   ├── config/
 │   ├── database/
-│   ├── public/
-│   ├── resources/
 │   ├── routes/
-│   ├── storage/
 │   ├── tests/
 │   ├── .env.example
-│   ├── composer.json
-│   ├── artisan
-│   └── README.md
+│   └── artisan
 ├── src/
 │   ├── app/
 │   ├── components/
+│   ├── context/
 │   ├── data/
 │   ├── lib/
-│   ├── styles/
 │   └── services/
+├── .env.example
+├── app.json
 ├── package.json
-├── tsconfig.json
 └── README.md
 ```
-
-## Notes
-
-- The Expo frontend is the mobile app experience.
-- The Laravel backend handles API endpoints and server-side logic.
-- You usually run both at the same time during app development.

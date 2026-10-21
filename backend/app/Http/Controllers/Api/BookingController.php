@@ -59,12 +59,14 @@ class BookingController extends Controller
 
         $accommodation = Accommodation::findOrFail($validated['accommodation_id']);
 
+        // A valid accommodation ID does not guarantee it belongs to the selected resort.
         if ($accommodation->resort_id != $validated['resort_id']) {
             return response()->json([
                 'message' => 'The selected accommodation does not belong to the selected resort.',
             ], 422);
         }        
 
+        // Canceled stays release capacity, and same-day check-out/check-in does not overlap.
         $overlappingBookings = Booking::where('accommodation_id', $accommodation->id)
             ->where('check_in_date', '<', $validated['check_out_date'])
             ->where('check_out_date', '>', $validated['check_in_date'])
