@@ -79,6 +79,7 @@ export default function GuestScreen() {
 
   const removeGuest = (guestId: string) => {
     setGuests((currentGuests) => {
+      // Keep the primary guest and at least one traveler for a valid booking.
       if (guestId === "primary" || currentGuests.length <= 1) {
         return currentGuests;
       }

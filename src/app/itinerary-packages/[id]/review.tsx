@@ -166,6 +166,7 @@ export default function ReviewScreen() {
   }
 
   const handleContinue = async () => {
+    // A ref blocks rapid repeat taps before React can render the disabled/loading state.
     if (submissionInProgress.current) return;
 
     const invalidGuest = guests.some(

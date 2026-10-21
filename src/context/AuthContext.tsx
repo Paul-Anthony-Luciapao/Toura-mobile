@@ -91,6 +91,7 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
             }
           }
 
+          // Revalidate the cached profile so server-side role or account changes take effect.
           setUser(await fetchMe());
         }
       } catch (error) {

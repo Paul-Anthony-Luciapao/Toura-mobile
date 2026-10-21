@@ -49,6 +49,7 @@ export default function AvailabilityScreen() {
   }
 
   const handleContinue = () => {
+    // Compare local calendar dates so timezone offsets cannot turn a selected day into another date.
     if (toLocalDate(departureDate) <= toLocalDate(arrivalDate)) {
       Alert.alert(
         "Invalid travel dates",

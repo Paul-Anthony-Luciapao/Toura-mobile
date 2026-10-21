@@ -21,9 +21,14 @@ export default function TabsLayout() {
           marginTop: -4,
         },
         animation: "none",
+
+        // Keep previously visited screens from re-rendering when switching tabs.
         freezeOnBlur: true,
+
+        // Mount each tab only when it is first accessed.
         lazy: true,
       }}>
+      {/* Main entry point for browsing the application's home screen. */}
       <Tabs.Screen
         name="index"
         options={{
@@ -33,6 +38,8 @@ export default function TabsLayout() {
           ),
         }}
       />
+
+      {/* Provides access to the user's saved or planned itineraries. */}
       <Tabs.Screen
         name="itinerary"
         options={{
@@ -42,6 +49,8 @@ export default function TabsLayout() {
           ),
         }}
       />
+
+      {/* Opens the messaging area for user conversations. */}
       <Tabs.Screen
         name="messages"
         options={{
@@ -51,6 +60,8 @@ export default function TabsLayout() {
           ),
         }}
       />
+
+      {/* Provides access to the user's profile and account information. */}
       <Tabs.Screen
         name="profile"
         options={{
@@ -60,6 +71,8 @@ export default function TabsLayout() {
           ),
         }}
       />
+
+      {/* Groups additional navigation options outside the primary tabs. */}
       <Tabs.Screen
         name="more"
         options={{

@@ -26,6 +26,7 @@ class ItineraryBookingController extends Controller
 
     public function show(Request $request, ItineraryBooking $booking): JsonResponse
     {
+        // Return 404 rather than disclose that another user's booking exists.
         abort_unless($booking->user_id === $request->user()->id, 404);
 
         return response()->json(
@@ -57,6 +58,7 @@ class ItineraryBookingController extends Controller
             ]);
         }
 
+        // Derive the booking price from stored package data rather than trusting a client-calculated total.
         $totalPrice = 0.0;
         foreach ($priceBreakdown as $line) {
             if (
@@ -77,6 +79,7 @@ class ItineraryBookingController extends Controller
             ]);
         }
 
+        // Keep the reservation and its guest records atomic to avoid partial bookings.
         $booking = DB::transaction(function () use ($request, $validated, $totalPrice) {
             $booking = ItineraryBooking::create([
                 'booking_reference' => 'TOURA-'.Str::upper(Str::random(8)),
@@ -112,6 +115,7 @@ class ItineraryBookingController extends Controller
 
     public function destroy(Request $request, ItineraryBooking $booking): JsonResponse
     {
+        // Match the read behavior so deletion cannot confirm another user's booking exists.
         abort_unless($booking->user_id === $request->user()->id, 404);
         $booking->delete();
         return response()->json(['message' => 'Itinerary deleted.']);
