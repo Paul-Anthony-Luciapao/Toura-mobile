@@ -41,3 +41,11 @@ example
 # generated native folders
 /ios
 /android
+
+# Laravel environment files
+/backend/.env
+/backend/.env.testing
+/.env
+
+# Duplicate local Laravel project
+/backend-daryl/

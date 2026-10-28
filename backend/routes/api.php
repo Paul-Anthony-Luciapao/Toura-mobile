@@ -60,8 +60,17 @@ Route::prefix('v1')->group(function () {
         Route::delete('/offers/{offer}', [OfferController::class, 'destroy']);
     });
 
-    // Tourist Spots
-    Route::apiResource('tourist-spots', TouristSpotController::class);
+    // Public tourist spot routes
+    Route::get('/tourist-spots', [TouristSpotController::class, 'index']);
+    Route::get('/tourist-spots/{tourist_spot}', [TouristSpotController::class, 'show']);
+
+    // Authenticated tourist spot management
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::post('/tourist-spots', [TouristSpotController::class, 'store']);
+        Route::put('/tourist-spots/{tourist_spot}', [TouristSpotController::class, 'update']);
+        Route::patch('/tourist-spots/{tourist_spot}', [TouristSpotController::class, 'update']);
+        Route::delete('/tourist-spots/{tourist_spot}', [TouristSpotController::class, 'destroy']);
+    });
 
     // Bookings
     Route::middleware('auth:sanctum')->group(function () {
