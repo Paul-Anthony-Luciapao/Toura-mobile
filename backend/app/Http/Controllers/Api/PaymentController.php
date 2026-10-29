@@ -7,7 +7,7 @@ use App\Models\ItineraryBooking;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class PaymentController extends Controller
 {
@@ -16,6 +16,15 @@ class PaymentController extends Controller
         $request->validate([
             'order_id' => ['required_without:booking_id', 'integer'],
             'booking_id' => ['required_without:order_id', 'integer'],
+            'payment_method_type' => [
+                'sometimes',
+                'required',
+                'string',
+                Rule::in(config(
+                    'services.paymongo.payment_method_types',
+                    ['card', 'gcash', 'paymaya', 'qrph']
+                )),
+            ],
         ]);
 
         // Resolve the order, creating one from an itinerary booking when needed.
@@ -62,10 +71,12 @@ class PaymentController extends Controller
                                 'quantity' => 1,
                             ],
                         ],
-                        'payment_method_types' => config(
-                            'services.paymongo.payment_method_types',
-                            ['card', 'gcash', 'paymaya', 'qrph']
-                        ),
+                        'payment_method_types' => $request->filled('payment_method_type')
+                            ? [$request->input('payment_method_type')]
+                            : config(
+                                'services.paymongo.payment_method_types',
+                                ['card', 'gcash', 'paymaya', 'qrph']
+                            ),
                         'reference_number' =>
                             $order->reference_number,
                         'success_url' =>
