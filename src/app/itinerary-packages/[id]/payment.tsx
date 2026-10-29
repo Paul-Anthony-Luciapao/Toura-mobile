@@ -103,7 +103,14 @@ export default function Payment() {
     }
 
     try {
-      const { checkout_url } = await createCheckout(bookingId);
+      const paymentMethodType =
+        selectedMethod === "gcash" || selectedMethod === "paymaya"
+          ? selectedMethod
+          : "card";
+      const { checkout_url } = await createCheckout(
+        bookingId,
+        paymentMethodType,
+      );
       await WebBrowser.openBrowserAsync(checkout_url);
     } catch (error) {
       Alert.alert("Payment failed", getErrorMessage(error));
