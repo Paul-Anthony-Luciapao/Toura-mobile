@@ -2,8 +2,15 @@ import { PACKAGE_SPOTS } from "@/data/mockData";
 import { colors } from "@/styles/global";
 import { Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
-import React from "react";
-import { Alert, Image, Pressable, ScrollView, Text, View } from "react-native";
+import {
+  Alert,
+  Image,
+  Pressable,
+  ScrollView,
+  StatusBar,
+  Text,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 function getParam(value?: string | string[]) {
@@ -84,20 +91,31 @@ export default function PaymentSuccessScreen() {
     isCardPayment && last4
       ? `${paymentMethodName} •••• ${last4} (demo)`
       : `${paymentMethodName} (demo)`;
-
   const bookingId = getParam(params.bookingId);
 
   return (
-    <SafeAreaView className="flex-1 bg-background" edges={["top", "bottom"]}>
+    <SafeAreaView className="flex-1 bg-background" edges={["bottom"]}>
+      <StatusBar
+        hidden={false}
+        barStyle="light-content"
+        translucent={true}
+        backgroundColor="transparent"
+      />
       <ScrollView
         className="flex-1"
         contentContainerStyle={{ flexGrow: 1, padding: 20 }}
-        showsVerticalScrollIndicator={false}>
+        showsVerticalScrollIndicator={false}
+      >
         <View className="flex-1 justify-center">
           <View className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
             <View className="mb-4 items-center">
-              <View className="h-16 w-16 items-center justify-center rounded-full border-4 border-primary">
-                <Ionicons name="checkmark" size={36} color={colors.primary} />
+              <View
+                className="h-16 w-16 items-center justify-center rounded-full border-4 border-salmon-600">
+                <Ionicons
+                  name="checkmark"
+                  size={36}
+                  color="salmon"
+                />
               </View>
             </View>
 
@@ -181,7 +199,8 @@ export default function PaymentSuccessScreen() {
           <Pressable
             accessibilityRole="button"
             onPress={() => router.replace("/(tabs)")}
-            className="items-center rounded-xl bg-primary py-4">
+            className="items-center rounded-xl bg-salmon-600 py-4"
+          >
             <Text className="font-poppins-semibold text-white">
               Back to Home Page
             </Text>
@@ -189,7 +208,8 @@ export default function PaymentSuccessScreen() {
           <Pressable
             accessibilityRole="button"
             onPress={() => router.replace("/(tabs)/itinerary")}
-            className="items-center rounded-xl border border-primary bg-teal-50 py-4">
+            className="items-center rounded-xl border border-dashed border-salmon-600 bg-teal-50 py-4"
+          >
             <Text
               onPress={() => {
                 if (!bookingId) {
@@ -205,7 +225,8 @@ export default function PaymentSuccessScreen() {
                   params: { bookingId },
                 });
               }}
-              className="font-poppins-semibold text-primary">
+              className="font-poppins-semibold text-salmon-600"
+            >
               View my Itinerary
             </Text>
           </Pressable>

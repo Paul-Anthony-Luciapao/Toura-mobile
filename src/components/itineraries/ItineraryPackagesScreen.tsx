@@ -1,9 +1,11 @@
+import PackageFilterRow from "@/app/itinerary-packages/PackageFilterRow";
+import TourPackageCard from "@/app/itinerary-packages/TourPackageCard";
 import SearchBar from "@/components/common/SearchBar";
 import CategoryItineraries from "@/components/itineraries/CategoryItineraries";
 import {
-  INITIAL_ITINERARY_PACKAGES,
-  PACKAGE_RESORTS,
-  PACKAGE_SPOTS,
+    INITIAL_ITINERARY_PACKAGES,
+    PACKAGE_RESORTS,
+    PACKAGE_SPOTS,
 } from "@/data/mockData";
 import type { ItineraryPackage } from "@/data/types";
 import { Ionicons } from "@expo/vector-icons";
@@ -13,8 +15,6 @@ import { StatusBar } from "expo-status-bar";
 import { useMemo, useState } from "react";
 import { FlatList, Pressable, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import PackageFilterRow from "@/app/itinerary-packages/PackageFilterRow";
-import TourPackageCard from "@/app/itinerary-packages/TourPackageCard";
 
 type Props = Readonly<{
   showBackButton?: boolean;
@@ -120,13 +120,14 @@ const ItineraryPackagesScreen = ({ showBackButton = true }: Props) => {
                 onPress={() => router.back()}
                 hitSlop={10}
                 accessibilityLabel="Go back"
-                className="absolute left-0 h-[30px] w-[30px] items-center justify-center rounded-full bg-white shadow-sm shadow-black/10 active:opacity-70">
+                className="absolute left-0 h-[30px] w-[30px] items-center justify-center rounded-full bg-white shadow-sm shadow-black/10 active:opacity-70"
+              >
                 <Ionicons name="chevron-back" size={18} color="#111729" />
               </Pressable>
             )}
 
             <Text className="font-poppins-medium text-[20px] text-[#111729]">
-              Itineraries
+              My Itineraries
             </Text>
           </View>
 

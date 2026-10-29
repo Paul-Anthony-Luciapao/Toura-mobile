@@ -5,23 +5,18 @@ import ItineraryHero from "@components/itineraries/ItineraryHero";
 import VerificationCard from "@components/itineraries/VerificationCard";
 import { Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
-import { Pressable, ScrollView, Text, View } from "react-native";
+import { Pressable, ScrollView, StatusBar, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function VerificationScreen() {
-  const {
-    id,
-    arrivalDate,
-    arrivalTime,
-    departureDate,
-    departureTime,
-  } = useLocalSearchParams<{
-    id?: string | string[];
-    arrivalDate?: string | string[];
-    arrivalTime?: string | string[];
-    departureDate?: string | string[];
-    departureTime?: string | string[];
-  }>();
+  const { id, arrivalDate, arrivalTime, departureDate, departureTime } =
+    useLocalSearchParams<{
+      id?: string | string[];
+      arrivalDate?: string | string[];
+      arrivalTime?: string | string[];
+      departureDate?: string | string[];
+      departureTime?: string | string[];
+    }>();
 
   const packageId = Array.isArray(id) ? id[0] : id;
   const arrivalDateParam = Array.isArray(arrivalDate)
@@ -46,6 +41,11 @@ export default function VerificationScreen() {
   if (!packageId || !itinerary) {
     return (
       <SafeAreaView className="flex-1 items-center justify-center bg-background">
+        <StatusBar
+          hidden={false}
+          barStyle="dark-content"
+          backgroundColor="#F5F5F5"
+        />
         <Text className="font-poppins-semibold text-[16px] text-textMain">
           Itinerary package not found.
         </Text>
@@ -54,56 +54,61 @@ export default function VerificationScreen() {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-background">
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerClassName="pb-10"
-      >
-        {/* Hero */}
-        <ItineraryHero itinerary={itinerary} />
+    <SafeAreaView className="flex-1 bg-background" edges={["bottom"]}>
+      <StatusBar
+        hidden={false}
+        barStyle="light-content"
+        translucent={true}
+        backgroundColor="transparent"
+      />
 
-        {/* Back button */}
-        <Pressable
+      <View className="flex-1">
+        <ScrollView
+          className="flex-1"
+          showsVerticalScrollIndicator={false}
+          contentContainerClassName="pb-10"
+        >
+          {/* Hero image */}
+          <ItineraryHero itinerary={itinerary} />
+
+          {/* Back button */}
+          <Pressable
             onPress={() => router.back()}
             hitSlop={8}
             accessibilityRole="button"
             accessibilityLabel="Go back"
             className="absolute left-4 top-4 z-10 h-11 w-11 items-center justify-center rounded-full bg-black/30 active:opacity-70"
           >
-            <Ionicons
-              name="arrow-back"
-              size={24}
-              color={colors.white}
-            />
-        </Pressable>
+            <Ionicons name="arrow-back" size={24} color={colors.white} />
+          </Pressable>
 
-        {/* Verification Card */}
-        <View className="-mt-5 rounded-t-[30px] bg-white px-5 pt-6">
-          <VerificationCard />
+          {/* Rounded white verification panel */}
+          <View className="-mt-5 rounded-t-[30px] bg-white px-5 pt-6">
+            <VerificationCard />
+          </View>
+        </ScrollView>
 
-          {/* Continue Button */}
+        {/* Fixed Continue button */}
+        <View className="items-center justify-center bg-background px-4 py-4">
           <Button
-            title="Confirm and Proceed"
+            title="Continue"
             onPress={() => {
               router.push({
                 pathname: "/itinerary-packages/[id]/guest",
                 params: {
                   id: packageId,
-                  arrivalDate: arrivalDateParam,
-                  arrivalTime: arrivalTimeParam,
-                  departureDate: departureDateParam,
-                  departureTime: departureTimeParam,
+                  arrivalDate: arrivalDateParam ?? "",
+                  arrivalTime: arrivalTimeParam ?? "",
+                  departureDate: departureDateParam ?? "",
+                  departureTime: departureTimeParam ?? "",
                 },
               });
             }}
-            width="w-[225px]"
-            className="mt-5 self-center"
+            width="w-full"
+            className="mt-5 self-center bg-salmon-600"
           />
-
-          <View className="h-6" />
         </View>
-        
-      </ScrollView>
+      </View>
     </SafeAreaView>
   );
 }
