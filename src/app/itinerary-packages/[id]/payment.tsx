@@ -1,10 +1,13 @@
 import Buttons from "@/components/buttons/Buttons";
 import { PACKAGE_SPOTS, PAYMENT_METHODS } from "@/data/mockData";
 import type { PaymentMethod } from "@/data/types";
+import { getErrorMessage } from "@/services/api";
+import { createCheckout } from "@/services/payment";
 import { colors } from "@/styles/global";
 import ItineraryHero from "@components/itineraries/ItineraryHero";
 import { Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
+import * as WebBrowser from "expo-web-browser";
 import React, { useState } from "react";
 import { Alert, Pressable, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -87,40 +90,23 @@ export default function Payment() {
     });
   };
 
-  const continueWithSelection = () => {
+  const continueWithSelection = async () => {
     if (!selectedMethod) {
       Alert.alert("Select a payment method", "Choose how you want to pay.");
       return;
     }
 
-    const walletMethod = WALLET_METHODS.find(
-      (method) => method.id === selectedMethod,
-    );
-    if (walletMethod) {
-      goToOtp(walletMethod.id, walletMethod.label);
+    const bookingId = Number(getParam(params.bookingId));
+    if (!Number.isFinite(bookingId) || bookingId <= 0) {
+      Alert.alert("Missing booking", "Booking reference is missing.");
       return;
     }
 
-    const cardMethod = PAYMENT_METHODS.find(
-      (method) => method.id === selectedMethod,
-    );
-    if (cardMethod) {
-      router.push({
-        pathname: "/itinerary-packages/[id]/card-details",
-        params: {
-          id: packageId,
-          bookingId: getParam(params.bookingId),
-          bookingReference: getParam(params.bookingReference),
-          totalPrice: getParam(params.totalPrice),
-          guestCount: getParam(params.guestCount) ?? "1",
-          arrivalDate: getParam(params.arrivalDate),
-          arrivalTime: getParam(params.arrivalTime),
-          departureDate: getParam(params.departureDate),
-          departureTime: getParam(params.departureTime),
-          paymentMethod: cardMethod.id,
-          paymentMethodName: cardMethod.name,
-        },
-      });
+    try {
+      const { checkout_url } = await createCheckout(bookingId);
+      await WebBrowser.openBrowserAsync(checkout_url);
+    } catch (error) {
+      Alert.alert("Payment failed", getErrorMessage(error));
     }
   };
 
@@ -128,7 +114,8 @@ export default function Payment() {
     <View
       className={`h-6 w-6 items-center justify-center rounded-full border ${
         checked ? "border-primary" : "border-slate-200"
-      } bg-white`}>
+      } bg-white`}
+    >
       {checked && <View className="h-3 w-3 rounded-full bg-primary" />}
     </View>
   );
@@ -138,7 +125,8 @@ export default function Payment() {
       <ScrollView
         className="flex-1"
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 24 }}>
+        contentContainerStyle={{ paddingBottom: 24 }}
+      >
         <ItineraryHero itinerary={itinerary} />
 
         <Pressable
@@ -146,7 +134,8 @@ export default function Payment() {
           hitSlop={8}
           accessibilityRole="button"
           accessibilityLabel="Go back"
-          className="absolute left-4 top-4 z-10 h-11 w-11 items-center justify-center rounded-full bg-black/30 active:opacity-70">
+          className="absolute left-4 top-4 z-10 h-11 w-11 items-center justify-center rounded-full bg-black/30 active:opacity-70"
+        >
           <Ionicons name="arrow-back" size={24} color={colors.white} />
         </Pressable>
 
@@ -165,64 +154,67 @@ export default function Payment() {
 
                 return (
                   <View key={method.id}>
-                  <Pressable
-                    accessibilityRole="radio"
-                    accessibilityState={{ checked: isSelected }}
-                    onPress={() => {
-                      if (isWallet) {
-                        setWalletExpanded((expanded) => !expanded);
-                        if (
-                          selectedMethod !== "gcash" &&
-                          selectedMethod !== "paymaya"
-                        ) {
-                          setSelectedMethod(null);
+                    <Pressable
+                      accessibilityRole="radio"
+                      accessibilityState={{ checked: isSelected }}
+                      onPress={() => {
+                        if (isWallet) {
+                          setWalletExpanded((expanded) => !expanded);
+                          if (
+                            selectedMethod !== "gcash" &&
+                            selectedMethod !== "paymaya"
+                          ) {
+                            setSelectedMethod(null);
+                          }
+                          return;
                         }
-                        return;
-                      }
 
-                      if (CARD_METHODS.includes(method.id as CardMethodId)) {
-                        setSelectedMethod(method.id as CardMethodId);
-                        setWalletExpanded(false);
-                      }
-                    }}
-                    className="h-11 flex-row items-center rounded-xl bg-teal-50 px-4">
-                    <View className="w-10 items-start justify-center">
-                      <PaymentMethodIcon method={method} />
-                    </View>
-                    <Text className="ml-2 flex-1 font-poppins-medium text-base text-textMain">
-                      {method.name}
-                    </Text>
-                    {renderRadio(isSelected)}
-                  </Pressable>
+                        if (CARD_METHODS.includes(method.id as CardMethodId)) {
+                          setSelectedMethod(method.id as CardMethodId);
+                          setWalletExpanded(false);
+                        }
+                      }}
+                      className="h-11 flex-row items-center rounded-xl bg-teal-50 px-4"
+                    >
+                      <View className="w-10 items-start justify-center">
+                        <PaymentMethodIcon method={method} />
+                      </View>
+                      <Text className="ml-2 flex-1 font-poppins-medium text-base text-textMain">
+                        {method.name}
+                      </Text>
+                      {renderRadio(isSelected)}
+                    </Pressable>
 
-                  {isWallet && walletExpanded && (
-                    <View className="ml-8 mt-2 gap-2">
-                      {WALLET_METHODS.map((wallet) => {
-                        const walletSelected = selectedMethod === wallet.id;
+                    {isWallet && walletExpanded && (
+                      <View className="ml-8 mt-2 gap-2">
+                        {WALLET_METHODS.map((wallet) => {
+                          const walletSelected = selectedMethod === wallet.id;
 
-                        return (
-                          <Pressable
-                            key={wallet.id}
-                            accessibilityRole="radio"
-                            accessibilityState={{ checked: walletSelected }}
-                            onPress={() => setSelectedMethod(wallet.id)}
-                            className="h-11 flex-row items-center rounded-xl border border-teal-100 bg-white px-4">
-                            <View
-                              className="mr-3 h-7 w-7 items-center justify-center rounded-md"
-                              style={{ backgroundColor: wallet.color }}>
-                              <Text className="font-poppins-semibold text-sm text-white">
-                                {wallet.initials}
+                          return (
+                            <Pressable
+                              key={wallet.id}
+                              accessibilityRole="radio"
+                              accessibilityState={{ checked: walletSelected }}
+                              onPress={() => setSelectedMethod(wallet.id)}
+                              className="h-11 flex-row items-center rounded-xl border border-teal-100 bg-white px-4"
+                            >
+                              <View
+                                className="mr-3 h-7 w-7 items-center justify-center rounded-md"
+                                style={{ backgroundColor: wallet.color }}
+                              >
+                                <Text className="font-poppins-semibold text-sm text-white">
+                                  {wallet.initials}
+                                </Text>
+                              </View>
+                              <Text className="flex-1 font-poppins-medium text-base text-textMain">
+                                {wallet.label}
                               </Text>
-                            </View>
-                            <Text className="flex-1 font-poppins-medium text-base text-textMain">
-                              {wallet.label}
-                            </Text>
-                            {renderRadio(walletSelected)}
-                          </Pressable>
-                        );
-                      })}
-                    </View>
-                  )}
+                              {renderRadio(walletSelected)}
+                            </Pressable>
+                          );
+                        })}
+                      </View>
+                    )}
                   </View>
                 );
               })}
@@ -236,6 +228,7 @@ export default function Payment() {
           title="Continue"
           onPress={continueWithSelection}
           width="w-full"
+          className="bg-salmon-600"
         />
       </View>
     </SafeAreaView>
