@@ -6,6 +6,29 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        salmon: {
+          DEFAULT: "#FFA69B",
+          50: "#FFF1EF",
+          100: "#FFE1DD",
+          300: "#FFC9C2",
+          500: "#FFA69B",
+          600: "#D66957",
+        },
+        teal: {
+          50: "#E9F7F5",
+          100: "#D0EFEB",
+          200: "#A7DED8",
+          400: "#72CBBF",
+          600: "#238276",
+        },
+        neutral: {
+          50: "#F7F9FB",
+          100: "#F0F3F8",
+          300: "#BBC1D1",
+          600: "#5E677F",
+          800: "#31374A",
+          900: "#131525",
+        },
         coral: {
           50: "#FBEDE8",
           100: "#F6D8CC",
@@ -29,10 +52,6 @@ module.exports = {
           400: "#9AA09C",
           100: "#E8E8E4",
         },
-      },
-    },
-    extend: {
-      colors: {
         background: "#ffffff",
         surface: "#ffffff",
         surfaceSoft: "#eaf5f2",
@@ -40,6 +59,7 @@ module.exports = {
         primary: {
           DEFAULT: "#0f766e",
           dark: "#115e59",
+          salmon: "#FFA69B",
         },
         textSecondary: "#a0a0b0",
         textMain: "#0f172a",

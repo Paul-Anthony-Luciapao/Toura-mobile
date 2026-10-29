@@ -3,7 +3,7 @@ import DateTimePicker, {
     type DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
 import React, { useState } from "react";
-import { Modal, Pressable, Text, View } from "react-native";
+import { Modal, Platform, Pressable, Text, View } from "react-native";
 import DateTimeField from "./DateTimeField";
 
 type Props = Readonly<{
@@ -16,18 +16,33 @@ export default function TimeInput({ value, settings, onChange }: Props) {
   const [showPicker, setShowPicker] = useState(false);
   const [draftTime, setDraftTime] = useState(value);
 
+  const closePicker = () => {
+    setShowPicker(false);
+    setDraftTime(value);
+  };
+
   const handleTimeChange = (
     event: DateTimePickerEvent,
     selectedTime?: Date,
   ) => {
-    if (event.type === "set" && selectedTime) {
+    if (event.type === "dismissed") {
+      setShowPicker(false);
+      return;
+    }
+
+    if (!selectedTime) return;
+
+    if (Platform.OS === "android") {
+      onChange(selectedTime);
+      setShowPicker(false);
+    } else {
       setDraftTime(selectedTime);
     }
   };
 
-  const closePicker = () => {
-    setShowPicker(false);
+  const openPicker = () => {
     setDraftTime(value);
+    setShowPicker(true);
   };
 
   const confirmTime = () => {
@@ -45,56 +60,74 @@ export default function TimeInput({ value, settings, onChange }: Props) {
           hour: "numeric",
           minute: "2-digit",
         })}
-        onPress={() => {
-          setDraftTime(value);
-          setShowPicker(true);
-        }}
+        onPress={openPicker}
       />
-      <Modal
-        visible={showPicker}
-        transparent
-        animationType="fade"
-        onRequestClose={closePicker}
-      >
-        <View className="flex-1 items-center justify-center px-5">
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel="Close time picker"
-            className="absolute inset-0 bg-black/40"
-            onPress={closePicker}
+
+      {Platform.OS === "android" ? (
+        showPicker && (
+          <DateTimePicker
+            value={value}
+            mode="time"
+            display="clock"
+            is24Hour={settings.hourCycle === 24}
+            minuteInterval={settings.minuteInterval}
+            onChange={handleTimeChange}
           />
-          <View className="w-full max-w-md items-center overflow-hidden rounded-2xl border border-slate-200 bg-white p-4">
-            <DateTimePicker
-              value={draftTime}
-              mode="time"
-              display="spinner"
-              is24Hour={settings.hourCycle === 24}
-              minuteInterval={settings.minuteInterval}
-              onChange={handleTimeChange}
+        )
+      ) : (
+        <Modal
+          visible={showPicker}
+          transparent
+          animationType="fade"
+          onRequestClose={closePicker}
+        >
+          <View className="flex-1 items-center justify-center px-5">
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel="Close time picker"
+              className="absolute inset-0 bg-black/40"
+              onPress={closePicker}
             />
-            <View className="mt-2 w-full flex-row justify-end gap-3">
-              <Pressable
-                accessibilityRole="button"
-                onPress={closePicker}
-                className="rounded-lg px-4 py-2 active:opacity-70"
-              >
-                <Text className="font-poppins-medium text-sm text-textMuted">
-                  Cancel
-                </Text>
-              </Pressable>
-              <Pressable
-                accessibilityRole="button"
-                onPress={confirmTime}
-                className="rounded-lg bg-primary px-4 py-2 active:opacity-70"
-              >
-                <Text className="font-poppins-medium text-sm text-white">
-                  Done
-                </Text>
-              </Pressable>
+
+            <View className="w-full max-w-sm items-center overflow-hidden rounded-2xl bg-white p-4">
+              <DateTimePicker
+                value={draftTime}
+                mode="time"
+                display="spinner"
+                is24Hour={settings.hourCycle === 24}
+                minuteInterval={settings.minuteInterval}
+                onChange={handleTimeChange}
+                style={{
+                  width: "100%",
+                  height: 160,
+                }}
+              />
+
+              <View className="mt-2 w-full flex-row justify-end gap-3">
+                <Pressable
+                  accessibilityRole="button"
+                  onPress={closePicker}
+                  className="rounded-lg px-4 py-2 active:opacity-70"
+                >
+                  <Text className="font-poppins-medium text-sm text-textMuted">
+                    Cancel
+                  </Text>
+                </Pressable>
+
+                <Pressable
+                  accessibilityRole="button"
+                  onPress={confirmTime}
+                  className="rounded-lg bg-primary px-4 py-2 active:opacity-70"
+                >
+                  <Text className="font-poppins-medium text-sm text-white">
+                    Done
+                  </Text>
+                </Pressable>
+              </View>
             </View>
           </View>
-        </View>
-      </Modal>
+        </Modal>
+      )}
     </>
   );
 }

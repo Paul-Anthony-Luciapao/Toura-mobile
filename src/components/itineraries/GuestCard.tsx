@@ -1,7 +1,7 @@
 import type { Guest } from "@/data/types";
 import { Ionicons } from "@expo/vector-icons";
 import DateTimePicker, {
-  type DateTimePickerEvent,
+  type DateTimePickerChangeEvent,
 } from "@react-native-community/datetimepicker";
 import React, { useState } from "react";
 import {
@@ -57,24 +57,20 @@ export default function GuestCard({
   };
 
   const handleAndroidDateChange = (
-    event: DateTimePickerEvent,
-    selectedDate?: Date,
+    _event: DateTimePickerChangeEvent,
+    selectedDate: Date,
   ) => {
     setShowDatePicker(false);
     setFocusedInput(null);
 
-    if (event.type === "set" && selectedDate) {
-      onChange("dateOfBirth", selectedDate);
-    }
+    onChange("dateOfBirth", selectedDate);
   };
 
   const handleIOSDateChange = (
-    _event: DateTimePickerEvent,
-    selectedDate?: Date,
+    _event: DateTimePickerChangeEvent,
+    selectedDate: Date,
   ) => {
-    if (selectedDate) {
-      setDraftDate(selectedDate);
-    }
+    setDraftDate(selectedDate);
   };
 
   const confirmIOSDate = () => {
@@ -191,7 +187,11 @@ export default function GuestCard({
               mode="date"
               display="default"
               maximumDate={new Date()}
-              onChange={handleAndroidDateChange}
+              onValueChange={handleAndroidDateChange}
+              onDismiss={() => {
+                setShowDatePicker(false);
+                setFocusedInput(null);
+              }}
             />
           )}
 
@@ -215,7 +215,7 @@ export default function GuestCard({
                     mode="date"
                     display="spinner"
                     maximumDate={new Date()}
-                    onChange={handleIOSDateChange}
+                    onValueChange={handleIOSDateChange}
                   />
 
                   <View className="mt-2 w-full flex-row justify-end gap-3">

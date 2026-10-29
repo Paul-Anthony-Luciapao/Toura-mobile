@@ -1,5 +1,7 @@
 import { PACKAGE_SPOTS } from "@/data/mockData";
 import type { Guest } from "@/data/types";
+import { getErrorMessage } from "@/services/api";
+import { createItineraryBooking } from "@/services/itineraryBookings";
 import { colors } from "@/styles/global";
 import Buttons from "@components/buttons/Buttons";
 import ItineraryHero from "@components/itineraries/ItineraryHero";
@@ -7,10 +9,8 @@ import Review from "@components/itineraries/itinerary-packages/Review";
 import { Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useRef, useState } from "react";
-import { Alert, Pressable, ScrollView, Text } from "react-native";
+import { Alert, Pressable, ScrollView, StatusBar, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { getErrorMessage } from "@/services/api";
-import { createItineraryBooking } from "@/services/itineraryBookings";
 
 type SerializedGuest = Omit<Guest, "dateOfBirth"> & {
   dateOfBirth: string | null;
@@ -47,7 +47,9 @@ function parseSerializedGuests(serialized?: string): {
     }
 
     const guests = parsed.map((guest) => {
-      const dateOfBirth = guest.dateOfBirth ? new Date(guest.dateOfBirth) : null;
+      const dateOfBirth = guest.dateOfBirth
+        ? new Date(guest.dateOfBirth)
+        : null;
       if (dateOfBirth && Number.isNaN(dateOfBirth.getTime())) {
         throw new Error("Invalid guest date of birth.");
       }
@@ -245,11 +247,18 @@ export default function ReviewScreen() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-background">
+    <SafeAreaView className="flex-1 bg-background" edges={["bottom"]}>
+      <StatusBar
+        hidden={false}
+        barStyle="light-content"
+        translucent={true}
+        backgroundColor="transparent"
+      />
       <ScrollView
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
-        contentContainerClassName="pb-10">
+        contentContainerClassName="pb-10"
+      >
         <ItineraryHero itinerary={itinerary} />
 
         <Pressable
@@ -257,7 +266,8 @@ export default function ReviewScreen() {
           hitSlop={8}
           accessibilityRole="button"
           accessibilityLabel="Go back"
-          className="absolute left-4 top-4 z-10 h-11 w-11 items-center justify-center rounded-full bg-black/30 active:opacity-70">
+          className="absolute left-4 top-4 z-10 h-11 w-11 items-center justify-center rounded-full bg-black/30 active:opacity-70"
+        >
           <Ionicons name="arrow-back" size={24} color={colors.white} />
         </Pressable>
 
@@ -265,10 +275,10 @@ export default function ReviewScreen() {
 
         {/* Confirm and proceed */}
         <Buttons
-          title={submitting ? "Saving booking..." : "Confirm and Proceed"}
+          title={"Continue"}
           onPress={() => void handleContinue()}
-          width="w-[225px]"
-          className="mt-5 self-center"
+          width="w-[350px]"
+          className="font-poppins mt-5 self-center bg-salmon-600"
         />
       </ScrollView>
     </SafeAreaView>

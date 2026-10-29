@@ -1,6 +1,7 @@
 export const colors = {
   // Brand — coral
   primary: "#E07856", // CTAs, active tab, links, accents
+  primarySalmon: "#FFA69B",
   primaryHover: "#C9613E",
   primaryPressed: "#A14E32",
   primaryDeep: "#7A3B26", // strong emphasis, disabled

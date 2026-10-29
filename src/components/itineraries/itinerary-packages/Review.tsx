@@ -3,14 +3,14 @@ import { colors } from "@/styles/global";
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
 import {
-  Alert,
-  KeyboardAvoidingView,
-  Modal,
-  Platform,
-  Pressable,
-  Text,
-  TextInput,
-  View,
+    Alert,
+    KeyboardAvoidingView,
+    Modal,
+    Platform,
+    Pressable,
+    Text,
+    TextInput,
+    View,
 } from "react-native";
 
 type GuestField = keyof Omit<Guest, "id">;
@@ -182,7 +182,8 @@ export default function Review({ guests, onUpdateGuest }: ReviewProps) {
         transparent
         animationType="slide"
         statusBarTranslucent
-        onRequestClose={closeDrawer}>
+        onRequestClose={closeDrawer}
+      >
         <View className="flex-1 justify-end">
           {/* Dark backdrop */}
           <Pressable
@@ -192,7 +193,8 @@ export default function Review({ guests, onUpdateGuest }: ReviewProps) {
           />
 
           <KeyboardAvoidingView
-            behavior={Platform.OS === "ios" ? "padding" : undefined}>
+            behavior={Platform.OS === "ios" ? "padding" : undefined}
+          >
             {/* Bottom drawer */}
             <View className="rounded-t-[28px] bg-white px-5 pb-8 pt-3">
               <View className="mb-5 items-center">
@@ -216,7 +218,8 @@ export default function Review({ guests, onUpdateGuest }: ReviewProps) {
                   hitSlop={10}
                   accessibilityRole="button"
                   accessibilityLabel="Close drawer"
-                  className="ml-3 h-10 w-10 items-center justify-center rounded-full bg-slate-100">
+                  className="ml-3 h-10 w-10 items-center justify-center rounded-full bg-slate-100"
+                >
                   <Ionicons name="close" size={22} color={colors.primary} />
                 </Pressable>
               </View>
@@ -261,7 +264,8 @@ export default function Review({ guests, onUpdateGuest }: ReviewProps) {
               <View className="mt-6 flex-row gap-3">
                 <Pressable
                   onPress={closeDrawer}
-                  className="flex-1 items-center justify-center rounded-xl border border-slate-300 py-4">
+                  className="flex-1 items-center justify-center rounded-xl border border-slate-300 py-4"
+                >
                   <Text className="font-poppins-semibold text-base text-textMain">
                     Cancel
                   </Text>
@@ -269,7 +273,8 @@ export default function Review({ guests, onUpdateGuest }: ReviewProps) {
 
                 <Pressable
                   onPress={saveChanges}
-                  className="flex-1 flex-row items-center justify-center gap-2 rounded-xl bg-primary py-4">
+                  className="flex-1 flex-row items-center justify-center gap-2 rounded-xl bg-salmon-600 py-4"
+                >
                   <Ionicons name="checkmark" size={20} color="#FFFFFF" />
 
                   <Text className="font-poppins-semibold text-base text-white">
@@ -301,7 +306,8 @@ function GuestDetail({
       <View className="flex-row items-center rounded-xl border border-slate-300 bg-slate-50">
         <Text
           numberOfLines={1}
-          className="flex-1 px-4 py-3 font-poppins text-base text-textMain">
+          className="flex-1 px-4 py-3 font-poppins text-base text-textMain"
+        >
           {value || "Not provided"}
         </Text>
 
@@ -310,7 +316,8 @@ function GuestDetail({
           hitSlop={8}
           accessibilityRole="button"
           accessibilityLabel={`Edit ${label}`}
-          className="flex-row items-center gap-1 px-3 py-3">
+          className="flex-row items-center gap-1 px-3 py-3"
+        >
           <Ionicons name="pencil-outline" size={18} color={colors.primary} />
 
           <Text className="font-poppins-medium text-sm text-primary">Edit</Text>

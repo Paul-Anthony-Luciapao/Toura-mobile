@@ -100,10 +100,10 @@ export default function RootLayout() {
             screenOptions={{
               headerShown: false,
               animation: "slide_from_bottom",
-            }}>
-            {/* Register the main navigation groups and standalone screens. */}
-            <Stack.Screen name="(auth)" />
+            }}
+          >
             <Stack.Screen name="(tabs)" />
+            <Stack.Screen name="(auth)" />
             <Stack.Screen name="settings" />
             <Stack.Screen name="hotels" />
             <Stack.Screen name="esim" />

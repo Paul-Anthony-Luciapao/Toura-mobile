@@ -6,10 +6,11 @@ Toura is a full-stack travel app with a React Native and Expo frontend and a Lar
 
 - Node.js 20 or later and npm
 - PHP 8.3 or later and Composer
+- MySQL
 - Git
 - Android Studio or Xcode if you plan to use an emulator or simulator
 
-The frontend uses Expo SDK 57. Use the Expo CLI through `npx expo`; a global Expo CLI installation is not required.
+The frontend uses Expo SDK 58. Use the Expo CLI through `npx expo`; a global Expo CLI installation is not required.
 
 ## Clone and install
 
@@ -28,33 +29,34 @@ composer install
 
 ## Configure the backend
 
-From the `backend/` directory, create the local environment file and application key:
+From `backend/`, create the local environment file and application key:
 
 ```bash
 cp .env.example .env
 php artisan key:generate
 ```
 
-The example environment uses SQLite. Create its database file if it does not exist, then run the migrations:
+The example environment uses MySQL with the database name `toura`. Create that database, then update the `DB_*` values in `backend/.env` to match your local MySQL installation:
 
-```bash
-touch database/database.sqlite
-php artisan migrate
+```sql
+CREATE DATABASE toura;
 ```
 
-Optionally seed the database with the included development data:
+Run the migrations and seed the sample data:
 
 ```bash
+php artisan migrate
 php artisan db:seed
+php artisan db:seed --class=TouristSpotSeeder
 ```
 
 Start the API from `backend/`:
 
 ```bash
-php artisan serve
+php artisan serve --host=0.0.0.0 --port=8000
 ```
 
-By default, Laravel serves at `http://127.0.0.1:8000`. You can check that it is reachable with:
+The API is available at `http://127.0.0.1:8000` on your computer. You can check it with:
 
 ```bash
 curl http://127.0.0.1:8000/api/test
@@ -62,39 +64,34 @@ curl http://127.0.0.1:8000/api/test
 
 ## Configure the frontend API URL
 
-The frontend reads `EXPO_PUBLIC_API_URL` from a root-level `.env` file. Copy the example and set its value to the address where the backend can be reached:
+The frontend reads `EXPO_PUBLIC_API_URL` from a root-level `.env` file. Copy the example and set the URL to the address where the backend can be reached:
 
 ```bash
 cd ..
 cp .env.example .env
 ```
 
-```dotenv
-EXPO_PUBLIC_API_URL=http://127.0.0.1:8000/api
-```
-
-The app adds `/v1` automatically, so do not include it in this value. `EXPO_PUBLIC_` values are embedded in the client bundle; do not put secrets in them.
-
-Choose a host address that is reachable from the frontend:
+Choose the appropriate host for your device:
 
 - iOS simulator or web on the same computer: `http://127.0.0.1:8000/api`
 - Android emulator: `http://10.0.2.2:8000/api`
 - Physical device: `http://<your-computer-lan-ip>:8000/api`
 
-For a physical device, connect it and the computer to the same network. If you change the environment file while Expo is running, restart the development server and clear its cache with `npx expo start --clear`.
+For a physical device, connect it and the computer to the same network, and allow incoming connections to port 8000 through the computer's firewall. The app adds `/v1` automatically, so do not include it in `EXPO_PUBLIC_API_URL`. `EXPO_PUBLIC_` values are embedded in the client bundle; do not put secrets in them.
+
+If you change the frontend `.env` while Expo is running, restart the development server so it reloads the value.
 
 ## Run the app
 
 Run the backend and frontend in separate terminals.
 
-Terminal 1:
+Terminal 1, from `backend/`:
 
 ```bash
-cd backend
-php artisan serve
+php artisan serve --host=0.0.0.0 --port=8000
 ```
 
-Terminal 2, from the repository root:
+Terminal 2, from the project root:
 
 ```bash
 npm start
@@ -121,47 +118,4 @@ php artisan migrate
 php artisan db:seed
 php artisan test
 php artisan serve
-```
-
-## Troubleshooting
-
-### The app cannot connect to Laravel
-
-Confirm the backend is running and that `EXPO_PUBLIC_API_URL` uses a host reachable from the device or emulator. Do not edit `src/services/api.ts` to change the local server address; configure the root `.env` file instead. Restart Expo after changing environment values.
-
-### Composer reports a PHP version conflict
-
-The Laravel backend requires PHP 8.3 or later. Check the PHP version used by your terminal with:
-
-```bash
-php -v
-composer -V
-```
-
-### Laravel cannot open the SQLite database
-
-Make sure `backend/.env` uses the SQLite connection and that `backend/database/database.sqlite` exists and is writable. Re-run the migrations after creating the file.
-
-## Project structure
-
-```text
-Toura-mobile/
-├── backend/
-│   ├── app/
-│   ├── database/
-│   ├── routes/
-│   ├── tests/
-│   ├── .env.example
-│   └── artisan
-├── src/
-│   ├── app/
-│   ├── components/
-│   ├── context/
-│   ├── data/
-│   ├── lib/
-│   └── services/
-├── .env.example
-├── app.json
-├── package.json
-└── README.md
 ```
