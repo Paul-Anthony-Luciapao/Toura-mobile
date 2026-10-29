@@ -1,13 +1,15 @@
 import axios from "axios";
 
-const FALLBACK_BASE_URL = "http://127.0.0.1:8000/api";
+const FALLBACK_BASE_URL = "http://192.168.1.17:8000/api/v1";
 
 function resolveBaseURL(): string {
   const rawBaseURL =
     process.env.EXPO_PUBLIC_API_URL ||
     process.env.EXPO_PUBLIC_API_BASE_URL ||
     FALLBACK_BASE_URL;
+
   const trimmed = rawBaseURL.trim().replace(/\/+$/, "");
+
   return trimmed.endsWith("/v1") ? trimmed : `${trimmed}/v1`;
 }
 
@@ -43,9 +45,11 @@ export function getErrorMessage(error: unknown): string {
     const data = error.response.data as
       | { message?: string; errors?: Record<string, string[]> }
       | undefined;
+
     const firstFieldError = data?.errors
       ? Object.values(data.errors)[0]?.[0]
       : undefined;
+
     if (firstFieldError) return firstFieldError;
     if (data?.message) return data.message;
 

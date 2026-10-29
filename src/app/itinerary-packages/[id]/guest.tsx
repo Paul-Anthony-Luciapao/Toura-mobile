@@ -7,7 +7,14 @@ import ItineraryHero from "@components/itineraries/ItineraryHero";
 import { Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
-import { Alert, Pressable, ScrollView, Text, View } from "react-native";
+import {
+    Alert,
+    Pressable,
+    ScrollView,
+    StatusBar,
+    Text,
+    View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const createGuest = (): Guest => ({
@@ -132,10 +139,17 @@ export default function GuestScreen() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-background">
+    <SafeAreaView className="flex-1 bg-background" edges={["bottom"]}>
+      <StatusBar
+        hidden={false}
+        barStyle="light-content"
+        translucent={true}
+        backgroundColor="transparent"
+      />
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerClassName="pb-10">
+        contentContainerClassName="pb-10"
+      >
         <ItineraryHero itinerary={itinerary} />
 
         {/* Back button */}
@@ -144,7 +158,8 @@ export default function GuestScreen() {
           hitSlop={8}
           accessibilityRole="button"
           accessibilityLabel="Go back"
-          className="absolute left-4 top-4 z-10 h-11 w-11 items-center justify-center rounded-full bg-black/30 active:opacity-70">
+          className="absolute left-4 top-4 z-10 h-11 w-11 items-center justify-center rounded-full bg-black/30 active:opacity-70"
+        >
           <Ionicons name="arrow-back" size={24} color={colors.white} />
         </Pressable>
 
@@ -169,27 +184,30 @@ export default function GuestScreen() {
               onRemove={() => removeGuest(guest.id)}
             />
           ))}
-
-          {/* Add Guest */}
-          <Pressable
-            onPress={addGuest}
-            className="flex-row items-center justify-center rounded-xl border border-dashed border-primary py-4">
-            <Ionicons name="add-circle-outline" size={21} color="#FFA69B" />
-
-            <Text className="ml-2 font-poppins-semibold text-primary">
-              Add another guest
-            </Text>
-          </Pressable>
-
-          {/* Confirm and Proceed */}
-          <Button
-            title="Confirm and Proceed"
-            onPress={handleContinue}
-            width="w-[360px]"
-            className="mt-2 self-center"
-          />
         </View>
       </ScrollView>
+
+      <View className="bg-background items-center justify-center px-4 py-4">
+        {/* Add Guest */}
+        <Pressable
+          onPress={addGuest}
+          className="w-full flex-row items-center justify-center rounded-xl border border-dashed border-salmon-600 py-4"
+        >
+          <Ionicons name="add-circle-outline" size={21} color="#D66957" />
+
+          <Text className="ml-2 font-poppins-semibold text-salmon-600">
+            Add another guest
+          </Text>
+        </Pressable>
+
+        {/* Confirm and Proceed */}
+        <Button
+          title="Confirm and Proceed"
+          onPress={handleContinue}
+          width="w-full"
+          className="mt-2 self-center bg-salmon-600"
+        />
+      </View>
     </SafeAreaView>
   );
 }

@@ -27,14 +27,20 @@ export default function TabsLayout() {
 
         // Mount each tab only when it is first accessed.
         lazy: true,
-      }}>
+      }}
+    >
       {/* Main entry point for browsing the application's home screen. */}
+
       <Tabs.Screen
         name="index"
         options={{
           title: "Home",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="home-outline" size={24} color={color} />
+            <Ionicons
+              name="home-outline"
+              size={24}
+              color={typeof color === "string" ? color : "#1F2937"}
+            />
           ),
         }}
       />
@@ -45,7 +51,11 @@ export default function TabsLayout() {
         options={{
           title: "Itineraries",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="clipboard-outline" size={24} color={color} />
+            <Ionicons
+              name="clipboard-outline"
+              size={24}
+              color={typeof color === "string" ? color : "#1F2937"}
+            />
           ),
         }}
       />
@@ -56,7 +66,11 @@ export default function TabsLayout() {
         options={{
           title: "Messages",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="chatbubble-outline" size={24} color={color} />
+            <Ionicons
+              name="chatbubble-outline"
+              size={24}
+              color={typeof color === "string" ? color : "#1F2937"}
+            />
           ),
         }}
       />
@@ -67,7 +81,11 @@ export default function TabsLayout() {
         options={{
           title: "Profile",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="person-outline" size={24} color={color} />
+            <Ionicons
+              name="person-outline"
+              size={24}
+              color={typeof color === "string" ? color : "#1F2937"}
+            />
           ),
         }}
       />
@@ -78,7 +96,11 @@ export default function TabsLayout() {
         options={{
           title: "More",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="ellipsis-horizontal" size={24} color={color} />
+            <Ionicons
+              name="ellipsis-horizontal"
+              size={24}
+              color={typeof color === "string" ? color : "#1F2937"}
+            />
           ),
         }}
       />

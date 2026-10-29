@@ -1,18 +1,11 @@
-import Buttons from "@/components/buttons/Buttons";
+import Otp from "@/components/itineraries/itinerary-packages/otp/Otp";
 import { PACKAGE_SPOTS } from "@/data/mockData";
 import { colors } from "@/styles/global";
 import ItineraryHero from "@components/itineraries/ItineraryHero";
 import { Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
-import React, { useState } from "react";
-import {
-  Alert,
-  Pressable,
-  ScrollView,
-  Text,
-  TextInput,
-  View,
-} from "react-native";
+import React from "react";
+import { Pressable, ScrollView, StatusBar, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 function getParam(value?: string | string[]) {
@@ -36,24 +29,13 @@ export default function OtpScreen() {
   }>();
 
   const packageId = getParam(params.id);
+
   const itinerary = PACKAGE_SPOTS.find(
     (spot) => String(spot.id) === String(packageId),
   );
-  const [code, setCode] = useState("");
 
-  if (!itinerary || !packageId) {
-    return (
-      <SafeAreaView className="flex-1 items-center justify-center bg-background">
-        <Text className="font-poppins-semibold text-[16px] text-textMain">
-          Itinerary package not found.
-        </Text>
-      </SafeAreaView>
-    );
-  }
-
-  const confirmOtp = () => {
-    if (code !== "123456") {
-      Alert.alert("Incorrect demo code", "Enter 123456 to continue.");
+  const handleVerify = () => {
+    if (!packageId) {
       return;
     }
 
@@ -61,27 +43,50 @@ export default function OtpScreen() {
       pathname: "/itinerary-packages/[id]/success",
       params: {
         id: packageId,
-        bookingId: getParam(params.bookingId),
-        bookingReference: getParam(params.bookingReference),
-        totalPrice: getParam(params.totalPrice),
+        bookingId: getParam(params.bookingId) ?? "",
+        bookingReference: getParam(params.bookingReference) ?? "",
+        totalPrice: getParam(params.totalPrice) ?? "",
         guestCount: getParam(params.guestCount) ?? "1",
-        arrivalDate: getParam(params.arrivalDate),
-        arrivalTime: getParam(params.arrivalTime),
-        departureDate: getParam(params.departureDate),
-        departureTime: getParam(params.departureTime),
-        cardLast4: getParam(params.cardLast4),
-        paymentMethod: getParam(params.paymentMethod),
-        paymentMethodName: getParam(params.paymentMethodName),
+        arrivalDate: getParam(params.arrivalDate) ?? "",
+        arrivalTime: getParam(params.arrivalTime) ?? "",
+        departureDate: getParam(params.departureDate) ?? "",
+        departureTime: getParam(params.departureTime) ?? "",
+        cardLast4: getParam(params.cardLast4) ?? "",
+        paymentMethod: getParam(params.paymentMethod) ?? "",
+        paymentMethodName: getParam(params.paymentMethodName) ?? "",
       },
     });
   };
 
+  if (!itinerary || !packageId) {
+    return (
+      <SafeAreaView className="flex-1 items-center justify-center bg-background">
+        <Text className="font-poppins-semibold text-base text-textMain">
+          Itinerary package not found.
+        </Text>
+
+        <Pressable
+          onPress={() => router.back()}
+          className="mt-4 rounded-xl bg-primary px-5 py-3"
+        >
+          <Text className="font-poppins-medium text-white">Go back</Text>
+        </Pressable>
+      </SafeAreaView>
+    );
+  }
+
   return (
-    <SafeAreaView className="flex-1 bg-background" edges={["top", "bottom"]}>
+    <SafeAreaView className="flex-1 bg-background" edges={["bottom"]}>
+      <StatusBar
+        hidden={false}
+        barStyle="light-content"
+        translucent={true}
+        backgroundColor="transparent"
+      />
       <ScrollView
         className="flex-1"
-        keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
       >
         <ItineraryHero itinerary={itinerary} />
 
@@ -90,68 +95,16 @@ export default function OtpScreen() {
           hitSlop={8}
           accessibilityRole="button"
           accessibilityLabel="Go back"
-          className="absolute left-4 top-4 z-10 h-11 w-11 items-center justify-center rounded-full bg-black/30 active:opacity-70"
+          className="absolute left-4 top-4 z-10 h-11 w-11 items-center justify-center rounded-full bg-black/30"
         >
           <Ionicons name="arrow-back" size={24} color={colors.white} />
         </Pressable>
 
-        <View className="-mt-5 px-5 pb-10">
-          <View className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-            <Text className="text-center font-poppins-semibold text-xl text-textMain">
-              One-Time Password (OTP)
-            </Text>
-            <Text className="mt-3 text-center font-poppins text-sm text-slate-500">
-              This is a demo verification screen. Enter the displayed demo code
-              to continue.
-            </Text>
-
-            <View className="mt-6 flex-row justify-center gap-2">
-              {Array.from({ length: 6 }, (_, index) => (
-                <View
-                  key={index}
-                  className="h-12 w-10 items-center justify-center rounded-md bg-teal-50"
-                >
-                  <Text className="font-poppins-semibold text-xl text-primary">
-                    {code[index] ?? ""}
-                  </Text>
-                </View>
-              ))}
-              <TextInput
-                value={code}
-                onChangeText={(value) =>
-                  setCode(value.replace(/\D/g, "").slice(0, 6))
-                }
-                keyboardType="number-pad"
-                maxLength={6}
-                accessibilityLabel="Six digit demo OTP"
-                className="absolute h-12 w-[280px] opacity-[0.02]"
-              />
-            </View>
-
-            <Text className="mt-3 text-center font-poppins text-xs text-slate-500">
-              Demo OTP: 123456
-            </Text>
-
-            <Pressable
-              onPress={() =>
-                Alert.alert(
-                  "Demo OTP",
-                  "No message was sent. Use 123456 to continue.",
-                )
-              }
-              className="mt-5 items-center"
-            >
-              <Text className="font-poppins-medium text-sm text-primary">
-                Resend demo code
-              </Text>
-            </Pressable>
-          </View>
+        {/* White content with rounded top corners */}
+        <View className="mt-[-24px] rounded-t-3xl bg-white px-5 pt-6 pb-10 overflow-hidden">
+          <Otp onVerify={handleVerify} />
         </View>
       </ScrollView>
-
-      <View className="bg-background px-4 py-3">
-        <Buttons title="Continue" onPress={confirmOtp} width="w-full" />
-      </View>
     </SafeAreaView>
   );
 }
