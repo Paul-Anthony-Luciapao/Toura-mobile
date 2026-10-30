@@ -41,11 +41,7 @@ export default function VerificationScreen() {
   if (!packageId || !itinerary) {
     return (
       <SafeAreaView className="flex-1 items-center justify-center bg-background">
-        <StatusBar
-          hidden={false}
-          barStyle="dark-content"
-          backgroundColor="#F5F5F5"
-        />
+        <StatusBar hidden={false} barStyle="dark-content" />
         <Text className="font-poppins-semibold text-[16px] text-textMain">
           Itinerary package not found.
         </Text>
@@ -55,12 +51,7 @@ export default function VerificationScreen() {
 
   return (
     <SafeAreaView className="flex-1 bg-background" edges={["bottom"]}>
-      <StatusBar
-        hidden={false}
-        barStyle="light-content"
-        translucent={true}
-        backgroundColor="transparent"
-      />
+      <StatusBar hidden={false} barStyle="light-content" />
 
       <View className="flex-1">
         <ScrollView
@@ -77,7 +68,7 @@ export default function VerificationScreen() {
             hitSlop={8}
             accessibilityRole="button"
             accessibilityLabel="Go back"
-            className="absolute left-4 top-4 z-10 h-11 w-11 items-center justify-center rounded-full bg-black/30 active:opacity-70"
+            className="absolute left-4 top-12 z-10 h-11 w-11 items-center justify-center rounded-full bg-black/30 active:opacity-70"
           >
             <Ionicons name="arrow-back" size={24} color={colors.white} />
           </Pressable>

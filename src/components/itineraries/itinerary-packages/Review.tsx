@@ -10,7 +10,7 @@ import {
     Pressable,
     Text,
     TextInput,
-    View,
+    View
 } from "react-native";
 
 type GuestField = keyof Omit<Guest, "id">;
@@ -122,61 +122,103 @@ export default function Review({ guests, onUpdateGuest }: ReviewProps) {
   };
 
   return (
-    <View className="px-5">
-      <Text className="mt-6 font-poppins-semibold text-2xl text-textMain">
-        Guest Information
-      </Text>
+    <View className="flex-1 bg-background px-5">
+      {/* Section heading */}
+      <View className="mb-2 mt-7">
+        <Text className="font-poppins-semibold text-2xl text-textMain">
+          Guest Information
+        </Text>
 
-      <Text className="mt-2 font-poppins text-slate-500">
-        Review or edit each guest&apos;s details.
-      </Text>
+        <Text className="mt-2 font-poppins text-sm text-slate-500">
+          Review or edit each guest's details before continuing.
+        </Text>
+      </View>
 
+      {/* Guest cards */}
       {guests.map((guest, index) => (
-        <View key={guest.id} className="mt-5 rounded-2xl bg-white p-5">
-          <Text className="mb-5 font-poppins-semibold text-xl text-textMain">
-            Guest {index + 1}
-          </Text>
+        <View
+          key={guest.id}
+          className="mt-5 rounded-2xl border border-slate-200 bg-white p-5"
+        >
+          {/* Guest header */}
+          <View className="mb-5 flex-row items-center">
+            <View className="mr-3 h-11 w-11 items-center justify-center rounded-full bg-salmon-600/10">
+              <Ionicons
+                name="person-outline"
+                size={22}
+                color={colors.primary}
+              />
+            </View>
 
-          <GuestDetail
-            label="First Name"
-            value={guest.firstName}
-            onEdit={() => openDrawer(guest, "firstName")}
-          />
+            <View className="flex-1">
+              <Text className="font-poppins-semibold text-lg text-textMain">
+                Guest {index + 1}
+              </Text>
 
-          <GuestDetail
-            label="Last Name"
-            value={guest.lastName}
-            onEdit={() => openDrawer(guest, "lastName")}
-          />
+              <Text className="font-poppins text-xs text-slate-500">
+                Personal information
+              </Text>
+            </View>
 
-          <GuestDetail
-            label="Date of Birth"
-            value={guest.dateOfBirth ? formatDate(guest.dateOfBirth) : ""}
-            onEdit={() => openDrawer(guest, "dateOfBirth")}
-          />
+            <View className="rounded-full bg-slate-100 px-3 py-1">
+              <Text className="font-poppins-medium text-xs text-slate-600">
+                Guest
+              </Text>
+            </View>
+          </View>
 
-          <GuestDetail
-            label="Phone"
-            value={guest.phone}
-            onEdit={() => openDrawer(guest, "phone")}
-          />
+          <View className="h-px bg-slate-100" />
 
-          <GuestDetail
-            label="Email"
-            value={guest.email}
-            onEdit={() => openDrawer(guest, "email")}
-          />
+          <View className="mt-5">
+            <GuestDetail
+              label="First Name"
+              value={guest.firstName}
+              onEdit={() => openDrawer(guest, "firstName")}
+            />
+
+            <GuestDetail
+              label="Last Name"
+              value={guest.lastName}
+              onEdit={() => openDrawer(guest, "lastName")}
+            />
+
+            <GuestDetail
+              label="Date of Birth"
+              value={guest.dateOfBirth ? formatDate(guest.dateOfBirth) : ""}
+              onEdit={() => openDrawer(guest, "dateOfBirth")}
+            />
+
+            <GuestDetail
+              label="Phone"
+              value={guest.phone}
+              onEdit={() => openDrawer(guest, "phone")}
+            />
+
+            <GuestDetail
+              label="Email"
+              value={guest.email}
+              onEdit={() => openDrawer(guest, "email")}
+            />
+          </View>
         </View>
       ))}
 
+      {/* Empty state */}
       {guests.length === 0 && (
-        <View className="mt-10 items-center">
-          <Text className="font-poppins text-slate-500">
-            No guest information found.
+        <View className="mt-10 items-center rounded-2xl bg-white p-8">
+          <Ionicons name="people-outline" size={40} color="#94A3B8" />
+
+          <Text className="mt-3 font-poppins-semibold text-base text-textMain">
+            No guest information found
+          </Text>
+
+          <Text className="mt-1 text-center font-poppins text-sm text-slate-500">
+            Guest details will appear here.
           </Text>
         </View>
       )}
 
+      {/* Edit modal */}
       <Modal
         visible={drawerVisible}
         transparent
@@ -185,22 +227,23 @@ export default function Review({ guests, onUpdateGuest }: ReviewProps) {
         onRequestClose={closeDrawer}
       >
         <View className="flex-1 justify-end">
-          {/* Dark backdrop */}
+          {/* Backdrop */}
           <Pressable
-            className="absolute inset-0 bg-black/40"
+            className="absolute inset-0 bg-black/50"
             onPress={closeDrawer}
             accessibilityLabel="Close edit drawer"
           />
 
           <KeyboardAvoidingView
-            behavior={Platform.OS === "ios" ? "padding" : undefined}
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
           >
-            {/* Bottom drawer */}
-            <View className="rounded-t-[28px] bg-white px-5 pb-8 pt-3">
+            <View className="rounded-t-[28px] border-t border-slate-200 bg-white px-5 pb-8 pt-3">
+              {/* Drawer indicator */}
               <View className="mb-5 items-center">
                 <View className="h-1.5 w-12 rounded-full bg-slate-300" />
               </View>
 
+              {/* Drawer header */}
               <View className="mb-6 flex-row items-center justify-between">
                 <View className="flex-1">
                   <Text className="font-poppins-semibold text-xl text-textMain">
@@ -224,10 +267,12 @@ export default function Review({ guests, onUpdateGuest }: ReviewProps) {
                 </Pressable>
               </View>
 
+              {/* Input label */}
               <Text className="mb-2 font-poppins-medium text-sm text-textMain">
                 {selectedField ? fieldLabels[selectedField] : ""}
               </Text>
 
+              {/* Input */}
               <TextInput
                 value={draftValue}
                 onChangeText={setDraftValue}
@@ -238,7 +283,11 @@ export default function Review({ guests, onUpdateGuest }: ReviewProps) {
                       ? "Enter email address"
                       : selectedField === "phone"
                         ? "Enter phone number"
-                        : `Enter ${selectedField ? fieldLabels[selectedField].toLowerCase() : "value"}`
+                        : `Enter ${
+                            selectedField
+                              ? fieldLabels[selectedField].toLowerCase()
+                              : "value"
+                          }`
                 }
                 placeholderTextColor="#94A3B8"
                 autoFocus
@@ -261,9 +310,11 @@ export default function Review({ guests, onUpdateGuest }: ReviewProps) {
                 </Text>
               )}
 
+              {/* Drawer actions */}
               <View className="mt-6 flex-row gap-3">
                 <Pressable
                   onPress={closeDrawer}
+                  accessibilityRole="button"
                   className="flex-1 items-center justify-center rounded-xl border border-slate-300 py-4"
                 >
                   <Text className="font-poppins-semibold text-base text-textMain">
@@ -273,6 +324,7 @@ export default function Review({ guests, onUpdateGuest }: ReviewProps) {
 
                 <Pressable
                   onPress={saveChanges}
+                  accessibilityRole="button"
                   className="flex-1 flex-row items-center justify-center gap-2 rounded-xl bg-salmon-600 py-4"
                 >
                   <Ionicons name="checkmark" size={20} color="#FFFFFF" />
@@ -290,6 +342,7 @@ export default function Review({ guests, onUpdateGuest }: ReviewProps) {
   );
 }
 
+/* Guest detail row */
 function GuestDetail({
   label,
   value,
@@ -303,10 +356,10 @@ function GuestDetail({
     <View className="mb-4">
       <Text className="mb-2 font-poppins text-sm text-slate-500">{label}</Text>
 
-      <View className="flex-row items-center rounded-xl border border-slate-300 bg-slate-50">
+      <View className="flex-row items-center rounded-xl border border-slate-200 bg-slate-50">
         <Text
           numberOfLines={1}
-          className="flex-1 px-4 py-3 font-poppins text-base text-textMain"
+          className="flex-1 px-4 py-3 font-poppins text-sm text-textMain"
         >
           {value || "Not provided"}
         </Text>
@@ -318,7 +371,7 @@ function GuestDetail({
           accessibilityLabel={`Edit ${label}`}
           className="flex-row items-center gap-1 px-3 py-3"
         >
-          <Ionicons name="pencil-outline" size={18} color={colors.primary} />
+          <Ionicons name="pencil-outline" size={17} color={colors.primary} />
 
           <Text className="font-poppins-medium text-sm text-primary">Edit</Text>
         </Pressable>
@@ -327,6 +380,7 @@ function GuestDetail({
   );
 }
 
+/* Date formatter */
 function formatDate(value: Date | string): string {
   const date = typeof value === "string" ? parseDate(value) : value;
 
@@ -341,6 +395,7 @@ function formatDate(value: Date | string): string {
   return `${month}/${day}/${year}`;
 }
 
+/* Date parser */
 function parseDate(value: string): Date | null {
   const match = value.trim().match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
 
