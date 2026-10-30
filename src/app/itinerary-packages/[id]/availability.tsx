@@ -8,12 +8,12 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
 import {
-  Alert,
-  LayoutChangeEvent,
-  Pressable,
-  ScrollView,
-  Text,
-  View,
+    Alert,
+    LayoutChangeEvent,
+    Pressable,
+    ScrollView,
+    Text,
+    View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -144,7 +144,7 @@ export default function AvailabilityScreen() {
             hitSlop={8}
             accessibilityRole="button"
             accessibilityLabel="Go back"
-            className="absolute left-4 top-4 z-10 h-11 w-11 items-center justify-center rounded-full bg-black/30 active:opacity-70"
+            className="absolute left-4 top-12 z-10 h-11 w-11 items-center justify-center rounded-full bg-black/30 active:opacity-70"
           >
             <Ionicons name="arrow-back" size={24} color={colors.white} />
           </Pressable>
