@@ -3,6 +3,7 @@ import {
     PACKAGE_RESORTS,
     PACKAGE_SPOTS,
 } from "@/data/mockData";
+import { getPackageSpotImage } from "@/data/packageImages";
 import { formatCurrency, formatReviewCount } from "@/lib/formatters";
 import { colors } from "@/styles/global";
 import { Ionicons } from "@expo/vector-icons";
@@ -82,7 +83,7 @@ export default function CurrentItineraryPackage() {
     spot && resort
       ? [
           ...new Set([
-            spot.image,
+            getPackageSpotImage(spot.image),
             resort.coverImage,
             ...resort.images,
             ...resort.accommodations.map((room) => room.image),
@@ -151,10 +152,10 @@ export default function CurrentItineraryPackage() {
               );
             }}
           >
-            {gallery.map((image) => (
+            {gallery.map((image, index) => (
               <Image
-                key={image}
-                source={{ uri: image }}
+                key={index}
+                source={typeof image === "string" ? { uri: image } : image}
                 resizeMode="cover"
                 style={{
                   width,

@@ -1,4 +1,5 @@
-import { TouristSpot } from "@/data/types";
+import { getPackageSpotImage } from "@/data/packageImages";
+import type { TouristSpot } from "@/data/types";
 import React from "react";
 import { Image, Text, View } from "react-native";
 
@@ -10,7 +11,7 @@ export default function ItineraryHero({ itinerary }: Props) {
   return (
     <View className="relative w-full">
       <Image
-        source={{ uri: itinerary.image }}
+        source={getPackageSpotImage(itinerary.image)}
         resizeMode="cover"
         className="h-[240px] w-full bg-slate-200"
       />

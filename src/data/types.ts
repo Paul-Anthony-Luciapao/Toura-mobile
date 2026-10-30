@@ -76,7 +76,7 @@ export type TouristSpot = {
   municipality: string;
   category: string;
   description: string;
-  image: string;
+  image: ImageSourcePropType | string;
   tags: string[];
   rating: number;
   reviewCount: number;
