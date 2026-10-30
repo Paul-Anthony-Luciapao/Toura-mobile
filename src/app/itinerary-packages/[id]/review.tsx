@@ -26,6 +26,7 @@ function isSerializedGuest(value: unknown): value is SerializedGuest {
   if (typeof value !== "object" || value === null) return false;
 
   const guest = value as Record<string, unknown>;
+
   return (
     typeof guest.id === "string" &&
     typeof guest.firstName === "string" &&
@@ -36,14 +37,26 @@ function isSerializedGuest(value: unknown): value is SerializedGuest {
   );
 }
 
+const createGuest = (): Guest => ({
+  id: `${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
+  firstName: "",
+  lastName: "",
+  dateOfBirth: null,
+  phone: "",
+  email: "",
+});
+
 function parseSerializedGuests(serialized?: string): {
   guests: Guest[];
   failed: boolean;
 } {
-  if (!serialized) return { guests: [createGuest()], failed: false };
+  if (!serialized) {
+    return { guests: [createGuest()], failed: false };
+  }
 
   try {
     const parsed: unknown = JSON.parse(serialized);
+
     if (
       !Array.isArray(parsed) ||
       parsed.length === 0 ||
@@ -56,6 +69,7 @@ function parseSerializedGuests(serialized?: string): {
       const dateOfBirth = guest.dateOfBirth
         ? new Date(guest.dateOfBirth)
         : null;
+
       if (dateOfBirth && Number.isNaN(dateOfBirth.getTime())) {
         throw new Error("Invalid guest date of birth.");
       }
@@ -71,32 +85,28 @@ function parseSerializedGuests(serialized?: string): {
 
 function toLocalDate(value: string): string | null {
   const date = new Date(value);
+
   if (Number.isNaN(date.getTime())) return null;
 
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0");
   const day = String(date.getDate()).padStart(2, "0");
+
   return `${year}-${month}-${day}`;
 }
 
 function toLocalTime(value?: string): string | null {
   if (!value) return null;
+
   const date = new Date(value);
+
   if (Number.isNaN(date.getTime())) return null;
 
   const hours = String(date.getHours()).padStart(2, "0");
   const minutes = String(date.getMinutes()).padStart(2, "0");
+
   return `${hours}:${minutes}`;
 }
-
-const createGuest = (): Guest => ({
-  id: `${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
-  firstName: "",
-  lastName: "",
-  dateOfBirth: null,
-  phone: "",
-  email: "",
-});
 
 export default function ReviewScreen() {
   const {
@@ -116,15 +126,19 @@ export default function ReviewScreen() {
   }>();
 
   const packageId = Array.isArray(id) ? id[0] : id;
+
   const arrivalDateParam = Array.isArray(arrivalDate)
     ? arrivalDate[0]
     : arrivalDate;
+
   const arrivalTimeParam = Array.isArray(arrivalTime)
     ? arrivalTime[0]
     : arrivalTime;
+
   const departureDateParam = Array.isArray(departureDate)
     ? departureDate[0]
     : departureDate;
+
   const departureTimeParam = Array.isArray(departureTime)
     ? departureTime[0]
     : departureTime;
@@ -138,8 +152,11 @@ export default function ReviewScreen() {
   );
 
   const [guestData] = useState(() => parseSerializedGuests(serializedGuests));
+
   const [guests, setGuests] = useState<Guest[]>(guestData.guests);
+
   const [submitting, setSubmitting] = useState(false);
+
   const submissionInProgress = useRef(false);
 
   useEffect(() => {
@@ -163,18 +180,7 @@ export default function ReviewScreen() {
     );
   };
 
-  if (!packageId || !itinerary) {
-    return (
-      <SafeAreaView className="flex-1 items-center justify-center bg-background">
-        <Text className="font-poppins-semibold text-[16px] text-textMain">
-          Itinerary package not found.
-        </Text>
-      </SafeAreaView>
-    );
-  }
-
   const handleContinue = async () => {
-    // A ref blocks rapid repeat taps before React can render the disabled/loading state.
     if (submissionInProgress.current) return;
 
     const invalidGuest = guests.some(
@@ -184,6 +190,7 @@ export default function ReviewScreen() {
         !guest.dateOfBirth ||
         (!guest.phone.trim() && !guest.email.trim()),
     );
+
     if (invalidGuest) {
       Alert.alert(
         "Guest information required",
@@ -195,9 +202,11 @@ export default function ReviewScreen() {
     const arrivalDateValue = arrivalDateParam
       ? toLocalDate(arrivalDateParam)
       : null;
+
     const departureDateValue = departureDateParam
       ? toLocalDate(departureDateParam)
       : null;
+
     if (
       !arrivalDateValue ||
       !departureDateValue ||
@@ -212,9 +221,10 @@ export default function ReviewScreen() {
 
     submissionInProgress.current = true;
     setSubmitting(true);
+
     try {
       const booking = await createItineraryBooking({
-        itinerary_package_id: packageId,
+        itinerary_package_id: packageId!,
         arrival_date: arrivalDateValue,
         arrival_time: toLocalTime(arrivalTimeParam),
         departure_date: departureDateValue,
@@ -233,7 +243,7 @@ export default function ReviewScreen() {
       router.push({
         pathname: "/itinerary-packages/[id]/payment",
         params: {
-          id: packageId,
+          id: packageId!,
           bookingId: String(booking.id),
           bookingReference: booking.booking_reference,
           totalPrice: booking.total_price,
@@ -252,35 +262,57 @@ export default function ReviewScreen() {
     }
   };
 
+  if (!packageId || !itinerary) {
+    return (
+      <SafeAreaView className="flex-1 bg-background" edges={["top", "bottom"]}>
+        <StatusBar barStyle="dark-content" />
+        <Text className="font-poppins-semibold text-[16px] text-textMain">
+          Itinerary package not found.
+        </Text>
+      </SafeAreaView>
+    );
+  }
+
   return (
     <SafeAreaView className="flex-1 bg-background" edges={["bottom"]}>
-      <StatusBar hidden={false} barStyle="light-content" />
+      <StatusBar barStyle="light-content" />
+
       <ScrollView
+        className="flex-1"
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
-        contentContainerClassName="pb-10"
+        contentContainerStyle={{ paddingBottom: 24 }}
       >
-        <ItineraryHero itinerary={itinerary} />
+        {/* Hero Image */}
+        <View className="relative w-full">
+          <ItineraryHero itinerary={itinerary} />
 
-        <Pressable
-          onPress={() => router.back()}
-          hitSlop={8}
-          accessibilityRole="button"
-          accessibilityLabel="Go back"
-          className="absolute left-4 top-4 z-10 h-11 w-11 items-center justify-center rounded-full bg-black/30 active:opacity-70"
-        >
-          <Ionicons name="arrow-back" size={24} color={colors.white} />
-        </Pressable>
+          {/* Back Button - same as Payment.tsx */}
+          <Pressable
+            onPress={() => router.back()}
+            hitSlop={8}
+            accessibilityRole="button"
+            accessibilityLabel="Go back"
+            className="absolute left-4 top-12 z-20 h-11 w-11 items-center justify-center rounded-full bg-black/30 active:opacity-70"
+          >
+            <Ionicons name="arrow-back" size={24} color={colors.white} />
+          </Pressable>
+        </View>
 
-        <Review guests={guests} onUpdateGuest={updateGuest} />
+        {/* Review Content */}
+        <View className="-mt-5 min-h-[520px] rounded-t-[30px] bg-white px-5 pb-8 pt-5">
+          <Review guests={guests} onUpdateGuest={updateGuest} />
+        </View>
       </ScrollView>
-      <View className="bg-background items-center justify-center px-4 py-4">
+
+      {/* Continue Button */}
+      <View className="items-center justify-center bg-white px-5 py-3">
         <Pressable
           onPress={() => void handleContinue()}
           disabled={submitting}
           accessibilityRole="button"
           accessibilityLabel="Continue"
-          className={`mt-5 w-[350px] items-center justify-center rounded-xl bg-salmon-600 py-4 ${
+          className={`w-full items-center justify-center rounded-xl bg-salmon-600 py-4 ${
             submitting ? "opacity-50" : "active:opacity-70"
           }`}
         >
