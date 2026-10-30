@@ -1,5 +1,7 @@
 import { formatCurrency, formatReviewCount } from "@/lib/formatters";
 import { colors } from "@/styles/global";
+import { getPackageSpotImage } from "@/data/packageImages";
+import type { TouristSpot } from "@/data/types";
 import { Ionicons } from "@expo/vector-icons";
 import { Link } from "expo-router";
 import { Image, Pressable, Text, View } from "react-native";
@@ -8,7 +10,7 @@ export type TouristSpotCardData = {
   id: string;
   name: string;
   municipality: string;
-  image: string;
+  image: TouristSpot["image"];
   rating: number;
   reviewCount: number;
   price: number;
@@ -32,7 +34,7 @@ export default function TouristSpotCard({
     >
       {/* Image */}
       <Image
-        source={{ uri: spot.image }}
+        source={getPackageSpotImage(spot.image)}
         resizeMode="cover"
         className="h-[180px] w-full bg-slate-200"
       />
