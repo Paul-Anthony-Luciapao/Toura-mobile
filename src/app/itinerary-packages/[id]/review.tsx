@@ -3,13 +3,19 @@ import type { Guest } from "@/data/types";
 import { getErrorMessage } from "@/services/api";
 import { createItineraryBooking } from "@/services/itineraryBookings";
 import { colors } from "@/styles/global";
-import Buttons from "@components/buttons/Buttons";
 import ItineraryHero from "@components/itineraries/ItineraryHero";
 import Review from "@components/itineraries/itinerary-packages/Review";
 import { Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
-import { useEffect, useRef, useState } from "react";
-import { Alert, Pressable, ScrollView, StatusBar, Text } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import {
+    Alert,
+    Pressable,
+    ScrollView,
+    StatusBar,
+    Text,
+    View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 type SerializedGuest = Omit<Guest, "dateOfBirth"> & {
@@ -248,12 +254,7 @@ export default function ReviewScreen() {
 
   return (
     <SafeAreaView className="flex-1 bg-background" edges={["bottom"]}>
-      <StatusBar
-        hidden={false}
-        barStyle="light-content"
-        translucent={true}
-        backgroundColor="transparent"
-      />
+      <StatusBar hidden={false} barStyle="light-content" />
       <ScrollView
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
@@ -272,15 +273,22 @@ export default function ReviewScreen() {
         </Pressable>
 
         <Review guests={guests} onUpdateGuest={updateGuest} />
-
-        {/* Confirm and proceed */}
-        <Buttons
-          title={"Continue"}
-          onPress={() => void handleContinue()}
-          width="w-[350px]"
-          className="font-poppins mt-5 self-center bg-salmon-600"
-        />
       </ScrollView>
+      <View className="bg-background items-center justify-center px-4 py-4">
+        <Pressable
+          onPress={() => void handleContinue()}
+          disabled={submitting}
+          accessibilityRole="button"
+          accessibilityLabel="Continue"
+          className={`mt-5 w-[350px] items-center justify-center rounded-xl bg-salmon-600 py-4 ${
+            submitting ? "opacity-50" : "active:opacity-70"
+          }`}
+        >
+          <Text className="font-poppins-semibold text-base text-white">
+            {submitting ? "Processing..." : "Continue"}
+          </Text>
+        </Pressable>
+      </View>
     </SafeAreaView>
   );
 }

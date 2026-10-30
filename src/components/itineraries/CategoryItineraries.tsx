@@ -7,13 +7,11 @@ type CategoryItineraryPlaces = {
   label: string;
 };
 
-const PLACEHOLDER_CATEGORIES_ITINERARIES: CategoryItineraryPlaces[] = [
+const PALAWAN_DESTINATION_CATEGORIES: CategoryItineraryPlaces[] = [
   { id: "all", name: "All", label: "All" },
-  { id: "1", name: "Palawan", label: "Palawan" },
-  { id: "2", name: "Cebu", label: "Cebu" },
-  { id: "3", name: "Baguio", label: "Baguio" },
-  { id: "4", name: "Siargao", label: "Siargao" },
-  { id: "5", name: "Vigan", label: "Vigan" },
+  { id: "1", name: "El nido", label: "El nido" },
+  { id: "2", name: "Coron", label: "Coron" },
+  { id: "3", name: "Puerto Princesa", label: "Puerto Princesa" },
 ];
 
 type Variant = "plain" | "pill";
@@ -29,7 +27,7 @@ type Props = Readonly<{
 }>;
 
 const CategoryItineraries = ({
-  items = PLACEHOLDER_CATEGORIES_ITINERARIES,
+  items = PALAWAN_DESTINATION_CATEGORIES,
   onSelect,
   variant = "plain",
 }: Props) => {
@@ -51,7 +49,8 @@ const CategoryItineraries = ({
         isPill
           ? { paddingHorizontal: 14, paddingVertical: 8, gap: 12 }
           : { paddingHorizontal: 16, paddingVertical: 12, gap: 8 }
-      }>
+      }
+    >
       {items.map((item) => {
         const isSelected = selectedId === item.id;
 
@@ -83,7 +82,8 @@ const CategoryItineraries = ({
             onPress={() => handleSelect(item)}
             hitSlop={isPill ? { top: 6, bottom: 6 } : undefined}
             className={chipClass}
-            style={{ backgroundColor: chipBackgroundColor }}>
+            style={{ backgroundColor: chipBackgroundColor }}
+          >
             <Text className={textClass} style={{ color: textColor }}>
               {item.label}
             </Text>

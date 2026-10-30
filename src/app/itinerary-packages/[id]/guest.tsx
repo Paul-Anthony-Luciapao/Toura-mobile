@@ -140,12 +140,7 @@ export default function GuestScreen() {
 
   return (
     <SafeAreaView className="flex-1 bg-background" edges={["bottom"]}>
-      <StatusBar
-        hidden={false}
-        barStyle="light-content"
-        translucent={true}
-        backgroundColor="transparent"
-      />
+      <StatusBar hidden={false} barStyle="light-content" />
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerClassName="pb-10"

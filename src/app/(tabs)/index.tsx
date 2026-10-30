@@ -7,10 +7,13 @@ import {
     PACKAGE_RESORTS,
     PACKAGE_SPOTS,
 } from "@/data/mockData";
+import { getPackageSpotImage } from "@/data/packageImages";
 import type { ItineraryPackage } from "@/data/types";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { ScrollView, StatusBar, View } from "react-native";
+
+const heroImage = require("../../../assets/images/elnido.jpg");
 
 const HOME_PACKAGES = INITIAL_ITINERARY_PACKAGES.map((pkg) => {
   const spot = PACKAGE_SPOTS.find((item) => item.id === pkg.spotId);
@@ -56,7 +59,7 @@ export default function Index() {
           <View key={pkg.id} className="mr-3.5 w-[280px]">
             <TourPackageCard
               title={`${spot.name} Itinerary Package`}
-              image={spot.image}
+              image={getPackageSpotImage(spot.image)}
               rating={spot.rating}
               reviewCount={spot.reviewCount}
               detail={`· ${detailParts.join(" · ")}`}
@@ -90,11 +93,11 @@ export default function Index() {
       contentContainerClassName="pb-10"
       showsVerticalScrollIndicator={false}
     >
-      <StatusBar barStyle="light-content" />
+      <StatusBar barStyle="auto" />
 
       {/* Hero Banner */}
       <HeroBanner
-        image="https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1400&q=85"
+        image={heroImage}
         headline={"Discover\nYour Next\nAdventure"}
         subtext={
           "Explore breathing destinations,\ncurated itinerary packages, and\nunforgettable experience."
@@ -116,7 +119,7 @@ export default function Index() {
         </View>
 
         {/* Itineraries */}
-        <View className="mt-5">
+        <View>
           <SectionHeader
             title="Itinerary Packages"
             action="View all"

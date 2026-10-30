@@ -1,11 +1,12 @@
 import { formatCurrency, formatReviewCount } from "@/lib/formatters";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
+import type { ImageSourcePropType } from "react-native";
 import { Image, Pressable, Text, View } from "react-native";
 
 type Props = Readonly<{
   title: string;
-  image: string;
+  image: ImageSourcePropType;
   rating: number;
   reviewCount: number;
   /** Line under the title, e.g. "· 2 Beds · Free breakfast". */
@@ -49,7 +50,7 @@ export default function TourPackageCard({
       {/* Image */}
       <View className="overflow-hidden rounded-[16px] bg-slate-200">
         <Image
-          source={{ uri: image }}
+          source={image}
           resizeMode="cover"
           className="h-[196px] w-full"
         />

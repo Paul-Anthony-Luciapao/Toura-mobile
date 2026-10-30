@@ -1,4 +1,5 @@
 import { PACKAGE_SPOTS } from "@/data/mockData";
+import { getPackageSpotImage } from "@/data/packageImages";
 import { colors } from "@/styles/global";
 import { Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
@@ -162,7 +163,7 @@ export default function PaymentSuccessScreen() {
 
             <View className="mt-4 flex-row rounded-xl border border-slate-200 p-3">
               <Image
-                source={{ uri: itinerary.image }}
+                source={getPackageSpotImage(itinerary.image)}
                 resizeMode="cover"
                 className="h-28 w-24 rounded-lg"
               />

@@ -33,7 +33,7 @@ export default function SectionHeader({
           hitSlop={8}
           className="active:opacity-70"
         >
-          <Text className="font-poppins-bold text-[13px] text-primary">
+          <Text className="font-poppins-bold text-[13px] text-salmon">
             {action}
           </Text>
         </Pressable>

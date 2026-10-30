@@ -1,7 +1,7 @@
-import type { TouristSpot } from "@/data/types";
+import { getPackageSpotImage } from "@/data/packageImages";
+import type { ItineraryDates, TouristSpot } from "@/data/types";
 import React from "react";
 import { Image, Text, View } from "react-native";
-import type { ItineraryDates } from "@/data/types";
 
 type Props = Readonly<{
   itinerary: TouristSpot;
@@ -24,7 +24,7 @@ export default function SelectedItineraryCard({
     >
       {/* Image */}
       <Image
-        source={{ uri: itinerary.image }}
+        source={getPackageSpotImage(itinerary.image)}
         resizeMode="cover"
         className="h-[240px] w-full bg-slate-200"
       />

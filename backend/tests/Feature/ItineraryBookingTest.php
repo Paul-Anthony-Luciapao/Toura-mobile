@@ -17,23 +17,28 @@ class ItineraryBookingTest extends TestCase
     {
         $this->seed(ItineraryPackageSeeder::class);
 
-        $this->assertDatabaseCount('itinerary_packages', 10);
+        $this->assertDatabaseCount('itinerary_packages', 11);
         $this->assertDatabaseHas('itinerary_packages', [
             'id' => 'spot-1',
             'title' => 'Kayangan Lake Itinerary Package',
         ]);
+        $this->assertDatabaseHas('itinerary_packages', [
+            'id' => 'spot-13',
+            'title' => 'Lio Beach Itinerary Package',
+        ]);
+        $this->assertDatabaseMissing('itinerary_packages', ['id' => 'spot-7']);
 
         $this->getJson('/api/v1/itinerary-packages')
             ->assertOk()
-            ->assertJsonCount(10);
+            ->assertJsonCount(11);
     }
 
     public function test_authenticated_traveler_can_create_an_itinerary_booking(): void
     {
         $user = User::factory()->create();
         $package = ItineraryPackage::create([
-            'id' => 'spot-1',
-            'title' => 'Kayangan Lake Package',
+            'id' => 'spot-13',
+            'title' => 'Lio Beach Itinerary Package',
             'days' => [['id' => 'day-1', 'title' => 'Arrival', 'notes' => []]],
             'price_breakdown' => [
                 ['label' => 'Stay', 'amount' => 5000],
@@ -63,7 +68,7 @@ class ItineraryBookingTest extends TestCase
 
         $response
             ->assertCreated()
-            ->assertJsonPath('itinerary_package_id', 'spot-1')
+            ->assertJsonPath('itinerary_package_id', 'spot-13')
             ->assertJsonPath('guest_count', 1)
             ->assertJsonPath('total_price', '6200.00')
             ->assertJsonPath('status', 'pending')
@@ -71,7 +76,7 @@ class ItineraryBookingTest extends TestCase
 
         $this->assertDatabaseHas('itinerary_bookings', [
             'user_id' => $user->id,
-            'itinerary_package_id' => 'spot-1',
+            'itinerary_package_id' => 'spot-13',
             'total_price' => 6200,
         ]);
         $this->assertDatabaseHas('itinerary_booking_guests', [

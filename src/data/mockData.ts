@@ -462,8 +462,7 @@ export const INITIAL_TOURIST_SPOTS: TouristSpot[] = [
     category: "Lakes & Lagoons",
     description:
       "Reputed as the cleanest inland body of water in Asia, framed by soaring karst peaks and crystalline waters.",
-    image:
-      "https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=800&q=80",
+    image: require("../../assets/images/kayangan-lake.jpeg"),
     tags: ["Snorkeling", "Limestone Cliffs", "Photography"],
   },
   {
@@ -476,8 +475,7 @@ export const INITIAL_TOURIST_SPOTS: TouristSpot[] = [
     category: "Islands & Lagoons",
     description:
       "An iconic emerald lagoon flanked by majestic karst spires, ideal for serene kayaking and paddleboarding.",
-    image:
-      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80",
+    image: require("../../assets/images/big-lagoon.webp"),
     tags: ["Kayaking", "Iconic Spot", "Marine Life"],
   },
   {
@@ -490,8 +488,7 @@ export const INITIAL_TOURIST_SPOTS: TouristSpot[] = [
     category: "Beaches",
     description:
       "A 4-kilometer continuous stretch of golden powdery sand lined with swaying coconut palms and rolling surf.",
-    image:
-      "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=800&q=80",
+    image: require("../../assets/images/Napcan.jpg"),
     tags: ["Sunset", "Twin Beach", "Beach Bar"],
   },
   {
@@ -504,13 +501,12 @@ export const INITIAL_TOURIST_SPOTS: TouristSpot[] = [
     category: "UNESCO World Heritage",
     description:
       "One of the New 7 Wonders of Nature, featuring an 8.2 km navigable underground river through dramatic limestone caverns.",
-    image:
-      "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=800&q=80",
+    image: require("../../assets/images/puertoprinsesa.jpg"),
     tags: ["UNESCO Site", "Cave Tour", "Eco Tourism"],
   },
   {
     id: "spot-5",
-    name: "Long Beach",
+    name: "San Vicente Long Beach",
     rating: 4.2,
     reviewCount: 1500000,
     price: 1310,
@@ -518,8 +514,7 @@ export const INITIAL_TOURIST_SPOTS: TouristSpot[] = [
     category: "Beaches",
     description:
       "The longest white/golden sand beach in the Philippines, stretching 14.7 kilometers along the turquoise West Philippine Sea.",
-    image:
-      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=800&q=80",
+    image: require("../../assets/images/sanvicente.jpg"),
     tags: ["Longest Beach", "Surfing", "Tranquil"],
   },
   {
@@ -532,9 +527,99 @@ export const INITIAL_TOURIST_SPOTS: TouristSpot[] = [
     category: "Lakes & Lagoons",
     description:
       "Two breathtaking emerald lagoons separated by a limestone wall, connected by an underwater swim-through opening.",
-    image:
-      "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=800&q=80",
+    image: require("../../assets/images/twin-lagoon.jpg"),
     tags: ["Swim-Through", "Thermocline", "Scenic"],
+  },
+  {
+    id: "spot-7",
+    name: "El Nido",
+    rating: 4.8,
+    reviewCount: 950,
+    price: 1800,
+    municipality: "El Nido",
+    category: "Island Destinations",
+    description:
+      "A coastal town known for limestone scenery, clear water, and boat trips through the Bacuit Archipelago.",
+    image: require("../../assets/images/elnido.jpg"),
+    tags: ["Island Hopping", "Limestone Cliffs", "Beaches"],
+  },
+  {
+    id: "spot-8",
+    name: "Coron",
+    rating: 4.8,
+    reviewCount: 820,
+    price: 1600,
+    municipality: "Coron",
+    category: "Island Destinations",
+    description:
+      "A destination for island excursions, limestone landscapes, snorkeling, and access to Coron Bay.",
+    image: require("../../assets/images/coron.jpg"),
+    tags: ["Island Hopping", "Snorkeling", "Limestone Cliffs"],
+  },
+  {
+    id: "spot-9",
+    name: "Balabac Islands",
+    rating: 4.8,
+    reviewCount: 340,
+    price: 2500,
+    municipality: "Balabac",
+    category: "Islands & Beaches",
+    description:
+      "A remote island group in southern Palawan with white-sand shores and shallow turquoise waters.",
+    image: require("../../assets/images/balabac.jpg"),
+    tags: ["Sandbars", "Island Hopping", "Beaches"],
+  },
+  {
+    id: "spot-10",
+    name: "Matinloc Island",
+    rating: 4.8,
+    reviewCount: 520,
+    price: 1700,
+    municipality: "El Nido",
+    category: "Islands & Lagoons",
+    description:
+      "An island in the Bacuit Archipelago known for dramatic limestone cliffs, beaches, and clear-water stops.",
+    image: require("../../assets/images/maticnloc.jpg"),
+    tags: ["Island Hopping", "Limestone Cliffs", "Snorkeling"],
+  },
+  {
+    id: "spot-11",
+    name: "Darocotan Island",
+    rating: 4.7,
+    reviewCount: 280,
+    price: 1400,
+    municipality: "El Nido",
+    category: "Islands & Beaches",
+    description:
+      "A quiet island north of El Nido offering a relaxed coastal stay and opportunities to explore nearby reefs.",
+    image: require("../../assets/images/dryft-darocotan.jpg"),
+    tags: ["Island Stay", "Snorkeling", "Quiet Beaches"],
+  },
+  {
+    id: "spot-12",
+    name: "Catian Island",
+    rating: 4.7,
+    reviewCount: 190,
+    price: 1500,
+    municipality: "Palawan",
+    category: "Islands & Lagoons",
+    description:
+      "A scenic island stop with turquoise water and limestone coastal scenery. Access depends on local boat tours and conditions.",
+    image: require("../../assets/images/catian.jpeg"),
+    tags: ["Island Hopping", "Limestone Cliffs", "Clear Water"],
+  },
+  {
+    id: "spot-13",
+    name: "Lio Beach",
+    rating: 4.7,
+    reviewCount: 410,
+    price: 1200,
+    municipality: "El Nido",
+    category: "Beaches",
+    description:
+      "A broad, accessible beach area near El Nido with calm coastal views and nearby visitor facilities.",
+    image: require("../../assets/images/Seda-Lio.jpg"),
+    tags: ["Beach", "Swimming", "Coastal Views"],
   },
 ];
 
@@ -979,6 +1064,28 @@ const packageSpecs = [
       "Island hopping",
       "Departure",
     ],
+    dayNotes: [
+      [
+        "Arrive in Coron and transfer to the resort for check-in.",
+        "Review the next day's lake tour and local permit requirements.",
+      ],
+      [
+        "Visit Kayangan Lake, reached by a short uphill walk to the viewpoint and lake.",
+        "Allow time for swimming and enjoy the limestone scenery.",
+      ],
+      [
+        "Explore Coron town and its local shops and eateries.",
+        "Keep the afternoon flexible for a relaxed resort stay.",
+      ],
+      [
+        "Take a guided boat trip to nearby islands and snorkeling spots.",
+        "Bring sun protection and follow the guide's safety instructions.",
+      ],
+      [
+        "Check out and transfer to the airport or ferry terminal.",
+        "Confirm departure time and transport arrangements with the resort.",
+      ],
+    ],
     inclusions: [
       "Resort stay",
       "Guided lake tour",
@@ -1002,6 +1109,28 @@ const packageSpecs = [
       "Island beaches",
       "Coastal day",
       "Departure",
+    ],
+    dayNotes: [
+      [
+        "Arrive in El Nido and transfer to the resort for check-in.",
+        "Confirm the boat tour departure point and permit requirements.",
+      ],
+      [
+        "Explore Big Lagoon by kayak or boat with a local tour guide.",
+        "Follow local access rules and allow time for the lagoon's narrow entrance.",
+      ],
+      [
+        "Visit nearby island beaches on a guided boat excursion.",
+        "Take breaks for swimming and snorkeling when conditions allow.",
+      ],
+      [
+        "Enjoy a flexible coastal day around El Nido.",
+        "Ask the resort about nearby beaches and current sea conditions.",
+      ],
+      [
+        "Check out and transfer to the airport or ferry terminal.",
+        "Confirm departure time and transport arrangements with the resort.",
+      ],
     ],
     inclusions: [
       "Resort stay",
@@ -1027,6 +1156,28 @@ const packageSpecs = [
       "Free exploration",
       "Departure",
     ],
+    dayNotes: [
+      [
+        "Arrive in El Nido and settle in at the resort.",
+        "Confirm the land transfer to Nacpan Beach for the following day.",
+      ],
+      [
+        "Spend the day at Nacpan Beach, known for its long stretch of sand.",
+        "Check local swimming conditions and arrange return transport in advance.",
+      ],
+      [
+        "Enjoy a relaxed beach morning before exploring El Nido town.",
+        "Try local restaurants and browse the town at your own pace.",
+      ],
+      [
+        "Keep the day open for another beach visit or a rest at the resort.",
+        "Ask locally about weather, transport, and optional activities.",
+      ],
+      [
+        "Check out and transfer to the airport or ferry terminal.",
+        "Confirm departure time and transport arrangements with the resort.",
+      ],
+    ],
     inclusions: ["Resort stay", "Beach transfer", "Breakfast", "Local guide"],
     review: {
       id: "review-3",
@@ -1046,6 +1197,28 @@ const packageSpecs = [
       "City tour",
       "Departure",
     ],
+    dayNotes: [
+      [
+        "Arrive in Puerto Princesa and transfer to the resort.",
+        "Confirm pickup time and the permits needed for the river tour.",
+      ],
+      [
+        "Travel to Sabang for a guided boat tour of the Puerto Princesa Underground River.",
+        "Follow park guidance and allow for the road and boat transfers.",
+      ],
+      [
+        "Explore the Sabang coast and enjoy time by the shore.",
+        "Keep the schedule flexible around weather and boat conditions.",
+      ],
+      [
+        "Visit selected Puerto Princesa city highlights with a local guide.",
+        "Confirm the route and stops with the tour operator.",
+      ],
+      [
+        "Check out and transfer to the airport or ferry terminal.",
+        "Confirm departure time and transport arrangements with the resort.",
+      ],
+    ],
     inclusions: ["Resort stay", "River tour", "Boat transfer", "Park permits"],
     review: {
       id: "review-4",
@@ -1064,6 +1237,28 @@ const packageSpecs = [
       "Surf and coast",
       "Free beach day",
       "Departure",
+    ],
+    dayNotes: [
+      [
+        "Arrive in San Vicente and check in at the resort.",
+        "Confirm transfers to Long Beach and any planned activities.",
+      ],
+      [
+        "Explore Long Beach and enjoy its wide shoreline.",
+        "Bring sun protection and check local swimming conditions.",
+      ],
+      [
+        "Try a surf session or enjoy the coastline at your own pace.",
+        "Arrange board rental and lessons with a local operator if needed.",
+      ],
+      [
+        "Enjoy a flexible beach day with time to relax or revisit a favorite spot.",
+        "Check transport availability before heading out.",
+      ],
+      [
+        "Check out and transfer to the airport or ferry terminal.",
+        "Confirm departure time and transport arrangements with the resort.",
+      ],
     ],
     inclusions: [
       "Resort stay",
@@ -1089,6 +1284,28 @@ const packageSpecs = [
       "Coron town",
       "Departure",
     ],
+    dayNotes: [
+      [
+        "Arrive in Coron and transfer to the resort for check-in.",
+        "Confirm the lagoon tour's meeting point and equipment needs.",
+      ],
+      [
+        "Visit Twin Lagoon by boat and experience its connected lagoons.",
+        "Follow the guide's advice about swimming conditions and access.",
+      ],
+      [
+        "Join a guided reef excursion for snorkeling around Coron's marine sites.",
+        "Use reef-safe practices and follow local marine guidelines.",
+      ],
+      [
+        "Explore Coron town and enjoy time for local food and shopping.",
+        "Keep the afternoon open to rest after the boat excursions.",
+      ],
+      [
+        "Check out and transfer to the airport or ferry terminal.",
+        "Confirm departure time and transport arrangements with the resort.",
+      ],
+    ],
     inclusions: [
       "Resort stay",
       "Lagoon excursion",
@@ -1102,231 +1319,242 @@ const packageSpecs = [
       text: "The lagoon and snorkeling days were well organized.",
     },
   },
+  {
+    spotId: "spot-13",
+    resortId: "resort-1",
+    startDate: "2026-11-21",
+    titles: [
+      "Arrive in El Nido",
+      "Lio Beach",
+      "Island and coastline",
+      "Free beach day",
+      "Departure",
+    ],
+    dayNotes: [
+      [
+        "Arrive in El Nido and transfer to the resort for check-in.",
+        "Confirm local transport to Lio Beach and the next day's plans.",
+      ],
+      [
+        "Spend the day at Lio Beach, with time to swim and relax by the shore.",
+        "Check local sea conditions and follow beach safety guidance.",
+      ],
+      [
+        "Explore the El Nido coastline or join an optional local island excursion.",
+        "Confirm boat availability and weather conditions before departure.",
+      ],
+      [
+        "Enjoy a flexible beach day for swimming, dining, or resting at the resort.",
+        "Arrange any local transportation with the resort in advance.",
+      ],
+      [
+        "Check out and transfer to the airport or ferry terminal.",
+        "Confirm departure time and transport arrangements with the resort.",
+      ],
+    ],
+    inclusions: [
+      "Resort stay",
+      "Lio Beach transfer",
+      "Breakfast",
+      "Local transport assistance",
+    ],
+    review: {
+      id: "review-7",
+      name: "Mika",
+      rating: 5,
+      text: "A relaxing El Nido stay with plenty of time to enjoy Lio Beach.",
+    },
+  },
+  {
+    spotId: "spot-9",
+    resortId: "resort-4",
+    startDate: "2026-11-28",
+    titles: [
+      "Arrive in Puerto Princesa",
+      "Travel to Balabac",
+      "Balabac island hopping",
+      "Sandbars and beaches",
+      "Return to Puerto Princesa",
+    ],
+    dayNotes: [
+      [
+        "Arrive in Puerto Princesa and check in at the resort.",
+        "Confirm the overland transfer, boat schedule, and permits with the tour operator.",
+      ],
+      [
+        "Travel south toward Balabac and follow the operator's planned land and boat transfers.",
+        "This route is long; confirm transport and overnight arrangements before booking.",
+      ],
+      [
+        "Explore Balabac's islands and beaches with a local boat operator.",
+        "The island route depends on weather, tides, and local conditions.",
+      ],
+      [
+        "Visit available sandbars and beaches on a guided excursion.",
+        "Bring drinking water, sun protection, and any essentials recommended by the guide.",
+      ],
+      [
+        "Return toward Puerto Princesa using the pre-arranged land and boat transfers.",
+        "Allow schedule flexibility and confirm onward travel after reaching the city.",
+      ],
+    ],
+    inclusions: [
+      "Puerto Princesa resort stay",
+      "Balabac land and boat transfers",
+      "Guided island-hopping tour",
+      "Local permits and fees",
+    ],
+    review: {
+      id: "review-8",
+      name: "Janelle",
+      rating: 5,
+      text: "Balabac's beaches were beautiful, and confirming transfers early made the trip easier.",
+    },
+  },
+  {
+    spotId: "spot-10",
+    resortId: "resort-1",
+    startDate: "2026-12-05",
+    titles: [
+      "Arrive in El Nido",
+      "Matinloc Island",
+      "Hidden beaches and coves",
+      "Coastal exploration",
+      "Departure",
+    ],
+    dayNotes: [
+      [
+        "Arrive in El Nido and check in at the resort.",
+        "Confirm the boat tour schedule, meeting point, and local access requirements.",
+      ],
+      [
+        "Visit Matinloc Island as part of a guided Bacuit Archipelago boat excursion.",
+        "Stops and swimming access may vary with sea and weather conditions.",
+      ],
+      [
+        "Explore nearby beaches and coves with the boat tour operator.",
+        "Follow the guide's advice and take care around rocky shorelines.",
+      ],
+      [
+        "Enjoy a flexible day for another local excursion or time in El Nido town.",
+        "Arrange optional activities locally and confirm current conditions.",
+      ],
+      [
+        "Check out and transfer to the airport or ferry terminal.",
+        "Confirm departure time and transport arrangements with the resort.",
+      ],
+    ],
+    inclusions: [
+      "El Nido resort stay",
+      "Matinloc Island boat excursion",
+      "Boat transfers",
+      "Local permits",
+    ],
+    review: {
+      id: "review-9",
+      name: "Luis",
+      rating: 5,
+      text: "The Matinloc Island tour had incredible scenery and a well-paced boat day.",
+    },
+  },
+  {
+    spotId: "spot-11",
+    resortId: "resort-1",
+    startDate: "2026-12-12",
+    titles: [
+      "Arrive in El Nido",
+      "Transfer to Darocotan Island",
+      "Island and reef day",
+      "Beach and free time",
+      "Return to El Nido",
+    ],
+    dayNotes: [
+      [
+        "Arrive in El Nido and check in at the resort.",
+        "Confirm the land and boat transfers to Darocotan Island in advance.",
+      ],
+      [
+        "Travel to Darocotan Island with the arranged local transfers.",
+        "Check boat departure times and luggage guidance with your operator.",
+      ],
+      [
+        "Explore the island coastline and nearby reef areas where conditions allow.",
+        "Use reef-safe practices and follow local guidance for swimming and snorkeling.",
+      ],
+      [
+        "Enjoy a relaxed beach day and time to explore the island.",
+        "Confirm meal and return-boat arrangements with your host or operator.",
+      ],
+      [
+        "Return to El Nido by the pre-arranged boat and land transfers.",
+        "Allow extra time for weather-related schedule changes.",
+      ],
+    ],
+    inclusions: [
+      "El Nido resort stay",
+      "Darocotan Island transfers",
+      "Local island excursion",
+      "Breakfast",
+    ],
+    review: {
+      id: "review-10",
+      name: "Rina",
+      rating: 5,
+      text: "Darocotan was peaceful, and the island stay made it easy to slow down.",
+    },
+  },
+  {
+    spotId: "spot-12",
+    resortId: "resort-1",
+    startDate: "2026-12-19",
+    titles: [
+      "Arrive in El Nido",
+      "Boat trip to Catian Island",
+      "Island and lagoon exploration",
+      "Coastal day",
+      "Departure",
+    ],
+    dayNotes: [
+      [
+        "Arrive in El Nido and check in at the resort.",
+        "Confirm the Catian Island tour route and departure point with a local operator.",
+      ],
+      [
+        "Take a guided boat trip to Catian Island.",
+        "Verify the destination name, route, and access conditions with the operator before departure.",
+      ],
+      [
+        "Explore the island and nearby coastal scenery as conditions permit.",
+        "Follow local guidance for swimming and snorkeling.",
+      ],
+      [
+        "Enjoy a flexible day for a local beach visit or time in El Nido.",
+        "Confirm any optional boat trips and weather conditions in advance.",
+      ],
+      [
+        "Check out and transfer to the airport or ferry terminal.",
+        "Confirm departure time and transport arrangements with the resort.",
+      ],
+    ],
+    inclusions: [
+      "El Nido resort stay",
+      "Guided island excursion",
+      "Boat transfers",
+      "Local permits where required",
+    ],
+    review: {
+      id: "review-11",
+      name: "Andrea",
+      rating: 4,
+      text: "A scenic island trip with a relaxed schedule and helpful local guidance.",
+    },
+  },
 ] as const;
 
-const demoImage = (photoId: string, width = 800) =>
-  `https://images.unsplash.com/${photoId}?auto=format&fit=crop&w=${width}&q=80`;
+/** Palawan fixtures used by the itinerary package list and detail screens. */
+export const PACKAGE_SPOTS: TouristSpot[] = INITIAL_TOURIST_SPOTS;
 
-export const DEMO_OTHER_DESTINATION_SPOTS: TouristSpot[] = [
-  {
-    id: "spot-7",
-    name: "Kawasan Falls",
-    rating: 4.8,
-    reviewCount: 1100000,
-    price: 1100,
-    municipality: "Badian",
-    category: "Waterfalls",
-    description:
-      "A multi-tiered turquoise waterfall in Badian, popular for swimming and canyoneering.",
-    image: demoImage("photo-1544551763-46a013bb70d5"),
-    tags: ["Canyoneering", "Waterfalls", "Swimming"],
-  },
-  {
-    id: "spot-8",
-    name: "Mines View Park",
-    rating: 4.7,
-    reviewCount: 600000,
-    price: 500,
-    municipality: "Baguio City",
-    category: "Viewpoints",
-    description:
-      "A mountain-top lookout over the Cordillera ranges with a lively souvenir market.",
-    image: demoImage("photo-1540555700478-4be289fbecef"),
-    tags: ["Viewpoint", "Souvenirs", "Cool Weather"],
-  },
-  {
-    id: "spot-9",
-    name: "Cloud 9 Boardwalk",
-    rating: 4.6,
-    reviewCount: 800000,
-    price: 900,
-    municipality: "General Luna",
-    category: "Surf Spots",
-    description:
-      "A palm-fringed boardwalk leading to Siargao's most famous surf break.",
-    image: demoImage("photo-1512343879784-a960bf40e7f2"),
-    tags: ["Surfing", "Boardwalk", "Sunrise"],
-  },
-  {
-    id: "spot-10",
-    name: "Calle Crisologo",
-    rating: 4.5,
-    reviewCount: 400000,
-    price: 700,
-    municipality: "Vigan City",
-    category: "Heritage Streets",
-    description:
-      "A cobblestone street lined with Spanish-era ancestral houses in Vigan's historic district.",
-    image: demoImage("photo-1500648767791-00dcc994a43e"),
-    tags: ["Heritage", "Cobblestone", "Kalesa Ride"],
-  },
-];
-
-type DemoResortInput = {
-  id: string;
-  name: string;
-  tagline: string;
-  municipality: string;
-  location: string;
-  coverPhotoId: string;
-  roomPhotoId: string;
-  basePrice: number;
-  amenities: string[];
-  room: {
-    id: string;
-    title: string;
-    bedType: string;
-    bedCount: number;
-    size: string;
-    capacity: number;
-  };
-};
-
-const buildDemoResort = (input: DemoResortInput): Resort => ({
-  id: input.id,
-  ownerId: "user-2",
-  name: input.name,
-  tagline: input.tagline,
-  municipality: input.municipality,
-  location: input.location,
-  description: `${input.tagline}. This listing is sample data.`,
-  coverImage: demoImage(input.coverPhotoId, 1400),
-  images: [
-    demoImage(input.coverPhotoId, 1200),
-    demoImage(input.roomPhotoId, 1200),
-  ],
-  rating: 4.7,
-  reviewCount: 30,
-  basePrice: input.basePrice,
-  amenities: input.amenities,
-  status: "published",
-  accommodations: [
-    {
-      id: input.room.id,
-      title: input.room.title,
-      description: "Comfortable sample room.",
-      pricePerNight: input.basePrice,
-      capacity: input.room.capacity,
-      bedType: input.room.bedType,
-      bedCount: input.room.bedCount,
-      availableUnits: 5,
-      size: input.room.size,
-      image: demoImage(input.roomPhotoId),
-      amenities: ["Air Conditioning", "Private Bathroom", "Free Wi-Fi"],
-    },
-  ],
-  offers: [],
-});
-
-export const DEMO_OTHER_DESTINATION_RESORTS: Resort[] = [
-  buildDemoResort({
-    id: "resort-5",
-    name: "Badian Canyon Lodge",
-    tagline: "Riverside rooms minutes from the Kawasan Falls trailhead",
-    municipality: "Badian",
-    location: "Badian, Cebu",
-    coverPhotoId: "photo-1544551763-46a013bb70d5",
-    roomPhotoId: "photo-1578683010236-d716f9a3f461",
-    basePrice: 4500,
-    amenities: [
-      "River View",
-      "Free Breakfast",
-      "Airport Transfer",
-      "Free Wi-Fi",
-    ],
-    room: {
-      id: "acc-501",
-      title: "Riverside Twin Room",
-      bedType: "2 Single Beds",
-      bedCount: 2,
-      size: "30 sqm",
-      capacity: 2,
-    },
-  }),
-  buildDemoResort({
-    id: "resort-6",
-    name: "Pine Hill Mountain Lodge",
-    tagline: "Cozy pine-lined rooms with cool-weather mountain views",
-    municipality: "Baguio City",
-    location: "Baguio City, Benguet",
-    coverPhotoId: "photo-1540555700478-4be289fbecef",
-    roomPhotoId: "photo-1566073771259-6a8506099945",
-    basePrice: 3200,
-    amenities: [
-      "Mountain View",
-      "Free Breakfast",
-      "Fireplace Lounge",
-      "Free Wi-Fi",
-    ],
-    room: {
-      id: "acc-601",
-      title: "Pine View Queen Room",
-      bedType: "1 Queen Bed",
-      bedCount: 1,
-      size: "28 sqm",
-      capacity: 2,
-    },
-  }),
-  buildDemoResort({
-    id: "resort-7",
-    name: "General Luna Surf Lodge",
-    tagline: "Barefoot beachside rooms a short walk from the surf breaks",
-    municipality: "General Luna",
-    location: "General Luna, Siargao",
-    coverPhotoId: "photo-1512343879784-a960bf40e7f2",
-    roomPhotoId: "photo-1499793983690-e29da59ef1c2",
-    basePrice: 5200,
-    amenities: [
-      "Beach Access",
-      "Surfboard Rentals",
-      "Free Breakfast",
-      "Free Wi-Fi",
-    ],
-    room: {
-      id: "acc-701",
-      title: "Surfside Double Room",
-      bedType: "2 Double Beds",
-      bedCount: 2,
-      size: "32 sqm",
-      capacity: 4,
-    },
-  }),
-  buildDemoResort({
-    id: "resort-8",
-    name: "Heritage House Vigan",
-    tagline: "Restored ancestral house steps from the cobblestone streets",
-    municipality: "Vigan City",
-    location: "Vigan City, Ilocos Sur",
-    coverPhotoId: "photo-1500648767791-00dcc994a43e",
-    roomPhotoId: "photo-1571003123894-1f0594d2b5d9",
-    basePrice: 3000,
-    amenities: [
-      "Heritage Architecture",
-      "Free Breakfast",
-      "Walkable Location",
-      "Free Wi-Fi",
-    ],
-    room: {
-      id: "acc-801",
-      title: "Ancestral Queen Room",
-      bedType: "1 Queen Bed",
-      bedCount: 1,
-      size: "30 sqm",
-      capacity: 2,
-    },
-  }),
-];
-
-/** Palawan fixtures + demo destinations. Used by the package list and detail screens. */
-export const PACKAGE_SPOTS: TouristSpot[] = [
-  ...INITIAL_TOURIST_SPOTS,
-  ...DEMO_OTHER_DESTINATION_SPOTS,
-];
-
-export const PACKAGE_RESORTS: Resort[] = [
-  ...INITIAL_RESORTS,
-  ...DEMO_OTHER_DESTINATION_RESORTS,
-];
+export const PACKAGE_RESORTS: Resort[] = INITIAL_RESORTS;
 
 type PackageSpec = {
   spotId: string;
@@ -1335,98 +1563,10 @@ type PackageSpec = {
   /** Matches the chip names on the Itineraries screen. Defaults to "Palawan". */
   destination?: string;
   titles: readonly string[];
+  dayNotes: readonly (readonly string[])[];
   inclusions: readonly string[];
   review: { id: string; name: string; rating: number; text: string };
 };
-
-// TODO(demo-data): hardcoded demo schedules, dates and reviews, like packageSpecs above.
-const DEMO_PACKAGE_SPECS: PackageSpec[] = [
-  {
-    spotId: "spot-7",
-    resortId: "resort-5",
-    startDate: "2026-11-21",
-    destination: "Cebu",
-    titles: [
-      "Arrive in Cebu",
-      "Kawasan Falls",
-      "Cebu City",
-      "Island hopping",
-      "Departure",
-    ],
-    inclusions: [
-      "Lodge stay",
-      "Falls and canyoneering",
-      "Transfers",
-      "Breakfast",
-    ],
-    review: {
-      id: "review-7",
-      name: "Karla",
-      rating: 5,
-      text: "The falls day was the highlight, and the transfers were smooth.",
-    },
-  },
-  {
-    spotId: "spot-8",
-    resortId: "resort-6",
-    startDate: "2026-11-28",
-    destination: "Baguio",
-    titles: [
-      "Arrive in Baguio",
-      "Mines View Park",
-      "Strawberry farm",
-      "Baguio city",
-      "Departure",
-    ],
-    inclusions: ["Lodge stay", "City tour", "Transfers", "Breakfast"],
-    review: {
-      id: "review-8",
-      name: "Rica",
-      rating: 4,
-      text: "Cool weather, nice views and a relaxed schedule.",
-    },
-  },
-  {
-    spotId: "spot-9",
-    resortId: "resort-7",
-    startDate: "2026-12-05",
-    destination: "Siargao",
-    titles: [
-      "Arrive in Siargao",
-      "Cloud 9",
-      "Island hopping",
-      "Surf day",
-      "Departure",
-    ],
-    inclusions: ["Lodge stay", "Surf lesson", "Island tour", "Breakfast"],
-    review: {
-      id: "review-9",
-      name: "Dennis",
-      rating: 4,
-      text: "Great surf lesson and a good mix of planned and free days.",
-    },
-  },
-  {
-    spotId: "spot-10",
-    resortId: "resort-8",
-    startDate: "2026-12-12",
-    destination: "Vigan",
-    titles: [
-      "Arrive in Vigan",
-      "Calle Crisologo",
-      "Heritage houses",
-      "Pottery and weaving",
-      "Departure",
-    ],
-    inclusions: ["Heritage stay", "Kalesa ride", "Guided walk", "Breakfast"],
-    review: {
-      id: "review-10",
-      name: "Tess",
-      rating: 5,
-      text: "Walking the old streets with a guide made the history come alive.",
-    },
-  },
-];
 
 function buildItineraryPackage(spec: PackageSpec): ItineraryPackage {
   const spot = PACKAGE_SPOTS.find((item) => item.id === spec.spotId);
@@ -1434,6 +1574,10 @@ function buildItineraryPackage(spec: PackageSpec): ItineraryPackage {
 
   if (!spot || !resort) {
     throw new Error(`Missing mock data for itinerary ${spec.spotId}`);
+  }
+
+  if (spec.titles.length !== spec.dayNotes.length) {
+    throw new Error(`Missing day details for itinerary ${spec.spotId}`);
   }
 
   return {
@@ -1445,10 +1589,7 @@ function buildItineraryPackage(spec: PackageSpec): ItineraryPackage {
     days: spec.titles.map((title, index) => ({
       id: `day-${index + 1}`,
       title,
-      notes: [
-        `${title} activities and timing are sample itinerary details.`,
-        "Confirm pickup times and operators before travel.",
-      ],
+      notes: [...spec.dayNotes[index]],
     })),
     // Demo estimate derived from existing mock prices; not a live quote.
     priceBreakdown: [
@@ -1464,5 +1605,4 @@ function buildItineraryPackage(spec: PackageSpec): ItineraryPackage {
 
 export const INITIAL_ITINERARY_PACKAGES: ItineraryPackage[] = [
   ...packageSpecs,
-  ...DEMO_PACKAGE_SPECS,
 ].map((spec) => buildItineraryPackage(spec));

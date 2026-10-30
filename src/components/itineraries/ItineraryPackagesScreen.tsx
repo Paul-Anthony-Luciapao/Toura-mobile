@@ -7,6 +7,7 @@ import {
     PACKAGE_RESORTS,
     PACKAGE_SPOTS,
 } from "@/data/mockData";
+import { getPackageSpotImage } from "@/data/packageImages";
 import type { ItineraryPackage } from "@/data/types";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
@@ -175,7 +176,7 @@ const ItineraryPackagesScreen = ({ showBackButton = true }: Props) => {
               <View className="mb-[26px] px-[14px]">
                 <TourPackageCard
                   title={`${spot.name} Itinerary Package`}
-                  image={spot.image}
+                  image={getPackageSpotImage(spot.image)}
                   rating={spot.rating}
                   reviewCount={spot.reviewCount}
                   detail={`· ${detailParts.join(" · ")}`}

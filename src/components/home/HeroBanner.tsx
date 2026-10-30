@@ -1,20 +1,22 @@
 import { Ionicons } from "@expo/vector-icons";
-import { ImageBackground, Text, TextInput, View } from "react-native";
+import { Image, type ImageSource } from "expo-image";
+import { StyleSheet, Text, TextInput, View } from "react-native";
 import Header from "./Header";
 
 type Props = Readonly<{
-  image: string;
+  image: ImageSource | number;
   headline: string;
   subtext: string;
 }>;
 
 export default function HeroBanner({ image, headline, subtext }: Props) {
   return (
-    <ImageBackground
-      source={{ uri: image }}
-      className="h-[440px] w-full"
-      resizeMode="cover"
-    >
+    <View className="h-[425px] w-full overflow-hidden">
+      <Image
+        source={image}
+        contentFit="cover"
+        style={StyleSheet.absoluteFill}
+      />
       {/* Dark overlay */}
       <View className="absolute inset-0 bg-[rgba(11,46,74,0.75)]" />
 
@@ -30,7 +32,7 @@ export default function HeroBanner({ image, headline, subtext }: Props) {
         <Text className="mt-3 text-xl leading-6 text-white">{subtext}</Text>
 
         {/* Search bar */}
-        <View className="mt-5 flex-row items-center gap-2 rounded-full bg-white px-[14px] py-[6px]">
+        <View className="mt-5 flex-row items-center gap-2 rounded-full bg-white px-[14px] py-[4px]">
           <Ionicons name="search" size={18} color="#64748b" />
 
           <TextInput
@@ -40,6 +42,6 @@ export default function HeroBanner({ image, headline, subtext }: Props) {
           />
         </View>
       </View>
-    </ImageBackground>
+    </View>
   );
 }

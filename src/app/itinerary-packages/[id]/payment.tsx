@@ -7,6 +7,7 @@ import { colors } from "@/styles/global";
 import ItineraryHero from "@components/itineraries/ItineraryHero";
 import { Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
+import { StatusBar } from "expo-status-bar";
 import * as WebBrowser from "expo-web-browser";
 import React, { useState } from "react";
 import { Alert, Pressable, ScrollView, Text, View } from "react-native";
@@ -129,6 +130,7 @@ export default function Payment() {
 
   return (
     <SafeAreaView className="flex-1 bg-background" edges={["top", "bottom"]}>
+      <StatusBar style="dark" />
       <ScrollView
         className="flex-1"
         showsVerticalScrollIndicator={false}
