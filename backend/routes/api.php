@@ -106,6 +106,10 @@ Route::prefix('v1')->group(function () {
             '/payments/checkout',
             [PaymentController::class, 'createCheckout']
         );
+        Route::get(
+            '/payments/orders/{orderId}/status',
+            [PaymentController::class, 'status']
+        );
     });
 
     // Owner-only resort management

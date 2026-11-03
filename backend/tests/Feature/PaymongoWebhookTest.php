@@ -59,6 +59,7 @@ class PaymongoWebhookTest extends TestCase
         $timestamp = '1234567890';
         config(['services.paymongo.webhook_secret' => $secret]);
         $order = $this->createPendingOrder();
+        $order->update(['paymongo_checkout_session_id' => 'cs_test_123']);
         $payload = json_encode($this->paidEvent($order), JSON_THROW_ON_ERROR);
         $signature = hash_hmac('sha256', $timestamp.'.'.$payload, $secret);
 
@@ -71,6 +72,51 @@ class PaymongoWebhookTest extends TestCase
             [
                 'CONTENT_TYPE' => 'application/json',
                 'HTTP_PAYMONGO_SIGNATURE' => "t={$timestamp},v1={$signature}",
+            ],
+            $payload,
+        )->assertOk()->assertJson(['received' => true]);
+
+        $this->assertDatabaseHas('orders', [
+            'id' => $order->id,
+            'status' => 'paid',
+            'payment_status' => 'paid',
+        ]);
+    }
+
+    public function test_webhook_accepts_paymongo_test_signature_format(): void
+    {
+        $secret = 'test-webhook-secret';
+        $timestamp = '1234567890';
+        config(['services.paymongo.webhook_secret' => $secret]);
+        $order = $this->createPendingOrder();
+        $order->update(['paymongo_checkout_session_id' => 'cs_test_123']);
+        $payload = json_encode([
+            'data' => [
+                'id' => 'evt_test_123',
+                'type' => 'event',
+                'attributes' => [
+                    'type' => 'checkout_session.payment.paid',
+                    'data' => [
+                        'id' => 'cs_test_123',
+                        'type' => 'checkout_session',
+                        'attributes' => [
+                            'reference_number' => $order->reference_number,
+                        ],
+                    ],
+                ],
+            ],
+        ], JSON_THROW_ON_ERROR);
+        $signature = hash_hmac('sha256', $timestamp.'.'.$payload, $secret);
+
+        $this->call(
+            'POST',
+            '/api/v1/webhooks/paymongo',
+            [],
+            [],
+            [],
+            [
+                'CONTENT_TYPE' => 'application/json',
+                'HTTP_PAYMONGO_SIGNATURE' => "t={$timestamp},te={$signature}",
             ],
             $payload,
         )->assertOk()->assertJson(['received' => true]);
@@ -96,10 +142,14 @@ class PaymongoWebhookTest extends TestCase
     {
         return [
             'data' => [
+                'id' => 'evt_test_123',
                 'type' => 'checkout_session.payment.paid',
-                'id' => 'cs_test_123',
-                'attributes' => [
-                    'reference_number' => $order->reference_number,
+                'data' => [
+                    'id' => 'cs_test_123',
+                    'type' => 'checkout_session',
+                    'attributes' => [
+                        'reference_number' => $order->reference_number,
+                    ],
                 ],
             ],
         ];

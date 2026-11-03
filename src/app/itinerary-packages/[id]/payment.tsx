@@ -2,7 +2,12 @@ import Buttons from "@/components/buttons/Buttons";
 import { PACKAGE_SPOTS, PAYMENT_METHODS } from "@/data/mockData";
 import type { PaymentMethod } from "@/data/types";
 import { getErrorMessage } from "@/services/api";
-import { createCheckout } from "@/services/payment";
+import {
+  createCheckout,
+  getCheckoutFailureReason,
+  getPaymentStatus,
+  type PaymentFailureReason,
+} from "@/services/payment";
 import { colors } from "@/styles/global";
 import ItineraryHero from "@components/itineraries/ItineraryHero";
 import { Ionicons } from "@expo/vector-icons";
@@ -29,6 +34,77 @@ const WALLET_METHODS = [
 
 type WalletMethodId = (typeof WALLET_METHODS)[number]["id"];
 type SelectedMethod = CardMethodId | WalletMethodId | null;
+type PaymentResultKind = PaymentFailureReason | "paid";
+
+type PaymentResult = Readonly<{
+  kind: PaymentResultKind;
+  orderId?: number;
+}>;
+
+const PAYMENT_RESULT_CONTENT: Record<
+  PaymentResultKind,
+  Readonly<{
+    title: string;
+    message: string;
+    icon: React.ComponentProps<typeof Ionicons>["name"];
+    primaryLabel: string;
+  }>
+> = {
+  invalid_card_details: {
+    title: "Invalid Card Details",
+    message:
+      "PayMongo could not verify the card details. Check them in checkout and try again.",
+    icon: "card-outline",
+    primaryLabel: "Try a different card",
+  },
+  expired_card: {
+    title: "Expired Card",
+    message: "This card has expired. Use another card to continue.",
+    icon: "card-outline",
+    primaryLabel: "Try another card",
+  },
+  insufficient_funds: {
+    title: "Insufficient Funds",
+    message:
+      "The card issuer reported insufficient funds. Try a different card.",
+    icon: "card-outline",
+    primaryLabel: "Try a different card",
+  },
+  payment_declined: {
+    title: "Payment Declined",
+    message:
+      "The payment provider or card issuer declined this payment. Try a different card.",
+    icon: "business-outline",
+    primaryLabel: "Try a different card",
+  },
+  authentication_failed: {
+    title: "Authentication Failed",
+    message:
+      "The bank could not authenticate this payment. Retry authentication or use another card.",
+    icon: "lock-closed-outline",
+    primaryLabel: "Retry payment",
+  },
+  connection_timeout: {
+    title: "Connection Timeout",
+    message:
+      "We couldn't confirm the payment status. Check your booking before trying again to avoid paying twice.",
+    icon: "cloud-offline-outline",
+    primaryLabel: "Check payment status",
+  },
+  duplicate_payment: {
+    title: "Duplicate Payment Detected",
+    message:
+      "This booking may already be paid. Check its status before attempting another payment.",
+    icon: "copy-outline",
+    primaryLabel: "View my booking",
+  },
+  paid: {
+    title: "Payment Successful",
+    message: "Your payment is confirmed and your itinerary booking is confirmed.",
+    icon: "checkmark-circle-outline",
+    primaryLabel: "View my itinerary",
+  },
+};
 
 function getParam(value?: string | string[]) {
   return Array.isArray(value) ? value[0] : value;
@@ -48,6 +124,68 @@ function PaymentMethodIcon({ method }: Readonly<{ method: PaymentMethod }>) {
   }
 
   return null;
+}
+
+function PaymentResultScreen({
+  result,
+  isProcessing,
+  onPrimaryPress,
+  onCancel,
+}: Readonly<{
+  result: PaymentResult;
+  isProcessing: boolean;
+  onPrimaryPress: () => void;
+  onCancel: () => void;
+}>) {
+  const content = PAYMENT_RESULT_CONTENT[result.kind];
+  const primaryLabel =
+    result.kind === "connection_timeout" && !result.orderId
+      ? "Check my bookings"
+      : content.primaryLabel;
+
+  return (
+    <SafeAreaView className="flex-1 bg-background px-6">
+      <StatusBar barStyle="dark-content" />
+      <View className="flex-1 items-center justify-center">
+        <View className="mb-5 h-16 w-16 items-center justify-center rounded-full border-2 border-primary">
+          <Ionicons name={content.icon} size={30} color={colors.primary} />
+        </View>
+        <Text className="text-center font-poppins-semibold text-xl text-textMain">
+          {content.title}
+        </Text>
+        <Text className="mt-3 max-w-sm text-center font-poppins text-sm leading-6 text-slate-600">
+          {content.message}
+        </Text>
+      </View>
+
+      <View className="gap-3 pb-5">
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={primaryLabel}
+          accessibilityState={{ disabled: isProcessing }}
+          disabled={isProcessing}
+          onPress={onPrimaryPress}
+          className={`items-center rounded-xl bg-salmon-600 py-4 ${
+            isProcessing ? "opacity-60" : "active:opacity-80"
+          }`}
+        >
+          <Text className="font-poppins-semibold text-white">
+            {isProcessing ? "Checking..." : primaryLabel}
+          </Text>
+        </Pressable>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="Cancel and view bookings"
+          onPress={onCancel}
+          className="items-center rounded-xl bg-teal-50 py-4 active:opacity-80"
+        >
+          <Text className="font-poppins-medium text-primary">
+            Cancel
+          </Text>
+        </Pressable>
+      </View>
+    </SafeAreaView>
+  );
 }
 
 export default function Payment() {
@@ -72,6 +210,10 @@ export default function Payment() {
   const [selectedMethod, setSelectedMethod] = useState<SelectedMethod>(null);
 
   const [walletExpanded, setWalletExpanded] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [paymentResult, setPaymentResult] = useState<PaymentResult | null>(
+    null,
+  );
 
   if (!itinerary || !packageId) {
     return (
@@ -104,7 +246,48 @@ export default function Payment() {
     });
   };
 
+  const verifyPaymentStatus = async (orderId: number) => {
+    setIsProcessing(true);
+    try {
+      let paymentStatus = "pending";
+      let failureReason: PaymentFailureReason | null = null;
+
+      for (let attempt = 0; attempt < 6; attempt += 1) {
+        const status = await getPaymentStatus(orderId);
+        paymentStatus = status.payment_status;
+        failureReason = status.failure_reason;
+
+        if (paymentStatus !== "pending") {
+          break;
+        }
+
+        if (attempt < 5) {
+          await new Promise((resolve) => setTimeout(resolve, 2000));
+        }
+      }
+
+      if (paymentStatus === "paid") {
+        setPaymentResult({ kind: "paid", orderId });
+      } else if (paymentStatus === "failed") {
+        setPaymentResult({
+          kind: failureReason ?? "payment_declined",
+          orderId,
+        });
+      } else {
+        setPaymentResult({ kind: "connection_timeout", orderId });
+      }
+    } catch {
+      setPaymentResult({ kind: "connection_timeout", orderId });
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
   const continueWithSelection = async () => {
+    if (isProcessing) {
+      return;
+    }
+
     if (!selectedMethod) {
       Alert.alert("Select a payment method", "Choose how you want to pay.");
       return;
@@ -117,22 +300,77 @@ export default function Payment() {
       return;
     }
 
+    setIsProcessing(true);
+
+    const paymentMethodType =
+      selectedMethod === "gcash" || selectedMethod === "paymaya"
+        ? selectedMethod
+        : "card";
+
+    let orderId: number;
+
     try {
-      const paymentMethodType =
-        selectedMethod === "gcash" || selectedMethod === "paymaya"
-          ? selectedMethod
-          : "card";
-
-      const { checkout_url } = await createCheckout(
-        bookingId,
-        paymentMethodType,
-      );
-
-      await WebBrowser.openBrowserAsync(checkout_url);
+      const checkout = await createCheckout(bookingId, paymentMethodType);
+      orderId = checkout.order_id;
+      await WebBrowser.openBrowserAsync(checkout.checkout_url);
     } catch (error) {
-      Alert.alert("Payment failed", getErrorMessage(error));
+      const reason = getCheckoutFailureReason(error);
+
+      if (reason) {
+        setPaymentResult({ kind: reason });
+      } else {
+        Alert.alert("Unable to start checkout", getErrorMessage(error));
+      }
+
+      setIsProcessing(false);
+      return;
     }
+
+    setIsProcessing(false);
+    await verifyPaymentStatus(orderId);
   };
+
+  const handleResultPrimaryPress = () => {
+    if (!paymentResult) {
+      return;
+    }
+
+    if (paymentResult.kind === "paid" || paymentResult.kind === "duplicate_payment") {
+      const bookingId = getParam(params.bookingId);
+      if (bookingId) {
+        router.replace({
+          pathname: "/my-itineraries/[bookingId]",
+          params: { bookingId },
+        });
+      } else {
+        router.replace("/my-itineraries");
+      }
+      return;
+    }
+
+    if (paymentResult.kind === "connection_timeout") {
+      if (paymentResult.orderId) {
+        void verifyPaymentStatus(paymentResult.orderId);
+      } else {
+        router.replace("/my-itineraries");
+      }
+      return;
+    }
+
+    setPaymentResult(null);
+    void continueWithSelection();
+  };
+
+  if (paymentResult) {
+    return (
+      <PaymentResultScreen
+        result={paymentResult}
+        isProcessing={isProcessing}
+        onPrimaryPress={handleResultPrimaryPress}
+        onCancel={() => router.replace("/my-itineraries")}
+      />
+    );
+  }
 
   const renderRadio = (checked: boolean) => (
     <View
@@ -277,8 +515,9 @@ export default function Payment() {
       {/* Continue Button */}
       <View className="bg-white px-5 py-3">
         <Buttons
-          title="Continue"
+          title={isProcessing ? "Checking payment..." : "Continue"}
           onPress={continueWithSelection}
+          disabled={isProcessing}
           width="w-full"
           className="bg-salmon-600"
         />

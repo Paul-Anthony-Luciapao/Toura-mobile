@@ -5,17 +5,26 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\ItineraryBooking;
 use App\Models\ItineraryPackage;
+use App\Models\Order;
+use App\Services\PaymongoPaymentVerifier;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use RuntimeException;
 
 class ItineraryBookingController extends Controller
 {
-    public function index(Request $request): JsonResponse
+    public function index(
+        Request $request,
+        PaymongoPaymentVerifier $paymentVerifier
+    ): JsonResponse
     {
+        $this->syncPaidBookings($request->user()->id, $paymentVerifier);
+
         return response()->json(
             $this->userBookings($request)
                 ->with(['itineraryPackage', 'guests'])
@@ -24,13 +33,23 @@ class ItineraryBookingController extends Controller
         );
     }
 
-    public function show(Request $request, ItineraryBooking $booking): JsonResponse
+    public function show(
+        Request $request,
+        ItineraryBooking $booking,
+        PaymongoPaymentVerifier $paymentVerifier
+    ): JsonResponse
     {
         // Return 404 rather than disclose that another user's booking exists.
         abort_unless($booking->user_id === $request->user()->id, 404);
 
+        $this->syncPaidBookings(
+            $request->user()->id,
+            $paymentVerifier,
+            $booking->booking_reference
+        );
+
         return response()->json(
-            $booking->load(['itineraryPackage', 'guests'])
+            $booking->refresh()->load(['itineraryPackage', 'guests'])
         );
     }
 
@@ -111,6 +130,49 @@ class ItineraryBookingController extends Controller
     private function userBookings(Request $request): Builder
     {
         return ItineraryBooking::query()->where('user_id', $request->user()->id);
+    }
+
+    private function syncPaidBookings(
+        int $userId,
+        PaymongoPaymentVerifier $paymentVerifier,
+        ?string $bookingReference = null
+    ): void
+    {
+        $orders = Order::query()
+            ->where('user_id', $userId)
+            ->where('payment_status', '!=', 'paid')
+            ->whereNotNull('paymongo_checkout_session_id');
+
+        if ($bookingReference !== null) {
+            $orders->where('reference_number', $bookingReference);
+        }
+
+        foreach ($orders->get() as $order) {
+            try {
+                $paymentVerifier->refreshPaidStatus($order);
+            } catch (RuntimeException $exception) {
+                Log::warning('Could not verify PayMongo payment while loading itinerary bookings.', [
+                    'order_id' => $order->id,
+                    'message' => $exception->getMessage(),
+                ]);
+            }
+        }
+
+        $paidOrderReferences = Order::query()
+            ->select('reference_number')
+            ->where('user_id', $userId)
+            ->where('payment_status', 'paid');
+
+        $bookings = ItineraryBooking::query()
+            ->where('user_id', $userId)
+            ->whereIn('booking_reference', $paidOrderReferences);
+
+        if ($bookingReference !== null) {
+            $bookings->where('booking_reference', $bookingReference);
+        }
+
+        $bookings->where('status', '!=', 'confirmed')
+            ->update(['status' => 'confirmed']);
     }
 
     public function destroy(Request $request, ItineraryBooking $booking): JsonResponse
