@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ItineraryBooking;
 use App\Models\ItineraryPackage;
 use App\Models\Order;
+use App\Models\User;
 use App\Services\PaymongoPaymentVerifier;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
@@ -100,6 +101,24 @@ class ItineraryBookingController extends Controller
 
         // Keep the reservation and its guest records atomic to avoid partial bookings.
         $booking = DB::transaction(function () use ($request, $validated, $totalPrice) {
+            User::query()
+                ->whereKey($request->user()->id)
+                ->lockForUpdate()
+                ->firstOrFail();
+
+            $hasOverlappingBooking = ItineraryBooking::query()
+                ->where('user_id', $request->user()->id)
+                ->where('itinerary_package_id', $validated['itinerary_package_id'])
+                ->whereDate('arrival_date', '<=', $validated['departure_date'])
+                ->whereDate('departure_date', '>=', $validated['arrival_date'])
+                ->exists();
+
+            if ($hasOverlappingBooking) {
+                throw ValidationException::withMessages([
+                    'itinerary_package_id' => 'You already have a booking for this itinerary package during overlapping dates.',
+                ]);
+            }
+
             $booking = ItineraryBooking::create([
                 'booking_reference' => 'TOURA-'.Str::upper(Str::random(8)),
                 'user_id' => $request->user()->id,

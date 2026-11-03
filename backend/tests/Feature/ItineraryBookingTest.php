@@ -87,6 +87,82 @@ class ItineraryBookingTest extends TestCase
         ]);
     }
 
+    public function test_user_cannot_create_overlapping_booking_for_same_package(): void
+    {
+        $user = User::factory()->create();
+        $package = ItineraryPackage::create([
+            'id' => 'spot-duplicate-test',
+            'title' => 'Duplicate test package',
+            'days' => [],
+            'price_breakdown' => [['label' => 'Package', 'amount' => 1000]],
+        ]);
+        $bookingPayload = [
+            'itinerary_package_id' => $package->id,
+            'arrival_date' => '2026-12-10',
+            'departure_date' => '2026-12-14',
+            'guests' => [
+                [
+                    'first_name' => 'Alex',
+                    'last_name' => 'Reyes',
+                    'date_of_birth' => '1995-06-10',
+                    'phone' => '+639175550000',
+                    'email' => null,
+                ],
+            ],
+        ];
+
+        $this->actingAs($user, 'sanctum')
+            ->postJson('/api/v1/itinerary-bookings', $bookingPayload)
+            ->assertCreated();
+
+        $this->postJson('/api/v1/itinerary-bookings', [
+            ...$bookingPayload,
+            'arrival_date' => '2026-12-12',
+            'departure_date' => '2026-12-16',
+        ])
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors('itinerary_package_id');
+
+        $this->assertDatabaseCount('itinerary_bookings', 1);
+    }
+
+    public function test_user_can_book_same_package_for_non_overlapping_dates(): void
+    {
+        $user = User::factory()->create();
+        $package = ItineraryPackage::create([
+            'id' => 'spot-non-overlap-test',
+            'title' => 'Non-overlap test package',
+            'days' => [],
+            'price_breakdown' => [['label' => 'Package', 'amount' => 1000]],
+        ]);
+        $bookingPayload = [
+            'itinerary_package_id' => $package->id,
+            'arrival_date' => '2026-12-10',
+            'departure_date' => '2026-12-14',
+            'guests' => [
+                [
+                    'first_name' => 'Alex',
+                    'last_name' => 'Reyes',
+                    'date_of_birth' => '1995-06-10',
+                    'phone' => '+639175550000',
+                    'email' => null,
+                ],
+            ],
+        ];
+
+        $this->actingAs($user, 'sanctum')
+            ->postJson('/api/v1/itinerary-bookings', $bookingPayload)
+            ->assertCreated();
+
+        $this->postJson('/api/v1/itinerary-bookings', [
+            ...$bookingPayload,
+            'arrival_date' => '2026-12-15',
+            'departure_date' => '2026-12-18',
+        ])->assertCreated();
+
+        $this->assertDatabaseCount('itinerary_bookings', 2);
+    }
+
     public function test_a_traveler_cannot_read_another_users_itinerary_booking(): void
     {
         $owner = User::factory()->create();
