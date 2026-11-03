@@ -1,10 +1,5 @@
-import { globalStyles } from "@/styles/global";
-import { Text, View } from "react-native";
+import ItineraryPackagesScreen from "@/components/itineraries/ItineraryPackagesScreen";
 
-export default function ItineraryScreen() {
-  return (
-    <View style={globalStyles.container}>
-      <Text style={globalStyles.title}>Itinerary</Text>
-    </View>
-  );
+export default function ItineraryTabScreen() {
+  return <ItineraryPackagesScreen showBackButton={true} />;
 }

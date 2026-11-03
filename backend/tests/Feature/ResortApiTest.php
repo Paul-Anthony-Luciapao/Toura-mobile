@@ -10,7 +10,13 @@ class ResortApiTest extends TestCase
     {
         $response = $this->getJson('/api/v1/resorts');
 
-        $response->assertOk();
-        $response->assertJsonIsArray();
+        $response->assertOk()
+            ->assertJsonStructure([
+                'data',
+                'links',
+                'meta',
+            ]);
+
+        $response->assertJsonIsArray('data');
     }
 }

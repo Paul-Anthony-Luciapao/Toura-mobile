@@ -21,6 +21,7 @@ class Offer extends Model
     {
         return [
             'inclusions' => 'array',
+            'valid_until' => 'date',
         ];
     }
 

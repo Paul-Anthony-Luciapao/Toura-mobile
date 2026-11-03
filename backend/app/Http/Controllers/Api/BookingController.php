@@ -64,12 +64,14 @@ class BookingController extends Controller
                 ->lockForUpdate()
                 ->firstOrFail();
 
+            // Ensure the accommodation belongs to the selected resort.
             if ($accommodation->resort_id != $validated['resort_id']) {
                 throw ValidationException::withMessages([
                     'accommodation_id' => 'The selected accommodation does not belong to the selected resort.',
                 ]);
             }
 
+            // Ensure the number of guests does not exceed capacity.
             if ($validated['guests_count'] > $accommodation->capacity) {
                 throw ValidationException::withMessages([
                     'guests_count' => 'The number of guests exceeds the accommodation capacity.',
