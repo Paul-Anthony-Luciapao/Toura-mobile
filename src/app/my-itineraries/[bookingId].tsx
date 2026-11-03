@@ -340,7 +340,7 @@ export default function ItineraryDetailScreen() {
                   color="#92400E"
                 />
                 <Text className="ml-2 flex-1 font-poppins text-sm text-amber-900">
-                  This itinerary is unpaid. Demo payment has not been processed.
+                  Payment for this itinerary has not been confirmed yet.
                 </Text>
               </View>
             ) : null}

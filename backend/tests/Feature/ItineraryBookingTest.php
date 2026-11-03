@@ -4,9 +4,11 @@ namespace Tests\Feature;
 
 use App\Models\ItineraryBooking;
 use App\Models\ItineraryPackage;
+use App\Models\Order;
 use App\Models\User;
 use Database\Seeders\ItineraryPackageSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
 class ItineraryBookingTest extends TestCase
@@ -109,6 +111,141 @@ class ItineraryBookingTest extends TestCase
         $this->actingAs($otherUser, 'sanctum')
             ->getJson("/api/v1/itinerary-bookings/{$booking->id}")
             ->assertNotFound();
+    }
+
+    public function test_my_itineraries_confirms_bookings_with_a_paid_order(): void
+    {
+        $user = User::factory()->create();
+        $package = ItineraryPackage::create([
+            'id' => 'spot-paid',
+            'title' => 'Paid itinerary package',
+            'days' => [],
+            'price_breakdown' => [['label' => 'Package', 'amount' => 1000]],
+        ]);
+        $booking = ItineraryBooking::create([
+            'booking_reference' => 'TOURA-PAID-BOOKING',
+            'user_id' => $user->id,
+            'itinerary_package_id' => $package->id,
+            'arrival_date' => '2026-11-01',
+            'departure_date' => '2026-11-02',
+            'guest_count' => 1,
+            'total_price' => 1000,
+            'status' => 'pending',
+        ]);
+        Order::create([
+            'user_id' => $user->id,
+            'total' => 1000,
+            'reference_number' => $booking->booking_reference,
+            'status' => 'paid',
+            'payment_status' => 'paid',
+        ]);
+
+        $this->actingAs($user, 'sanctum')
+            ->getJson('/api/v1/itinerary-bookings')
+            ->assertOk()
+            ->assertJsonPath('0.status', 'confirmed');
+
+        $this->assertDatabaseHas('itinerary_bookings', [
+            'id' => $booking->id,
+            'status' => 'confirmed',
+        ]);
+    }
+
+    public function test_my_itineraries_verifies_pending_checkout_with_paymongo(): void
+    {
+        config(['services.paymongo.secret_key' => 'sk_test_secret']);
+        Http::fake([
+            'https://api.paymongo.com/v1/checkout_sessions/cs_test_itinerary' => Http::response([
+                'data' => [
+                    'id' => 'cs_test_itinerary',
+                    'attributes' => [
+                        'reference_number' => 'TOURA-PENDING-SESSION',
+                        'payments' => [
+                            [
+                                'attributes' => [
+                                    'status' => 'paid',
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ]),
+        ]);
+
+        $user = User::factory()->create();
+        $package = ItineraryPackage::create([
+            'id' => 'spot-pending-session',
+            'title' => 'Paid itinerary package',
+            'days' => [],
+            'price_breakdown' => [['label' => 'Package', 'amount' => 1000]],
+        ]);
+        $booking = ItineraryBooking::create([
+            'booking_reference' => 'TOURA-PENDING-SESSION',
+            'user_id' => $user->id,
+            'itinerary_package_id' => $package->id,
+            'arrival_date' => '2026-11-01',
+            'departure_date' => '2026-11-02',
+            'guest_count' => 1,
+            'total_price' => 1000,
+            'status' => 'pending',
+        ]);
+        Order::create([
+            'user_id' => $user->id,
+            'total' => 1000,
+            'reference_number' => $booking->booking_reference,
+            'paymongo_checkout_session_id' => 'cs_test_itinerary',
+            'status' => 'pending',
+            'payment_status' => 'pending',
+        ]);
+
+        $this->actingAs($user, 'sanctum')
+            ->getJson('/api/v1/itinerary-bookings')
+            ->assertOk()
+            ->assertJsonPath('0.status', 'confirmed');
+
+        $this->assertDatabaseHas('orders', [
+            'reference_number' => $booking->booking_reference,
+            'status' => 'paid',
+            'payment_status' => 'paid',
+        ]);
+    }
+
+    public function test_booking_details_confirm_booking_with_a_paid_order(): void
+    {
+        $user = User::factory()->create();
+        $package = ItineraryPackage::create([
+            'id' => 'spot-paid-detail',
+            'title' => 'Paid itinerary package',
+            'days' => [],
+            'price_breakdown' => [['label' => 'Package', 'amount' => 1000]],
+        ]);
+        $booking = ItineraryBooking::create([
+            'booking_reference' => 'TOURA-PAID-DETAIL',
+            'user_id' => $user->id,
+            'itinerary_package_id' => $package->id,
+            'arrival_date' => '2026-11-01',
+            'departure_date' => '2026-11-02',
+            'guest_count' => 1,
+            'total_price' => 1000,
+            'status' => 'pending',
+        ]);
+        Order::create([
+            'user_id' => $user->id,
+            'total' => 1000,
+            'reference_number' => $booking->booking_reference,
+            'status' => 'paid',
+            'payment_status' => 'paid',
+        ]);
+
+        $this->actingAs($user, 'sanctum')
+            ->getJson("/api/v1/itinerary-bookings/{$booking->id}")
+            ->assertOk()
+            ->assertJsonPath('status', 'confirmed');
+
+        $this->assertDatabaseHas('itinerary_bookings', [
+            'id' => $booking->id,
+            'status' => 'confirmed',
+        ]);
     }
 
     public function test_booking_requires_contact_details_for_each_guest(): void

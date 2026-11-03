@@ -5,6 +5,7 @@ import { Pressable, Text } from "react-native";
 export default function Button({
   title,
   onPress,
+  disabled = false,
   width = "w-full",
   height = "py-[14px]",
   backgroundColor = "bg-primary",
@@ -16,8 +17,10 @@ export default function Button({
   return (
     <Pressable
       onPress={onPress}
+      disabled={disabled}
       accessibilityRole="button"
       accessibilityLabel={title}
+      accessibilityState={{ disabled }}
       className={`
         ${width}
         ${height}
@@ -26,7 +29,7 @@ export default function Button({
         justify-center
         rounded-[14px]
         px-[18px]
-        active:opacity-80
+        ${disabled ? "opacity-60" : "active:opacity-80"}
         ${className}
       `}
     >

@@ -155,10 +155,6 @@ export default function AvailabilityScreen() {
               <Text className="font-poppins-semibold text-[24px] text-textMain">
                 Time and Date
               </Text>
-
-              <Text className="font-poppins text-[12px] text-textMuted">
-                Step 1 of 4
-              </Text>
             </View>
 
             <View className="pl-5">

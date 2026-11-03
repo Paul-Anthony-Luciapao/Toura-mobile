@@ -25,11 +25,26 @@ class WebhookController extends Controller
             return response()->json(['message' => 'Invalid signature.'], 401);
         }
 
-        // PayMongo may wrap under data.attributes; normalize.
-        $session = $request->input('data.attributes') ?? $request->input('data') ?? [];
-        $sessionId = $session['id'] ?? ($request->input('data.id') ?? null);
-        $referenceNumber = $session['attributes']['reference_number'] ?? ($session['reference_number'] ?? null);
-        $eventType = $request->input('data.type') ?? $request->input('event_type') ?? $request->input('type');
+        $event = $request->input('data', []);
+        $event = is_array($event) ? $event : [];
+        $eventAttributes = $event['attributes'] ?? [];
+        $eventAttributes = is_array($eventAttributes) ? $eventAttributes : [];
+
+        $session = $event['data']
+            ?? $eventAttributes['data']
+            ?? $eventAttributes;
+        $session = is_array($session) ? $session : [];
+        $sessionAttributes = $session['attributes'] ?? [];
+        $sessionAttributes = is_array($sessionAttributes) ? $sessionAttributes : [];
+
+        $sessionId = $session['id'] ?? null;
+        $referenceNumber = $sessionAttributes['reference_number']
+            ?? $session['reference_number']
+            ?? null;
+        $eventType = $eventAttributes['type']
+            ?? $event['type']
+            ?? $request->input('event_type')
+            ?? $request->input('type');
 
         if ($eventType === 'checkout_session.payment.paid') {
             $order = null;
@@ -69,13 +84,24 @@ class WebhookController extends Controller
         }
 
         $timestamp = $parts['t'] ?? null;
-        $signature = $parts['v1'] ?? null;
-        if (! $timestamp || ! $signature) {
+        $signatures = array_filter([
+            $parts['v1'] ?? null,
+            $parts['te'] ?? null,
+            $parts['li'] ?? null,
+        ], fn ($signature) => is_string($signature) && $signature !== '');
+
+        if (! $timestamp || $signatures === []) {
             return false;
         }
 
         $expected = hash_hmac('sha256', $timestamp.'.'.$payload, $secret);
 
-        return hash_equals($expected, $signature);
+        foreach ($signatures as $signature) {
+            if (hash_equals($expected, $signature)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
