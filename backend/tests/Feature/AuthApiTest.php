@@ -15,6 +15,7 @@ class AuthApiTest extends TestCase
         $response = $this->postJson('/api/v1/auth/register', [
             'name' => 'Test User',
             'email' => 'testuser@example.com',
+            'phone' => '09123456789',
             'password' => 'password123',
             'password_confirmation' => 'password123',
         ]);
@@ -39,6 +40,7 @@ class AuthApiTest extends TestCase
         $response = $this->postJson('/api/v1/auth/register', [
             'name' => 'Another User',
             'email' => 'existing@example.com',
+            'phone' => '09123456789',
             'password' => 'password123',
             'password_confirmation' => 'password123',
         ]);
@@ -95,8 +97,10 @@ class AuthApiTest extends TestCase
             'password' => 'password123',
         ]);
 
-        $response->assertUnprocessable()
-            ->assertJsonValidationErrors('email');
+        $response->assertForbidden()
+            ->assertJson([
+                'message' => 'This account is not active.',
+            ]);
     }
 
     public function test_authenticated_user_can_access_profile(): void
@@ -107,8 +111,8 @@ class AuthApiTest extends TestCase
             ->getJson('/api/v1/me');
 
         $response->assertOk()
-            ->assertJsonPath('id', $user->id)
-            ->assertJsonPath('email', $user->email);
+            ->assertJsonPath('user.id', (string) $user->id)
+            ->assertJsonPath('user.email', $user->email);
     }
 
     public function test_unauthenticated_user_cannot_access_profile(): void
@@ -128,7 +132,7 @@ class AuthApiTest extends TestCase
 
         $response->assertOk()
             ->assertJson([
-                'message' => 'Logged out successfully.',
+                'message' => 'Logged out.',
             ]);
 
         $this->assertDatabaseMissing('personal_access_tokens', [

@@ -1,0 +1,86 @@
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  // NOTE: Update this to include the paths to all files that contain Nativewind classes.
+  content: ["./src/**/*.{js,jsx,ts,tsx}"],
+  presets: [require("nativewind/preset")],
+  theme: {
+    extend: {
+      colors: {
+        salmon: {
+          DEFAULT: "#FFA69B",
+          50: "#FFF1EF",
+          100: "#FFE1DD",
+          300: "#FFC9C2",
+          500: "#FFA69B",
+          600: "#D66957",
+        },
+        teal: {
+          50: "#E9F7F5",
+          100: "#D0EFEB",
+          200: "#A7DED8",
+          400: "#72CBBF",
+          600: "#238276",
+        },
+        neutral: {
+          50: "#F7F9FB",
+          100: "#F0F3F8",
+          300: "#BBC1D1",
+          600: "#5E677F",
+          800: "#31374A",
+          900: "#131525",
+        },
+        coral: {
+          50: "#FBEDE8",
+          100: "#F6D8CC",
+          200: "#EDB29E",
+          300: "#E48B70",
+          400: "#E07856",
+          500: "#C9613E",
+          600: "#A14E32",
+          700: "#7A3B26",
+        },
+        cream: {
+          DEFAULT: "#F5EBD8",
+          200: "#F0D9A8",
+          300: "#E8CC8B",
+        },
+        ink: {
+          DEFAULT: "#1B1F1E",
+          soft: "#2A2F2E",
+          600: "#4A4F4D",
+          500: "#6B716E",
+          400: "#9AA09C",
+          100: "#E8E8E4",
+        },
+        background: "#ffffff",
+        surface: "#ffffff",
+        surfaceSoft: "#eaf5f2",
+        surfaceMuted: "#e2e8f0",
+        primary: {
+          DEFAULT: "#0f766e",
+          dark: "#115e59",
+          salmon: "#FFA69B",
+        },
+        textSecondary: "#a0a0b0",
+        textMain: "#0f172a",
+        textSoft: "#334155",
+        textMuted: "#64748b",
+        border: "#e2e8f0",
+        warning: {
+          DEFAULT: "#f59e0b",
+          soft: "#fff7ed",
+        },
+        accent: "#c2410c",
+        heroOverlayTop: "rgba(15, 94, 140, 0.55)",
+        heroOverlayBottom: "rgba(11, 46, 74, 0.75)",
+      },
+      fontFamily: {
+        poppins: ["Poppins_400Regular"],
+        "poppins-medium": ["Poppins_500Medium"],
+        "poppins-semibold": ["Poppins_600SemiBold"],
+        "poppins-bold": ["Poppins_700Bold"],
+      },
+    },
+  },
+  plugins: [],
+};

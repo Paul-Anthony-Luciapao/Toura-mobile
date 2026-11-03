@@ -1,79 +1,47 @@
-import { colors } from "@/styles/global";
 import { Ionicons } from "@expo/vector-icons";
-import {
-  ImageBackground,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from "react-native";
+import { Image, type ImageSource } from "expo-image";
+import { StyleSheet, Text, TextInput, View } from "react-native";
 import Header from "./Header";
 
 type Props = Readonly<{
-  image: string;
+  image: ImageSource | number;
   headline: string;
   subtext: string;
 }>;
 
 export default function HeroBanner({ image, headline, subtext }: Props) {
   return (
-    <ImageBackground source={{ uri: image }} style={styles.background}>
-      <View style={styles.overlay} />
+    <View className="h-[425px] w-full overflow-hidden">
+      <Image
+        source={image}
+        contentFit="cover"
+        style={StyleSheet.absoluteFill}
+      />
+      {/* Dark overlay */}
+      <View className="absolute inset-0 bg-[rgba(11,46,74,0.75)]" />
+
+      {/* Header */}
       <Header variant="light" />
-      <View style={styles.content}>
-        <Text style={styles.headline}>{headline}</Text>
-        <Text style={styles.subtext}>{subtext}</Text>
-        <View style={styles.searchBar}>
-          <Ionicons name="search" size={18} color={colors.textMuted} />
+
+      {/* Hero content */}
+      <View className="mt-10 px-5">
+        <Text className="text-5xl font-bold leading-[41px] text-white">
+          {headline}
+        </Text>
+
+        <Text className="mt-3 text-xl leading-6 text-white">{subtext}</Text>
+
+        {/* Search bar */}
+        <View className="mt-5 flex-row items-center gap-2 rounded-full bg-white px-[14px] py-[4px]">
+          <Ionicons name="search" size={18} color="#64748b" />
+
           <TextInput
             placeholder="Search destinations, itineraries..."
-            placeholderTextColor={colors.textMuted}
-            style={styles.searchInput}
+            placeholderTextColor="#64748b"
+            className="flex-1 text-[14px] text-slate-900"
           />
         </View>
       </View>
-    </ImageBackground>
+    </View>
   );
 }
-
-const styles = StyleSheet.create({
-  background: {
-    width: "100%",
-    height: 480,
-  },
-  overlay: {
-    ...StyleSheet.absoluteFill,
-    backgroundColor: colors.heroOverlayBottom,
-  },
-  content: {
-    paddingHorizontal: 20,
-    marginTop: 40,
-  },
-  headline: {
-    fontSize: 34,
-    fontFamily: "Poppins_700Bold",
-    color: colors.white,
-    lineHeight: 40,
-  },
-  subtext: {
-    fontSize: 14,
-    color: colors.white,
-    marginTop: 12,
-    lineHeight: 20,
-  },
-  searchBar: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: colors.white,
-    borderRadius: 14,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-    marginTop: 20,
-    gap: 8,
-  },
-  searchInput: {
-    flex: 1,
-    fontSize: 14,
-    color: colors.text,
-  },
-});
