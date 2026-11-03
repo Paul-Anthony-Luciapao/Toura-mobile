@@ -238,6 +238,7 @@ export type ItineraryDates = Readonly<{
 export type ButtonProps = Readonly<{
   title: string;
   onPress?: () => void;
+  disabled?: boolean;
   width?: string;
   height?: string;
   backgroundColor?: string;

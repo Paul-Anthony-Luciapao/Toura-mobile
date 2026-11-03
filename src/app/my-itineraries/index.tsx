@@ -129,7 +129,7 @@ function ItineraryCard({
         <View className="mt-3 flex-row items-start rounded-xl bg-amber-50 p-3">
           <Ionicons name="alert-circle-outline" size={18} color="#92400E" />
           <Text className="ml-2 flex-1 font-poppins text-xs text-amber-900">
-            Unpaid — demo payment has not been processed.
+            Payment has not been confirmed yet.
           </Text>
         </View>
       ) : null}
