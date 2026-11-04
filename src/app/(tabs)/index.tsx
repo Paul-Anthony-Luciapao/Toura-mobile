@@ -98,7 +98,7 @@ export default function Index() {
       }}
       showsVerticalScrollIndicator={false}
     >
-      <StatusBar barStyle="auto" />
+      <StatusBar barStyle="light-content" />
 
       {/* Hero Banner */}
       <HeroBanner
