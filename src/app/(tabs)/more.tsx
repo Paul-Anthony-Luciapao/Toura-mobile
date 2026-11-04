@@ -1,7 +1,9 @@
 import { useAuth } from "@/context/AuthContext";
+import { getCustomTabBarContentPadding } from "@/components/CustomTabBar";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { Alert, Pressable, ScrollView, Text, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 type OptionItem = {
   id: string;
@@ -87,6 +89,7 @@ const LEGAL_LINKS = [
 export default function MoreOptionsScreen() {
   const router = useRouter();
   const { user, signOut } = useAuth();
+  const insets = useSafeAreaInsets();
 
   const visibleOptions = user
     ? OPTIONS
@@ -115,7 +118,9 @@ export default function MoreOptionsScreen() {
     <View className="flex-1 bg-white px-5 pt-16">
       <ScrollView
         className="flex-1"
-        contentContainerClassName="pb-10"
+        contentContainerStyle={{
+          paddingBottom: getCustomTabBarContentPadding(insets.bottom),
+        }}
         showsVerticalScrollIndicator={false}>
         <Text className="text-[20px] font-bold text-ink">More</Text>
 

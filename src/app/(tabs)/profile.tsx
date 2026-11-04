@@ -1,4 +1,5 @@
 import { useAuth } from "@/context/AuthContext";
+import { getCustomTabBarContentPadding } from "@/components/CustomTabBar";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
@@ -124,7 +125,9 @@ export default function Profile() {
 
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 20 }}
+        contentContainerStyle={{
+          paddingBottom: getCustomTabBarContentPadding(insets.bottom),
+        }}
       >
         {/* ---------- Cover image ---------- */}
         {/* Replaces ImageBackground with View + Image. */}

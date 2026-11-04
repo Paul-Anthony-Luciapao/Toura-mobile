@@ -19,6 +19,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 type Props = Readonly<{
   showBackButton?: boolean;
+  contentBottomPadding?: number;
 }>;
 
 /** Package total = sum of every line in its price breakdown. */
@@ -55,7 +56,10 @@ function EmptyState({ search }: Readonly<{ search: string }>) {
   );
 }
 
-const ItineraryPackagesScreen = ({ showBackButton = true }: Props) => {
+const ItineraryPackagesScreen = ({
+  showBackButton = true,
+  contentBottomPadding = 32,
+}: Props) => {
   const router = useRouter();
   const [search, setSearch] = useState("");
   const [destination, setDestination] = useState("All");
@@ -128,7 +132,7 @@ const ItineraryPackagesScreen = ({ showBackButton = true }: Props) => {
             )}
 
             <Text className="font-poppins-medium text-[20px] text-[#111729]">
-              My Itineraries
+              Itineraries
             </Text>
           </View>
 
@@ -142,25 +146,24 @@ const ItineraryPackagesScreen = ({ showBackButton = true }: Props) => {
           </View>
         </View>
 
+        <View className="pb-[15px] pt-2">
+          <CategoryItineraries
+            variant="pill"
+            onSelect={(item) => setDestination(item.name)}
+          />
+
+          <View className="mt-2">
+            <PackageFilterRow />
+          </View>
+        </View>
+
         {/* Itineraries */}
         <FlatList
           data={packageItems}
           keyExtractor={(item) => item.pkg.id}
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
-          contentContainerStyle={{ paddingBottom: 32 }}
-          ListHeaderComponent={
-            <View className="pb-[15px] pt-2">
-              <CategoryItineraries
-                variant="pill"
-                onSelect={(item) => setDestination(item.name)}
-              />
-
-              <View className="mt-2">
-                <PackageFilterRow />
-              </View>
-            </View>
-          }
+          contentContainerStyle={{ paddingBottom: contentBottomPadding }}
           ListEmptyComponent={<EmptyState search={search} />}
           renderItem={({ item }) => {
             const { pkg, spot, resort } = item;

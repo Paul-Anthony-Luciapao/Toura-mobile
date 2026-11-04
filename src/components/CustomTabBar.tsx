@@ -11,6 +11,12 @@ import Animated, {
 import { colors } from "@/styles/global";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+export const CUSTOM_TAB_BAR_HEIGHT = 60;
+
+export function getCustomTabBarContentPadding(bottomInset: number): number {
+  return Math.max(bottomInset, 12) + CUSTOM_TAB_BAR_HEIGHT + 12;
+}
+
 // Custom types
 type TabRoute = {
   key: string;
@@ -145,7 +151,7 @@ export default function CustomTabBar({
 
   const [containerWidth, setContainerWidth] = useState(0);
 
-  const tabBarHeight = 60;
+  const tabBarHeight = CUSTOM_TAB_BAR_HEIGHT;
   const tabBarBottom = Math.max(insets.bottom, 12);
 
   const tabWidth =
@@ -158,7 +164,7 @@ export default function CustomTabBar({
   return (
     <View
       onLayout={handleLayout}
-      className="absolute left-5 right-5 flex-row items-center justify-around rounded-[30px] border-t"
+      className="absolute left-4 right-4 flex-row items-center justify-around rounded-[30px] border-t"
       style={{
         bottom: tabBarBottom,
         height: tabBarHeight,

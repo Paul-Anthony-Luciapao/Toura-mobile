@@ -1,7 +1,5 @@
-import { colors } from "@/styles/global";
 import { Tabs } from "expo-router";
 import React from "react";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import CustomTabBar from "@/components/CustomTabBar";
 
@@ -14,22 +12,11 @@ const TAB_SCREENS = [
 ] as const;
 
 export default function TabsLayout() {
-  const insets = useSafeAreaInsets();
-
-  const tabBarHeight = 60;
-  const tabBarBottom = Math.max(insets.bottom, 12);
-
   return (
     <Tabs
       tabBar={(props) => <CustomTabBar {...props} />}
       screenOptions={{
         headerShown: false,
-
-        sceneStyle: {
-          paddingBottom: tabBarBottom + tabBarHeight,
-          backgroundColor: colors.white,
-        },
-
         animation: "fade",
         freezeOnBlur: true,
         lazy: true,

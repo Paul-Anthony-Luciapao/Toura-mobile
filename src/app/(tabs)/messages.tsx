@@ -1,5 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
+import { getCustomTabBarContentPadding } from "@/components/CustomTabBar";
 import {
   FlatList,
   Image,
@@ -80,7 +81,10 @@ export default function Messages() {
       <FlatList
         data={MOCK_CONVERSATIONS}
         keyExtractor={(item) => item.id}
-        contentContainerClassName="px-5 py-2 pb-24"
+        contentContainerClassName="px-5 py-2"
+        contentContainerStyle={{
+          paddingBottom: getCustomTabBarContentPadding(insets.bottom),
+        }}
         showsVerticalScrollIndicator={false}
         renderItem={({ item }) => (
           <Pressable className="flex-row items-center py-4 bg-white">

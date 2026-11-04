@@ -1,4 +1,5 @@
 import TourPackageCard from "@/app/itinerary-packages/TourPackageCard";
+import { getCustomTabBarContentPadding } from "@/components/CustomTabBar";
 import CategoryIcons from "@/components/home/CategoryIcons";
 import HeroBanner from "@/components/home/HeroBanner";
 import SectionHeader from "@/components/home/SectionHeader";
@@ -12,6 +13,7 @@ import type { ItineraryPackage } from "@/data/types";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { ScrollView, StatusBar, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const heroImage = require("../../../assets/images/elnido.jpg");
 
@@ -40,6 +42,7 @@ const MOST_POPULAR_PACKAGE_ID = HOME_PACKAGES.reduce<{
 
 export default function Index() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
 
   const [favoritePackageIds, setFavoritePackageIds] = useState<string[]>([]);
   const renderPackageCards = () => (
@@ -90,7 +93,9 @@ export default function Index() {
   return (
     <ScrollView
       className="flex-1 bg-background"
-      contentContainerClassName="pb-10"
+      contentContainerStyle={{
+        paddingBottom: getCustomTabBarContentPadding(insets.bottom),
+      }}
       showsVerticalScrollIndicator={false}
     >
       <StatusBar barStyle="auto" />

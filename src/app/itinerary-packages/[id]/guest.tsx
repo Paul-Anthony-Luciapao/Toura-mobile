@@ -1,5 +1,7 @@
 import { PACKAGE_SPOTS } from "@/data/mockData";
+import { useAuth } from "@/context/AuthContext";
 import type { Guest } from "@/data/types";
+import type { AuthUser } from "@/services/auth";
 import { colors } from "@/styles/global";
 import Button from "@components/buttons/Buttons";
 import GuestCard from "@components/itineraries/GuestCard";
@@ -8,6 +10,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import {
+    ActivityIndicator,
     Alert,
     Pressable,
     ScrollView,
@@ -26,7 +29,21 @@ const createGuest = (): Guest => ({
   email: "",
 });
 
+function createPrimaryGuest(user: AuthUser | null): Guest {
+  const [firstName = "", ...lastNameParts] = user?.name.trim().split(/\s+/) ?? [];
+
+  return {
+    ...createGuest(),
+    id: "primary",
+    firstName,
+    lastName: lastNameParts.join(" "),
+    phone: user?.phone ?? "",
+    email: user?.email ?? "",
+  };
+}
+
 export default function GuestScreen() {
+  const { user, loading } = useAuth();
   const { id, arrivalDate, arrivalTime, departureDate, departureTime } =
     useLocalSearchParams<{
       id?: string | string[];
@@ -50,17 +67,51 @@ export default function GuestScreen() {
     ? departureTime[0]
     : departureTime;
 
+  if (loading) {
+    return (
+      <SafeAreaView className="flex-1 items-center justify-center bg-background">
+        <ActivityIndicator color={colors.primary} />
+      </SafeAreaView>
+    );
+  }
+
+  return (
+    <GuestBookingForm
+      user={user}
+      packageId={packageId}
+      arrivalDate={arrivalDateParam}
+      arrivalTime={arrivalTimeParam}
+      departureDate={departureDateParam}
+      departureTime={departureTimeParam}
+    />
+  );
+}
+
+type GuestBookingFormProps = {
+  user: AuthUser | null;
+  packageId?: string;
+  arrivalDate?: string;
+  arrivalTime?: string;
+  departureDate?: string;
+  departureTime?: string;
+};
+
+function GuestBookingForm({
+  user,
+  packageId,
+  arrivalDate,
+  arrivalTime,
+  departureDate,
+  departureTime,
+}: GuestBookingFormProps) {
   const index = PACKAGE_SPOTS.findIndex(
     (spot) => String(spot.id) === String(packageId),
   );
 
   const itinerary = PACKAGE_SPOTS[index];
 
-  const [guests, setGuests] = useState<Guest[]>([
-    {
-      ...createGuest(),
-      id: "primary",
-    },
+  const [guests, setGuests] = useState<Guest[]>(() => [
+    createPrimaryGuest(user),
   ]);
 
   const addGuest = () => {
@@ -130,10 +181,10 @@ export default function GuestScreen() {
       params: {
         id: packageId,
         guests: JSON.stringify(guests),
-        arrivalDate: arrivalDateParam,
-        arrivalTime: arrivalTimeParam,
-        departureDate: departureDateParam,
-        departureTime: departureTimeParam,
+        arrivalDate,
+        arrivalTime,
+        departureDate,
+        departureTime,
       },
     });
   };
@@ -166,7 +217,9 @@ export default function GuestScreen() {
 
           {/* Description */}
           <Text className="pb-6 font-poppins text-slate-600">
-            Add the Guest Details for your trip
+            {user
+              ? "Your profile details are filled in for Guest 1. Add other guests as needed."
+              : "Add the guest details for your trip."}
           </Text>
 
           {/* Guest Cards */}
