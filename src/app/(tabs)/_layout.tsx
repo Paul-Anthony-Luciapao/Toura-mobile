@@ -1,65 +1,36 @@
-import { Ionicons } from "@expo/vector-icons";
+import { colors } from "@/styles/global";
 import { Tabs } from "expo-router";
+import React from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import CustomTabBar from "@/components/CustomTabBar";
+
 const TAB_SCREENS = [
-  {
-    name: "index",
-    title: "Home",
-    icon: "home-outline",
-  },
-  {
-    name: "itinerary",
-    title: "Itineraries",
-    icon: "clipboard-outline",
-  },
-  {
-    name: "messages",
-    title: "Messages",
-    icon: "chatbubble-outline",
-  },
-  {
-    name: "profile",
-    title: "Profile",
-    icon: "person-outline",
-  },
-  {
-    name: "more",
-    title: "More",
-    icon: "ellipsis-horizontal",
-  },
+  { name: "index", title: "Home" },
+  { name: "itinerary", title: "Itineraries" },
+  { name: "messages", title: "Messages" },
+  { name: "profile", title: "Profile" },
+  { name: "more", title: "More" },
 ] as const;
 
 export default function TabsLayout() {
   const insets = useSafeAreaInsets();
 
+  const tabBarHeight = 60;
+  const tabBarBottom = Math.max(insets.bottom, 12);
+
   return (
     <Tabs
+      tabBar={(props) => <CustomTabBar {...props} />}
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: "#FFA69B",
-        tabBarInactiveTintColor: "#1F2937",
-        tabBarShowLabel: false,
 
-        tabBarStyle: {
-          position: "absolute",
-          bottom: Math.max(insets.bottom, 16),
-          left: 20,
-          right: 20,
-          height: 55,
-          borderRadius: 28,
-          marginHorizontal: 10,
-          overflow: "hidden",
-          elevation: 8,
+        sceneStyle: {
+          paddingBottom: tabBarBottom + tabBarHeight,
+          backgroundColor: colors.white,
         },
 
-        tabBarLabelStyle: {
-          fontFamily: "Poppins_400Regular",
-          fontSize: 11,
-          marginTop: -4,
-        },
-
-        animation: "none",
+        animation: "fade",
         freezeOnBlur: true,
         lazy: true,
       }}
@@ -70,13 +41,6 @@ export default function TabsLayout() {
           name={tab.name}
           options={{
             title: tab.title,
-            tabBarIcon: ({ color, size }) => (
-              <Ionicons
-                name={tab.icon}
-                size={size}
-                color={typeof color === "string" ? color : "#1F2937"}
-              />
-            ),
           }}
         />
       ))}
