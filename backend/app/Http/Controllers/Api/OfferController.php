@@ -59,7 +59,6 @@ class OfferController extends Controller
         }        
 
         $validated = $request->validate([
-            'resort_id' => 'sometimes|exists:resorts,id',
             'title' => 'sometimes|string|max:255',
             'tag' => 'nullable|string|max:255',
             'description' => 'nullable|string',

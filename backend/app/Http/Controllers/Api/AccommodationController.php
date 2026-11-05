@@ -75,7 +75,6 @@ class AccommodationController extends Controller
         }        
 
         $validated = $request->validate([
-            'resort_id' => 'sometimes|exists:resorts,id',
             'title' => 'sometimes|string|max:255',
             'description' => 'nullable|string',
             'price_per_night' => 'sometimes|numeric|min:0',
