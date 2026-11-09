@@ -7,9 +7,8 @@ import {
     INITIAL_ITINERARY_PACKAGES,
     PACKAGE_RESORTS,
     PACKAGE_SPOTS,
-} from "@/data/mockData";
+} from "@/data/itineraryPackage";
 import { getPackageSpotImage } from "@/data/packageImages";
-import type { ItineraryPackage } from "@/data/types";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { ScrollView, StatusBar, View } from "react-native";
@@ -27,18 +26,6 @@ const HOME_PACKAGES = INITIAL_ITINERARY_PACKAGES.map((pkg) => {
 
   return { pkg, spot, resort };
 });
-
-const getPackageTotal = (pkg: ItineraryPackage) =>
-  pkg.priceBreakdown.reduce((total, line) => total + line.amount, 0);
-
-const MOST_POPULAR_PACKAGE_ID = HOME_PACKAGES.reduce<{
-  id: string;
-  count: number;
-} | null>((best, { pkg, spot }) => {
-  return !best || spot.reviewCount > best.count
-    ? { id: pkg.id, count: spot.reviewCount }
-    : best;
-}, null)?.id;
 
 export default function Index() {
   const router = useRouter();
@@ -61,14 +48,15 @@ export default function Index() {
         return (
           <View key={pkg.id} className="mr-3.5 w-[280px]">
             <TourPackageCard
-              title={`${spot.name} Itinerary Package`}
+              title={pkg.name}
               image={getPackageSpotImage(spot.image)}
               rating={spot.rating}
               reviewCount={spot.reviewCount}
               detail={`· ${detailParts.join(" · ")}`}
-              days={pkg.days.length}
-              price={getPackageTotal(pkg)}
-              isPopular={pkg.id === MOST_POPULAR_PACKAGE_ID}
+              duration={pkg.duration}
+              price={pkg.price}
+              priceBasis={pkg.priceBasis}
+              isPopular={pkg.popular}
               isFavorite={favoritePackageIds.includes(pkg.id)}
               onToggleFavorite={() =>
                 setFavoritePackageIds((current) =>

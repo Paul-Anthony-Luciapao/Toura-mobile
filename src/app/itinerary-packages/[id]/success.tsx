@@ -1,10 +1,9 @@
-import { PACKAGE_SPOTS } from "@/data/mockData";
+import { getItineraryPackageSpot } from "@/data/itineraryPackage";
 import { getPackageSpotImage } from "@/data/packageImages";
 import { colors } from "@/styles/global";
 import { Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
 import {
-  Alert,
   Image,
   Pressable,
   ScrollView,
@@ -60,9 +59,7 @@ export default function PaymentSuccessScreen() {
   }>();
 
   const packageId = getParam(params.id);
-  const itinerary = PACKAGE_SPOTS.find(
-    (spot) => String(spot.id) === String(packageId),
-  );
+  const itinerary = getItineraryPackageSpot(packageId);
 
   if (!itinerary) {
     return (
@@ -92,7 +89,6 @@ export default function PaymentSuccessScreen() {
     isCardPayment && last4
       ? `${paymentMethodName} •••• ${last4} (demo)`
       : `${paymentMethodName} (demo)`;
-  const bookingId = getParam(params.bookingId);
 
   return (
     <SafeAreaView className="flex-1 bg-background" edges={["bottom"]}>
@@ -204,31 +200,6 @@ export default function PaymentSuccessScreen() {
           >
             <Text className="font-poppins-semibold text-white">
               Back to Home Page
-            </Text>
-          </Pressable>
-          <Pressable
-            accessibilityRole="button"
-            onPress={() => router.replace("/(tabs)/itinerary")}
-            className="items-center rounded-xl border border-dashed border-salmon-600 bg-teal-50 py-4"
-          >
-            <Text
-              onPress={() => {
-                if (!bookingId) {
-                  Alert.alert(
-                    "Itinerary unavailable",
-                    "The booking ID is missing.",
-                  );
-                  return;
-                }
-
-                router.replace({
-                  pathname: "/my-itineraries/[bookingId]",
-                  params: { bookingId },
-                });
-              }}
-              className="font-poppins-semibold text-salmon-600"
-            >
-              View my Itinerary
             </Text>
           </Pressable>
         </View>

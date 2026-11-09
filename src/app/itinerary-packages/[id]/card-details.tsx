@@ -1,5 +1,6 @@
 import Buttons from "@/components/buttons/Buttons";
-import { PACKAGE_SPOTS, PAYMENT_METHODS } from "@/data/mockData";
+import { getItineraryPackageSpot } from "@/data/itineraryPackage";
+import { PAYMENT_METHODS } from "@/data/mockData";
 import type { PaymentMethod } from "@/data/types";
 import { colors } from "@/styles/global";
 import ItineraryHero from "@components/itineraries/ItineraryHero";
@@ -91,9 +92,7 @@ export default function CardDetailsScreen() {
   const packageId = getParam(params.id);
   const paymentMethodId = getParam(params.paymentMethod);
   const paymentMethodName = getParam(params.paymentMethodName) ?? "Card";
-  const itinerary = PACKAGE_SPOTS.find(
-    (spot) => String(spot.id) === String(packageId),
-  );
+  const itinerary = getItineraryPackageSpot(packageId);
   const selectedMethod = PAYMENT_METHODS.find(
     (method) => method.id === paymentMethodId,
   );

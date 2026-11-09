@@ -1,0 +1,22 @@
+export type TourPackage = {
+  id: string;
+  name: string;
+  municipality: string;
+  description: string;
+  image?: string;
+  rating?: number;
+  category: string;
+  duration: string;
+  price: number;
+  priceType: "per_person" | "per_group";
+  inclusions: string[];
+  exclusions: string[];
+  destinations: string[];
+  activities: string[];
+  availableDays?: string[];
+  maxParticipants?: number;
+  meetingPoint?: string;
+  meetingTime?: string;
+  requirements?: string[];
+  cancellationPolicy?: string;
+};

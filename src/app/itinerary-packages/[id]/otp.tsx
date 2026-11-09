@@ -1,5 +1,5 @@
 import Otp from "@/components/itineraries/itinerary-packages/otp/Otp";
-import { PACKAGE_SPOTS } from "@/data/mockData";
+import { getItineraryPackageSpot } from "@/data/itineraryPackage";
 import { colors } from "@/styles/global";
 import ItineraryHero from "@components/itineraries/ItineraryHero";
 import { Ionicons } from "@expo/vector-icons";
@@ -30,9 +30,7 @@ export default function OtpScreen() {
 
   const packageId = getParam(params.id);
 
-  const itinerary = PACKAGE_SPOTS.find(
-    (spot) => String(spot.id) === String(packageId),
-  );
+  const itinerary = getItineraryPackageSpot(packageId);
 
   const handleVerify = () => {
     if (!packageId) {

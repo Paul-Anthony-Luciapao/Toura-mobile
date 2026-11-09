@@ -1,4 +1,7 @@
-import { PACKAGE_SPOTS } from "@/data/mockData";
+import {
+  getItineraryPackageSpot,
+  INITIAL_ITINERARY_PACKAGES,
+} from "@/data/itineraryPackage";
 import type { Guest } from "@/data/types";
 import { getErrorMessage } from "@/services/api";
 import { createItineraryBooking } from "@/services/itineraryBookings";
@@ -147,8 +150,9 @@ export default function ReviewScreen() {
     ? guestsParam[0]
     : guestsParam;
 
-  const itinerary = PACKAGE_SPOTS.find(
-    (spot) => String(spot.id) === String(packageId),
+  const itinerary = getItineraryPackageSpot(packageId);
+  const selectedPackage = INITIAL_ITINERARY_PACKAGES.find(
+    (item) => item.id === packageId,
   );
 
   const [guestData] = useState(() => parseSerializedGuests(serializedGuests));
@@ -182,6 +186,14 @@ export default function ReviewScreen() {
 
   const handleContinue = async () => {
     if (submissionInProgress.current) return;
+
+    if (!selectedPackage) {
+      Alert.alert(
+        "Itinerary package not found",
+        "Please return to the itinerary list and select a package again.",
+      );
+      return;
+    }
 
     const invalidGuest = guests.some(
       (guest) =>
@@ -224,7 +236,7 @@ export default function ReviewScreen() {
 
     try {
       const booking = await createItineraryBooking({
-        itinerary_package_id: packageId!,
+        itinerary_package_id: selectedPackage.id,
         arrival_date: arrivalDateValue,
         arrival_time: toLocalTime(arrivalTimeParam),
         departure_date: departureDateValue,

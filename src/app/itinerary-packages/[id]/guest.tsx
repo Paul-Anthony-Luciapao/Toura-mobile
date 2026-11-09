@@ -1,4 +1,7 @@
-import { PACKAGE_SPOTS } from "@/data/mockData";
+import {
+  getItineraryPackageSpot,
+  INITIAL_ITINERARY_PACKAGES,
+} from "@/data/itineraryPackage";
 import { useAuth } from "@/context/AuthContext";
 import type { Guest } from "@/data/types";
 import type { AuthUser } from "@/services/auth";
@@ -104,18 +107,27 @@ function GuestBookingForm({
   departureDate,
   departureTime,
 }: GuestBookingFormProps) {
-  const index = PACKAGE_SPOTS.findIndex(
-    (spot) => String(spot.id) === String(packageId),
+  const itinerary = getItineraryPackageSpot(packageId);
+  const selectedPackage = INITIAL_ITINERARY_PACKAGES.find(
+    (item) => item.id === packageId,
   );
-
-  const itinerary = PACKAGE_SPOTS[index];
+  const requiredGroupSize =
+    selectedPackage?.priceBasis === "couple"
+      ? 2
+      : selectedPackage?.priceBasis === "family of 4"
+        ? 4
+        : null;
 
   const [guests, setGuests] = useState<Guest[]>(() => [
     createPrimaryGuest(user),
   ]);
 
   const addGuest = () => {
-    setGuests((currentGuests) => [...currentGuests, createGuest()]);
+    setGuests((currentGuests) =>
+      currentGuests.length < 20
+        ? [...currentGuests, createGuest()]
+        : currentGuests,
+    );
   };
 
   const updateGuest = (
@@ -157,6 +169,14 @@ function GuestBookingForm({
   }
 
   const handleContinue = () => {
+    if (requiredGroupSize !== null && guests.length !== requiredGroupSize) {
+      Alert.alert(
+        "Package group size",
+        `This package price applies to exactly ${requiredGroupSize} guests. Add or remove guests to continue.`,
+      );
+      return;
+    }
+
     const errors = guests.flatMap((guest, index) => {
       const missing: string[] = [];
       if (!guest.firstName.trim()) missing.push("first name");
@@ -221,6 +241,11 @@ function GuestBookingForm({
               ? "Your profile details are filled in for Guest 1. Add other guests as needed."
               : "Add the guest details for your trip."}
           </Text>
+          {requiredGroupSize !== null ? (
+            <Text className="mb-4 rounded-xl bg-amber-50 p-3 font-poppins text-sm text-amber-900">
+              This package price covers exactly {requiredGroupSize} guests.
+            </Text>
+          ) : null}
 
           {/* Guest Cards */}
           {guests.map((guest, index) => (
@@ -239,12 +264,13 @@ function GuestBookingForm({
         {/* Add Guest */}
         <Pressable
           onPress={addGuest}
+          disabled={guests.length >= 20}
           className="w-full flex-row items-center justify-center rounded-xl border border-dashed border-salmon-600 py-4"
         >
           <Ionicons name="add-circle-outline" size={21} color="#D66957" />
 
           <Text className="ml-2 font-poppins-semibold text-salmon-600">
-            Add another guest
+            {guests.length >= 20 ? "Maximum guests reached" : "Add another guest"}
           </Text>
         </Pressable>
 

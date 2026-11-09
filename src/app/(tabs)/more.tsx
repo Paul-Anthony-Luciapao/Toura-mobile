@@ -96,6 +96,11 @@ export default function MoreOptionsScreen() {
     : OPTIONS.filter((option) => option.id !== "logout");
 
   const handleOptionPress = async (option: OptionItem) => {
+    if (option.id === "bookings") {
+      router.push("/my-bookings");
+      return;
+    }
+
     if (option.id === "settings") {
       router.push("/settings");
       return;

@@ -20,6 +20,8 @@ class ItineraryPackage extends Model
         'start_date',
         'days',
         'price_breakdown',
+        'price_type',
+        'group_size',
         'inclusions',
         'reviews',
     ];
@@ -32,6 +34,7 @@ class ItineraryPackage extends Model
             'price_breakdown' => 'array',
             'inclusions' => 'array',
             'reviews' => 'array',
+            'group_size' => 'integer',
         ];
     }
 }

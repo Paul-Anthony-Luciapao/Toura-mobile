@@ -50,6 +50,14 @@ php artisan db:seed
 php artisan db:seed --class=TouristSpotSeeder
 ```
 
+For local development, run the Laravel scheduler in a second terminal so unpaid bookings expire on time:
+
+```bash
+php artisan schedule:work
+```
+
+In production, configure Laravel's scheduler to invoke `php artisan schedule:run` every minute. Tour package prices are sample values; update seeded prices before accepting real bookings. Per-date operator capacity and availability are not configured yet, so bookings currently capture requests but do not reserve a limited number of tour seats.
+
 Start the API from `backend/`:
 
 ```bash

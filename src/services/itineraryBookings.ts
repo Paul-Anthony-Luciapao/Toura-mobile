@@ -24,6 +24,18 @@ export type ItineraryBookingResponse = {
   guest_count: number;
   total_price: string;
   status: string;
+  payment_status: "pending" | "paid" | "refunded";
+  price_type: "per_person" | "per_group";
+  unit_price: string;
+  pricing_snapshot: {
+    package_title: string;
+    price_type: "per_person" | "per_group";
+    group_size: number | null;
+    unit_price: number;
+    guest_count: number;
+    total_price: number;
+  };
+  expires_at: string | null;
 };
 
 export async function createItineraryBooking(
@@ -74,7 +86,7 @@ export async function fetchItineraryBooking(
   return data;
 }
 
-export async function deleteItineraryBooking(
+export async function cancelItineraryBooking(
   bookingId: string | number,
 ): Promise<void> {
   await api.delete(`/itinerary-bookings/${bookingId}`);

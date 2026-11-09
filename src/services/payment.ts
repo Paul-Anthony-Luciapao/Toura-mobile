@@ -13,12 +13,14 @@ export type PaymentFailureReason =
 export async function createCheckout(
   bookingId: number,
   paymentMethodType: "card" | "gcash" | "paymaya",
+  bookingType: "itinerary" | "tour" = "itinerary",
 ) {
   const response = await api.post<{
     checkout_url: string;
     order_id: number;
   }>("/payments/checkout", {
     booking_id: bookingId,
+    booking_type: bookingType,
     payment_method_type: paymentMethodType,
   });
 

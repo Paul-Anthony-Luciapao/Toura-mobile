@@ -191,36 +191,6 @@ export type Itineraries = {
   minicontent: string;
 };
 
-export type ItineraryDay = {
-  id: string;
-  title: string;
-  notes: string[];
-};
-
-export type PackagePriceLine = {
-  label: string;
-  amount: number;
-};
-
-export type PackageReview = {
-  id: string;
-  name: string;
-  rating: number;
-  text: string;
-};
-
-export type ItineraryPackage = {
-  id: string;
-  spotId: string;
-  resortId: string;
-  startDate: string;
-  days: ItineraryDay[];
-  priceBreakdown: PackagePriceLine[];
-  inclusions: string[];
-  reviews: PackageReview[];
-  destination?: string;
-};
-
 export type TimePickerSettings = Readonly<{
   hourCycle: 12 | 24;
   minuteInterval: 1 | 5 | 10 | 15 | 30;

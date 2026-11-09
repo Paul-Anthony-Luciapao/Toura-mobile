@@ -1,4 +1,4 @@
-import { PACKAGE_SPOTS } from "@/data/mockData";
+import { getItineraryPackageSpot } from "@/data/itineraryPackage";
 import { colors } from "@/styles/global";
 import Button from "@components/buttons/Buttons";
 import ItineraryHero from "@components/itineraries/ItineraryHero";
@@ -32,11 +32,7 @@ export default function VerificationScreen() {
     ? departureTime[0]
     : departureTime;
 
-  const index = PACKAGE_SPOTS.findIndex(
-    (spot) => String(spot.id) === String(packageId),
-  );
-
-  const itinerary = PACKAGE_SPOTS[index];
+  const itinerary = getItineraryPackageSpot(packageId);
 
   if (!packageId || !itinerary) {
     return (

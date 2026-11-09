@@ -9,6 +9,8 @@ use App\Http\Controllers\Api\ItineraryPackageController;
 use App\Http\Controllers\Api\OfferController;
 use App\Http\Controllers\Api\ResortController;
 use App\Http\Controllers\Api\TouristSpotController;
+use App\Http\Controllers\Api\TourBookingController;
+use App\Http\Controllers\Api\TourPackageController;
 use App\Http\Controllers\Api\PaymentController;
 use App\Http\Controllers\Api\WebhookController;
 use Illuminate\Support\Facades\Route;
@@ -49,6 +51,8 @@ Route::prefix('v1')->group(function () {
 
 
     Route::get('/itinerary-packages/{id}', [ItineraryPackageController::class, 'show']);
+    Route::get('/tour-packages', [TourPackageController::class, 'index']);
+    Route::get('/tour-packages/{id}', [TourPackageController::class, 'show']);
 
     // Any logged-in user
     Route::middleware('auth:sanctum')->group(function () {
@@ -100,6 +104,10 @@ Route::prefix('v1')->group(function () {
             '/itinerary-bookings/{booking}',
             [ItineraryBookingController::class, 'destroy']
         );
+        Route::get('/tour-bookings', [TourBookingController::class, 'index']);
+        Route::post('/tour-bookings', [TourBookingController::class, 'store']);
+        Route::get('/tour-bookings/{booking}', [TourBookingController::class, 'show']);
+        Route::delete('/tour-bookings/{booking}', [TourBookingController::class, 'destroy']);
 
         // Payment checkout
         Route::post(

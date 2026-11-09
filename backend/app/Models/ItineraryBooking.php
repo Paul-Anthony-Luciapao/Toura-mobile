@@ -18,6 +18,11 @@ class ItineraryBooking extends Model
         'departure_time',
         'guest_count',
         'total_price',
+        'price_type',
+        'unit_price',
+        'pricing_snapshot',
+        'expires_at',
+        'payment_status',
         'status',
     ];
 
@@ -27,6 +32,9 @@ class ItineraryBooking extends Model
             'arrival_date' => 'date:Y-m-d',
             'departure_date' => 'date:Y-m-d',
             'total_price' => 'decimal:2',
+            'unit_price' => 'decimal:2',
+            'pricing_snapshot' => 'array',
+            'expires_at' => 'datetime',
         ];
     }
 

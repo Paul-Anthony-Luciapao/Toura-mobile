@@ -6,9 +6,8 @@ import {
     INITIAL_ITINERARY_PACKAGES,
     PACKAGE_RESORTS,
     PACKAGE_SPOTS,
-} from "@/data/mockData";
+} from "@/data/itineraryPackage";
 import { getPackageSpotImage } from "@/data/packageImages";
-import type { ItineraryPackage } from "@/data/types";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
@@ -21,24 +20,6 @@ type Props = Readonly<{
   showBackButton?: boolean;
   contentBottomPadding?: number;
 }>;
-
-/** Package total = sum of every line in its price breakdown. */
-const getPackageTotal = (pkg: ItineraryPackage) =>
-  pkg.priceBreakdown.reduce((total, line) => total + line.amount, 0);
-
-/**
- * The package whose spot has the most reviews gets the "Popular" badge.
- * Computed over ALL packages so the badge doesn't jump around when filtering.
- */
-const MOST_POPULAR_PACKAGE_ID = INITIAL_ITINERARY_PACKAGES.reduce<{
-  id: string;
-  count: number;
-} | null>((best, pkg) => {
-  const count =
-    PACKAGE_SPOTS.find((spot) => spot.id === pkg.spotId)?.reviewCount ?? 0;
-
-  return !best || count > best.count ? { id: pkg.id, count } : best;
-}, null)?.id;
 
 function EmptyState({ search }: Readonly<{ search: string }>) {
   return (
@@ -78,12 +59,16 @@ const ItineraryPackagesScreen = ({
 
       const packageDestination = pkg.destination ?? "Palawan";
 
-      if (destination !== "All" && packageDestination !== destination) {
+      if (
+        destination !== "All" &&
+        packageDestination.toLowerCase() !== destination.toLowerCase()
+      ) {
         return [];
       }
 
       const matchesSearch =
         !term ||
+        pkg.name.toLowerCase().includes(term) ||
         spot.name.toLowerCase().includes(term) ||
         spot.municipality.toLowerCase().includes(term) ||
         packageDestination.toLowerCase().includes(term);
@@ -134,6 +119,22 @@ const ItineraryPackagesScreen = ({
             <Text className="font-poppins-medium text-[20px] text-[#111729]">
               Itineraries
             </Text>
+            <Pressable
+              onPress={() => router.push("/tours")}
+              accessibilityRole="button"
+              accessibilityLabel="Browse individual tours"
+              className="absolute right-0 flex-row items-center rounded-full bg-white px-3 py-2 shadow-sm shadow-black/10"
+            >
+              <Text className="font-poppins-medium text-[11px] text-primary">
+                Tours
+              </Text>
+              <Ionicons
+                name="chevron-forward"
+                size={14}
+                color="#2A9D8F"
+                style={{ marginLeft: 2 }}
+              />
+            </Pressable>
           </View>
 
           <View className="mt-4">
@@ -178,14 +179,15 @@ const ItineraryPackagesScreen = ({
             return (
               <View className="mb-[26px] px-[14px]">
                 <TourPackageCard
-                  title={`${spot.name} Itinerary Package`}
+                  title={pkg.name}
                   image={getPackageSpotImage(spot.image)}
                   rating={spot.rating}
                   reviewCount={spot.reviewCount}
                   detail={`· ${detailParts.join(" · ")}`}
-                  days={pkg.days.length}
-                  price={getPackageTotal(pkg)}
-                  isPopular={pkg.id === MOST_POPULAR_PACKAGE_ID}
+                  duration={pkg.duration}
+                  price={pkg.price}
+                  priceBasis={pkg.priceBasis}
+                  isPopular={pkg.popular}
                   isFavorite={favorites.includes(pkg.id)}
                   onToggleFavorite={() => toggleFavorite(pkg.id)}
                   onPress={() =>

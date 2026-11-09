@@ -3,6 +3,9 @@
 namespace Tests\Feature;
 
 use App\Models\Order;
+use App\Models\TourBooking;
+use App\Models\User;
+use Database\Seeders\TourPackageSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -124,6 +127,58 @@ class PaymongoWebhookTest extends TestCase
         $this->assertDatabaseHas('orders', [
             'id' => $order->id,
             'status' => 'paid',
+            'payment_status' => 'paid',
+        ]);
+    }
+
+    public function test_webhook_confirms_a_tour_booking_after_verified_payment(): void
+    {
+        $secret = 'test-webhook-secret';
+        $timestamp = '1234567890';
+        config(['services.paymongo.webhook_secret' => $secret]);
+        $this->seed(TourPackageSeeder::class);
+        $user = User::factory()->create();
+        $order = Order::create([
+            'user_id' => $user->id,
+            'total' => 1500,
+            'reference_number' => 'TOURA-TOUR0001',
+            'status' => 'pending',
+            'payment_status' => 'pending',
+            'paymongo_checkout_session_id' => 'cs_test_tour_123',
+        ]);
+        $booking = TourBooking::create([
+            'booking_reference' => $order->reference_number,
+            'user_id' => $user->id,
+            'tour_package_id' => 'tour-el-nido-a',
+            'tour_date' => now()->addDays(2)->toDateString(),
+            'number_of_adults' => 1,
+            'number_of_children' => 0,
+            'total_participants' => 1,
+            'unit_price' => 1500,
+            'total_amount' => 1500,
+            'pricing_snapshot' => ['total_amount' => 1500],
+            'status' => 'pending',
+            'payment_status' => 'pending',
+        ]);
+        $payload = json_encode($this->paidEvent($order), JSON_THROW_ON_ERROR);
+        $signature = hash_hmac('sha256', $timestamp.'.'.$payload, $secret);
+
+        $this->call(
+            'POST',
+            '/api/v1/webhooks/paymongo',
+            [],
+            [],
+            [],
+            [
+                'CONTENT_TYPE' => 'application/json',
+                'HTTP_PAYMONGO_SIGNATURE' => "t={$timestamp},v1={$signature}",
+            ],
+            $payload,
+        )->assertOk();
+
+        $this->assertDatabaseHas('tour_bookings', [
+            'id' => $booking->id,
+            'status' => 'confirmed',
             'payment_status' => 'paid',
         ]);
     }

@@ -1,4 +1,4 @@
-import { PACKAGE_SPOTS } from "@/data/mockData";
+import { getItineraryPackageSpot } from "@/data/itineraryPackage";
 import type { TimePickerSettings } from "@/data/types";
 import { colors } from "@/styles/global";
 import AvailabilityCard from "@components/itineraries/itinerary-packages/availability/AvailabilityCard";
@@ -44,11 +44,7 @@ export default function AvailabilityScreen() {
 
   const packageId = Array.isArray(id) ? id[0] : id;
 
-  const index = PACKAGE_SPOTS.findIndex(
-    (spot) => String(spot.id) === String(packageId),
-  );
-
-  const itinerary = PACKAGE_SPOTS[index];
+  const itinerary = getItineraryPackageSpot(packageId);
 
   // Measure the actual rendered hero height.
   const handleHeroLayout = (event: LayoutChangeEvent) => {

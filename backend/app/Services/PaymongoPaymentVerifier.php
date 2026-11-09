@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\ItineraryBooking;
 use App\Models\Order;
+use App\Models\TourBooking;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
@@ -127,7 +128,14 @@ class PaymongoPaymentVerifier
                 $order->reference_number
             )
                 ->where('user_id', $order->user_id)
-                ->update(['status' => 'confirmed']);
+                    ->update(['status' => 'confirmed', 'payment_status' => 'paid']);
+
+            TourBooking::where(
+                'booking_reference',
+                $order->reference_number
+            )
+                ->where('user_id', $order->user_id)
+                    ->update(['status' => 'confirmed', 'payment_status' => 'paid']);
         });
     }
 

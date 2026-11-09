@@ -19,7 +19,7 @@ class ItineraryBookingTest extends TestCase
     {
         $this->seed(ItineraryPackageSeeder::class);
 
-        $this->assertDatabaseCount('itinerary_packages', 11);
+        $this->assertDatabaseCount('itinerary_packages', 26);
         $this->assertDatabaseHas('itinerary_packages', [
             'id' => 'spot-1',
             'title' => 'Kayangan Lake Itinerary Package',
@@ -29,15 +29,112 @@ class ItineraryBookingTest extends TestCase
             'title' => 'Lio Beach Itinerary Package',
         ]);
         $this->assertDatabaseMissing('itinerary_packages', ['id' => 'spot-7']);
+        $this->assertDatabaseHas('itinerary_packages', [
+            'id' => 'itinerary-01',
+            'title' => 'El Nido Island Hopping Adventure',
+        ]);
+
+        $expectedPrices = [
+            'itinerary-01' => 8500,
+            'itinerary-02' => 5500,
+            'itinerary-03' => 9000,
+            'itinerary-04' => 15000,
+            'itinerary-05' => 8000,
+            'itinerary-06' => 12500,
+            'itinerary-07' => 6000,
+            'itinerary-08' => 18000,
+            'itinerary-09' => 4500,
+            'itinerary-10' => 6500,
+            'itinerary-11' => 5000,
+            'itinerary-12' => 7000,
+            'itinerary-13' => 7500,
+            'itinerary-14' => 28000,
+            'itinerary-15' => 25000,
+        ];
+
+        foreach ($expectedPrices as $id => $expectedPrice) {
+            $package = ItineraryPackage::findOrFail($id);
+            $this->assertEquals(
+                $expectedPrice,
+                array_sum(array_column($package->price_breakdown, 'amount')),
+            );
+        }
 
         $this->getJson('/api/v1/itinerary-packages')
             ->assertOk()
-            ->assertJsonCount(11);
+            ->assertJsonCount(26);
+    }
+
+    public function test_authenticated_traveler_can_book_a_new_itinerary_package_at_its_listed_price(): void
+    {
+        $this->seed(ItineraryPackageSeeder::class);
+        $user = User::factory()->create();
+
+        $this->actingAs($user, 'sanctum')
+            ->postJson('/api/v1/itinerary-bookings', [
+                'itinerary_package_id' => 'itinerary-01',
+                'arrival_date' => now()->addDays(2)->toDateString(),
+                'departure_date' => now()->addDays(5)->toDateString(),
+                'guests' => [
+                    [
+                        'first_name' => 'Alex',
+                        'last_name' => 'Reyes',
+                        'date_of_birth' => '1995-06-10',
+                        'phone' => '+639175550000',
+                        'email' => null,
+                    ],
+                ],
+            ])
+            ->assertCreated()
+            ->assertJsonPath('itinerary_package_id', 'itinerary-01')
+            ->assertJsonPath('total_price', '8500.00');
+    }
+
+    public function test_per_group_itinerary_price_requires_the_listed_group_size(): void
+    {
+        $this->seed(ItineraryPackageSeeder::class);
+        $user = User::factory()->create();
+        $payload = [
+            'itinerary_package_id' => 'itinerary-04',
+            'arrival_date' => now()->addDays(2)->toDateString(),
+            'departure_date' => now()->addDays(5)->toDateString(),
+            'guests' => [
+                [
+                    'first_name' => 'Alex',
+                    'last_name' => 'Reyes',
+                    'date_of_birth' => '1995-06-10',
+                    'phone' => '+639175550000',
+                    'email' => null,
+                ],
+                [
+                    'first_name' => 'Sam',
+                    'last_name' => 'Reyes',
+                    'date_of_birth' => '1996-07-11',
+                    'phone' => '+639175550001',
+                    'email' => null,
+                ],
+            ],
+        ];
+
+        $this->actingAs($user, 'sanctum')
+            ->postJson('/api/v1/itinerary-bookings', [
+                ...$payload,
+                'guests' => [$payload['guests'][0]],
+            ])
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors('guests');
+
+        $this->postJson('/api/v1/itinerary-bookings', $payload)
+            ->assertCreated()
+            ->assertJsonPath('total_price', '15000.00')
+            ->assertJsonPath('price_type', 'per_group')
+            ->assertJsonPath('guest_count', 2);
     }
 
     public function test_authenticated_traveler_can_create_an_itinerary_booking(): void
     {
         $user = User::factory()->create();
+        $arrivalDate = now()->addDays(10);
         $package = ItineraryPackage::create([
             'id' => 'spot-13',
             'title' => 'Lio Beach Itinerary Package',
@@ -52,9 +149,9 @@ class ItineraryBookingTest extends TestCase
             '/api/v1/itinerary-bookings',
             [
                 'itinerary_package_id' => $package->id,
-                'arrival_date' => '2026-11-01',
+                'arrival_date' => now()->addDays(2)->toDateString(),
                 'arrival_time' => '09:30',
-                'departure_date' => '2026-11-05',
+                'departure_date' => now()->addDays(6)->toDateString(),
                 'departure_time' => '17:00',
                 'guests' => [
                     [
@@ -90,6 +187,7 @@ class ItineraryBookingTest extends TestCase
     public function test_user_cannot_create_overlapping_booking_for_same_package(): void
     {
         $user = User::factory()->create();
+        $arrivalDate = now()->addDays(10);
         $package = ItineraryPackage::create([
             'id' => 'spot-duplicate-test',
             'title' => 'Duplicate test package',
@@ -98,8 +196,8 @@ class ItineraryBookingTest extends TestCase
         ]);
         $bookingPayload = [
             'itinerary_package_id' => $package->id,
-            'arrival_date' => '2026-12-10',
-            'departure_date' => '2026-12-14',
+            'arrival_date' => $arrivalDate->toDateString(),
+            'departure_date' => $arrivalDate->copy()->addDays(4)->toDateString(),
             'guests' => [
                 [
                     'first_name' => 'Alex',
@@ -117,8 +215,8 @@ class ItineraryBookingTest extends TestCase
 
         $this->postJson('/api/v1/itinerary-bookings', [
             ...$bookingPayload,
-            'arrival_date' => '2026-12-12',
-            'departure_date' => '2026-12-16',
+            'arrival_date' => $arrivalDate->copy()->addDays(2)->toDateString(),
+            'departure_date' => $arrivalDate->copy()->addDays(6)->toDateString(),
         ])
             ->assertUnprocessable()
             ->assertJsonValidationErrors('itinerary_package_id');
@@ -129,6 +227,7 @@ class ItineraryBookingTest extends TestCase
     public function test_user_can_book_same_package_for_non_overlapping_dates(): void
     {
         $user = User::factory()->create();
+        $arrivalDate = now()->addDays(10);
         $package = ItineraryPackage::create([
             'id' => 'spot-non-overlap-test',
             'title' => 'Non-overlap test package',
@@ -137,8 +236,8 @@ class ItineraryBookingTest extends TestCase
         ]);
         $bookingPayload = [
             'itinerary_package_id' => $package->id,
-            'arrival_date' => '2026-12-10',
-            'departure_date' => '2026-12-14',
+            'arrival_date' => $arrivalDate->toDateString(),
+            'departure_date' => $arrivalDate->copy()->addDays(4)->toDateString(),
             'guests' => [
                 [
                     'first_name' => 'Alex',
@@ -156,8 +255,8 @@ class ItineraryBookingTest extends TestCase
 
         $this->postJson('/api/v1/itinerary-bookings', [
             ...$bookingPayload,
-            'arrival_date' => '2026-12-15',
-            'departure_date' => '2026-12-18',
+            'arrival_date' => $arrivalDate->copy()->addDays(5)->toDateString(),
+            'departure_date' => $arrivalDate->copy()->addDays(8)->toDateString(),
         ])->assertCreated();
 
         $this->assertDatabaseCount('itinerary_bookings', 2);

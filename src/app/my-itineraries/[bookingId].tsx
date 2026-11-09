@@ -1,6 +1,6 @@
 import { getErrorMessage } from "@/services/api";
 import {
-  deleteItineraryBooking,
+  cancelItineraryBooking,
   fetchItineraryBooking,
   type ItineraryBooking,
 } from "@/services/itineraryBookings";
@@ -180,10 +180,10 @@ export default function ItineraryDetailScreen() {
     setDeleting(true);
 
     try {
-      await deleteItineraryBooking(booking.id);
+      await cancelItineraryBooking(booking.id);
       router.replace("/my-itineraries");
     } catch (requestError) {
-      Alert.alert("Could not delete itinerary", getErrorMessage(requestError));
+      Alert.alert("Could not cancel itinerary", getErrorMessage(requestError));
       setDeleting(false);
     }
   };
@@ -194,15 +194,15 @@ export default function ItineraryDetailScreen() {
     }
 
     Alert.alert(
-      "Delete itinerary?",
-      "This will permanently delete this itinerary and its guest details.",
+      "Cancel itinerary booking?",
+      "This will cancel your pending itinerary booking.",
       [
         {
           text: "Cancel",
           style: "cancel",
         },
         {
-          text: "Delete",
+          text: "Cancel booking",
           style: "destructive",
           onPress: () => void handleDelete(),
         },
@@ -261,6 +261,7 @@ export default function ItineraryDetailScreen() {
   }
 
   const isUnpaid = booking.status.toLowerCase() === "pending";
+  const canResumePayment = isUnpaid;
   const arrivalTime = formatTime(booking.arrival_time);
   const departureTime = formatTime(booking.departure_time);
 
@@ -472,23 +473,49 @@ export default function ItineraryDetailScreen() {
           ))}
         </View>
 
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel="Delete itinerary"
-          disabled={deleting}
-          onPress={confirmDelete}
-          className="mt-5 flex-row items-center justify-center rounded-xl border border-red-300 bg-white py-4 active:opacity-80">
-          {deleting ? (
-            <ActivityIndicator color="#B91C1C" />
-          ) : (
-            <>
-              <Ionicons name="trash-outline" size={19} color="#B91C1C" />
-              <Text className="ml-2 font-poppins-semibold text-red-700">
-                Delete itinerary
-              </Text>
-            </>
-          )}
-        </Pressable>
+        {canResumePayment ? (
+          <Pressable
+            accessibilityRole="button"
+            onPress={() =>
+              router.push({
+                pathname: "/itinerary-packages/[id]/payment",
+                params: {
+                  id: booking.itinerary_package_id,
+                  bookingId: String(booking.id),
+                  bookingReference: booking.booking_reference,
+                  totalPrice: booking.total_price,
+                  guestCount: String(booking.guest_count),
+                  arrivalDate: booking.arrival_date,
+                  arrivalTime: booking.arrival_time ?? "",
+                  departureDate: booking.departure_date,
+                  departureTime: booking.departure_time ?? "",
+                },
+              })
+            }
+            className="mt-4 items-center rounded-xl bg-salmon-600 py-4">
+            <Text className="font-poppins-semibold text-white">Continue payment</Text>
+          </Pressable>
+        ) : null}
+
+        {booking.status === "pending" ? (
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Cancel itinerary booking"
+            disabled={deleting}
+            onPress={confirmDelete}
+            className="mt-5 flex-row items-center justify-center rounded-xl border border-red-300 bg-white py-4 active:opacity-80">
+            {deleting ? (
+              <ActivityIndicator color="#B91C1C" />
+            ) : (
+              <>
+                <Ionicons name="close-circle-outline" size={19} color="#B91C1C" />
+                <Text className="ml-2 font-poppins-semibold text-red-700">
+                  Cancel booking
+                </Text>
+              </>
+            )}
+          </Pressable>
+        ) : null}
       </ScrollView>
     </SafeAreaView>
   );

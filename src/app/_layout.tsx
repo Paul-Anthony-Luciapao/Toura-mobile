@@ -45,11 +45,17 @@ function AuthRouteGuard() {
   const isBookingRoute =
     segments[0] === "itinerary-packages" &&
     BOOKING_STEPS.has(segments[2] ?? "");
+  const isTourBookingRoute =
+    segments[0] === "my-bookings" ||
+    segments[0] === "my-tours" ||
+    segments[0] === "my-itineraries" ||
+    (segments[0] === "tours" && segments.length > 1);
 
   // Wait for authentication to finish before deciding whether a redirect is needed.
   const shouldRedirect =
     !loading &&
-    ((user !== null && isAuthRoute) || (user === null && isBookingRoute));
+    ((user !== null && isAuthRoute) ||
+      (user === null && (isBookingRoute || isTourBookingRoute)));
 
   useEffect(() => {
     if (!shouldRedirect) return;

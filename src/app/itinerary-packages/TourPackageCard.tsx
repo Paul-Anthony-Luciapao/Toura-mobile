@@ -11,8 +11,9 @@ type Props = Readonly<{
   reviewCount: number;
   /** Line under the title, e.g. "· 2 Beds · Free breakfast". */
   detail: string;
-  days: number;
+  duration: string;
   price: number;
+  priceBasis: string;
   /** The most popular package shows the "Popular" badge instead of a heart. */
   isPopular: boolean;
   isFavorite: boolean;
@@ -34,8 +35,9 @@ export default function TourPackageCard({
   rating,
   reviewCount,
   detail,
-  days,
+  duration,
   price,
+  priceBasis,
   isPopular,
   isFavorite,
   onToggleFavorite,
@@ -134,11 +136,11 @@ export default function TourPackageCard({
           </Text>
 
           <Text className="font-poppins text-[13px] text-[#364153]">
-            {days} Days
+            {duration}
           </Text>
 
           <Text className="ml-3 font-poppins-semibold text-[14px] text-[#111729]">
-            {formatCurrency(price)}
+            {formatCurrency(price)}/{priceBasis}
           </Text>
         </View>
       </View>

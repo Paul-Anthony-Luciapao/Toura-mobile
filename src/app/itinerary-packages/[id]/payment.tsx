@@ -1,5 +1,6 @@
 import Buttons from "@/components/buttons/Buttons";
-import { PACKAGE_SPOTS, PAYMENT_METHODS } from "@/data/mockData";
+import { getItineraryPackageSpot } from "@/data/itineraryPackage";
+import { PAYMENT_METHODS } from "@/data/mockData";
 import type { PaymentMethod } from "@/data/types";
 import { getErrorMessage } from "@/services/api";
 import {
@@ -203,9 +204,7 @@ export default function Payment() {
 
   const packageId = getParam(params.id);
 
-  const itinerary = PACKAGE_SPOTS.find(
-    (spot) => String(spot.id) === String(packageId),
-  );
+  const itinerary = getItineraryPackageSpot(packageId);
 
   const [selectedMethod, setSelectedMethod] = useState<SelectedMethod>(null);
 
@@ -226,25 +225,6 @@ export default function Payment() {
       </SafeAreaView>
     );
   }
-
-  const goToOtp = (methodId: string, methodName: string) => {
-    router.push({
-      pathname: "/itinerary-packages/[id]/otp",
-      params: {
-        id: packageId,
-        bookingId: getParam(params.bookingId),
-        bookingReference: getParam(params.bookingReference),
-        totalPrice: getParam(params.totalPrice),
-        guestCount: getParam(params.guestCount) ?? "1",
-        arrivalDate: getParam(params.arrivalDate),
-        arrivalTime: getParam(params.arrivalTime),
-        departureDate: getParam(params.departureDate),
-        departureTime: getParam(params.departureTime),
-        paymentMethod: methodId,
-        paymentMethodName: methodName,
-      },
-    });
-  };
 
   const verifyPaymentStatus = async (orderId: number) => {
     setIsProcessing(true);
@@ -310,7 +290,11 @@ export default function Payment() {
     let orderId: number;
 
     try {
-      const checkout = await createCheckout(bookingId, paymentMethodType);
+      const checkout = await createCheckout(
+        bookingId,
+        paymentMethodType,
+        "itinerary",
+      );
       orderId = checkout.order_id;
       await WebBrowser.openBrowserAsync(checkout.checkout_url);
     } catch (error) {

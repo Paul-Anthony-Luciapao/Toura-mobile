@@ -2,7 +2,7 @@ import {
     INITIAL_ITINERARY_PACKAGES,
     PACKAGE_RESORTS,
     PACKAGE_SPOTS,
-} from "@/data/mockData";
+} from "@/data/itineraryPackage";
 import { getPackageSpotImage } from "@/data/packageImages";
 import { formatCurrency, formatReviewCount } from "@/lib/formatters";
 import { colors } from "@/styles/global";
@@ -33,11 +33,12 @@ import {
 type Tab = "itinerary" | "inclusion" | "reviews";
 type StatusBarStyle = "light" | "dark";
 
-function formatDayDate(startDate: string, dayIndex: number) {
-  const date = new Date(`${startDate}T12:00:00`);
+function getItineraryDayDate(startDate: Date, dayIndex: number) {
+  const date = new Date(startDate);
   date.setDate(date.getDate() + dayIndex);
 
   return date.toLocaleDateString("en-US", {
+    weekday: "long",
     month: "long",
     day: "numeric",
     year: "numeric",
@@ -49,13 +50,21 @@ export default function CurrentItineraryPackage() {
   const insets = useSafeAreaInsets();
   const { width } = useWindowDimensions();
 
-  const { id, source } = useLocalSearchParams<{
+  const { id, source, arrivalDate } = useLocalSearchParams<{
     id?: string | string[];
     source?: string | string[];
+    arrivalDate?: string | string[];
   }>();
 
   const packageId = Array.isArray(id) ? id[0] : id;
   const packageSource = Array.isArray(source) ? source[0] : source;
+  const arrivalDateParam = Array.isArray(arrivalDate)
+    ? arrivalDate[0]
+    : arrivalDate;
+  const [itineraryStartDate] = useState(() => {
+    const date = arrivalDateParam ? new Date(arrivalDateParam) : new Date();
+    return Number.isNaN(date.getTime()) ? new Date() : date;
+  });
 
   const packageData = INITIAL_ITINERARY_PACKAGES.find(
     (item) => item.id === packageId,
@@ -106,11 +115,6 @@ export default function CurrentItineraryPackage() {
       </SafeAreaView>
     );
   }
-
-  const totalPrice = packageData.priceBreakdown.reduce(
-    (total, line) => total + line.amount,
-    0,
-  );
 
   const heroHeight = 270 + insets.top;
 
@@ -206,11 +210,11 @@ export default function CurrentItineraryPackage() {
             <View className="flex-row w-auto justify-between">
               <View>
                 <Text className="font-poppins-semibold text-3xl leading-7 text-white">
-                  {spot.municipality} Itinerary{"\n"}Packages
+                  {packageData.name}
                 </Text>
 
                 <Text className="mt-3 font-poppins text-[14px] text-white">
-                  5 days · 4 nights
+                  {packageData.duration}
                 </Text>
               </View>
 
@@ -275,16 +279,13 @@ export default function CurrentItineraryPackage() {
                       <Text className="font-poppins-semibold text-[15px] text-textMain">
                         Day {index + 1}
                       </Text>
-
                       <Text className="mt-1 font-poppins-medium text-[13px] text-textMain">
                         {day.title}
                       </Text>
-
                       <Text className="mt-1 font-poppins text-[11px] text-textMuted">
-                        {formatDayDate(packageData.startDate, index)}
+                        {getItineraryDayDate(itineraryStartDate, index)}
                       </Text>
                     </View>
-
                     <Ionicons
                       name={expanded ? "chevron-up" : "chevron-down"}
                       size={20}
@@ -308,37 +309,12 @@ export default function CurrentItineraryPackage() {
                           {note}
                         </Text>
                       ))}
-
-                      <Text className="mt-3 font-poppins-semibold text-[14px] text-textMain">
-                        Transportation
-                      </Text>
-
-                      <Text className="mt-1 font-poppins text-[13px] text-textSoft">
-                        Pickup details are sample demo data.
-                      </Text>
-
                       <Text className="mt-3 font-poppins-semibold text-[14px] text-textMain">
                         Hotel
                       </Text>
-
                       <Text className="mt-1 font-poppins text-[13px] text-textSoft">
                         {resort.name}
                       </Text>
-
-                      <ScrollView
-                        horizontal
-                        showsHorizontalScrollIndicator={false}
-                        className="mt-3"
-                      >
-                        {resort.accommodations.map((room) => (
-                          <Image
-                            key={room.id}
-                            source={{ uri: room.image }}
-                            resizeMode="cover"
-                            className="mr-3 h-20 w-20 rounded-xl"
-                          />
-                        ))}
-                      </ScrollView>
                     </Animated.View>
                   )}
                 </Animated.View>
@@ -360,24 +336,8 @@ export default function CurrentItineraryPackage() {
             </Text>
 
             <Text className="mt-2 font-poppins-semibold text-[14px] text-textMain">
-              Demo estimate: {formatCurrency(totalPrice)}
+              {formatCurrency(packageData.price)} / {packageData.priceBasis}
             </Text>
-
-            <Text className="mb-3 mt-2 font-poppins text-[12px] text-textMuted">
-              This sample breakdown is not a live quote.
-            </Text>
-
-            {packageData.priceBreakdown.map((line) => (
-              <View key={line.label} className="flex-row justify-between py-1">
-                <Text className="flex-1 pr-3 font-poppins text-[12px] text-textSoft">
-                  {line.label}
-                </Text>
-
-                <Text className="font-poppins text-[12px] text-textSoft">
-                  {formatCurrency(line.amount)}
-                </Text>
-              </View>
-            ))}
 
             <Text className="mb-1 mt-4 font-poppins-semibold text-[14px] text-textMain">
               Included

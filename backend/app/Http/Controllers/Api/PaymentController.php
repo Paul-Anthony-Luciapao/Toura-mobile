@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\ItineraryBooking;
 use App\Models\Order;
+use App\Models\TourBooking;
 use App\Services\PaymongoPaymentVerifier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
@@ -21,6 +22,7 @@ class PaymentController extends Controller
         $request->validate([
             'order_id' => ['required_without:booking_id', 'integer'],
             'booking_id' => ['required_without:order_id', 'integer'],
+            'booking_type' => ['sometimes', 'required', 'string', Rule::in(['itinerary', 'tour'])],
             'payment_method_type' => [
                 'sometimes',
                 'required',
@@ -37,14 +39,34 @@ class PaymentController extends Controller
             $order = Order::where('user_id', $request->user()->id)
                 ->findOrFail($request->order_id);
         } else {
-            $booking = ItineraryBooking::where('user_id', $request->user()->id)
-                ->findOrFail($request->booking_id);
+            $bookingType = $request->input('booking_type', 'itinerary');
+            $booking = $bookingType === 'tour'
+                ? TourBooking::where('user_id', $request->user()->id)->findOrFail($request->booking_id)
+                : ItineraryBooking::where('user_id', $request->user()->id)->findOrFail($request->booking_id);
+
+            if ($booking->status !== 'pending') {
+                return response()->json([
+                    'message' => 'This booking is no longer available for payment.',
+                    'code' => 'booking_not_payable',
+                ], 409);
+            }
+
+            if ($booking->expires_at !== null && $booking->expires_at->isPast()) {
+                $booking->update(['status' => 'expired']);
+
+                return response()->json([
+                    'message' => 'This booking has expired. Please create a new booking.',
+                    'code' => 'booking_expired',
+                ], 409);
+            }
 
             $order = Order::firstOrCreate(
                 ['reference_number' => $booking->booking_reference],
                 [
                     'user_id' => $request->user()->id,
-                    'total' => $booking->total_price,
+                    'total' => $booking instanceof TourBooking
+                        ? $booking->total_amount
+                        : $booking->total_price,
                     'currency' => 'PHP',
                     'status' => 'pending',
                     'payment_status' => 'pending',
