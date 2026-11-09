@@ -17,6 +17,7 @@ import {
   Text,
   View,
 } from "react-native";
+import ItineraryDetailSkeleton from "@/components/ui/skeletons/ItineraryDetailSkeleton";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 function getParam(value?: string | string[]): string | undefined {
@@ -210,16 +211,7 @@ export default function ItineraryDetailScreen() {
   };
 
   if (loading) {
-    return (
-      <SafeAreaView
-        className="flex-1 items-center justify-center bg-background"
-        edges={["top"]}>
-        <ActivityIndicator size="large" color={colors.primary} />
-        <Text className="mt-3 font-poppins text-sm text-slate-500">
-          Loading itinerary...
-        </Text>
-      </SafeAreaView>
-    );
+    return <ItineraryDetailSkeleton />;
   }
 
   if (error || !booking) {

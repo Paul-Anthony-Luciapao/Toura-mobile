@@ -1,5 +1,6 @@
 import ChatAvatar from "@/components/chat/ChatAvatar";
 import MessageBubble from "@/components/chat/MessageBubble";
+import ChatThreadSkeleton from "@/components/ui/skeletons/ChatThreadSkeleton";
 import { useAuth } from "@/context/AuthContext";
 import type { ChatMessage, Conversation } from "@/data/types";
 import { formatDayLabel } from "@/lib/formatters";
@@ -16,7 +17,6 @@ import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
-  ActivityIndicator,
   FlatList,
   KeyboardAvoidingView,
   Platform,
@@ -242,9 +242,7 @@ export default function ChatThread() {
       </View>
 
       {loading ? (
-        <View className="flex-1 items-center justify-center">
-          <ActivityIndicator color={colors.primary} />
-        </View>
+        <ChatThreadSkeleton />
       ) : error ? (
         <View className="flex-1 items-center justify-center px-8">
           <Text className="text-center text-[14px] font-semibold text-ink">

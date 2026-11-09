@@ -3,12 +3,12 @@ import {
   fetchMyItineraryBookings,
   type ItineraryBooking,
 } from "@/services/itineraryBookings";
+import ItineraryCardSkeleton from "@/components/ui/skeletons/ItineraryCardSkeleton";
 import { colors } from "@/styles/global";
 import { Ionicons } from "@expo/vector-icons";
 import { useFocusEffect, useRouter } from "expo-router";
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import {
-  ActivityIndicator,
   FlatList,
   Pressable,
   Text,
@@ -139,11 +139,10 @@ function ItineraryCard({
 
 function LoadingState() {
   return (
-    <View className="flex-1 items-center justify-center">
-      <ActivityIndicator size="large" color={colors.primary} />
-      <Text className="mt-3 font-poppins text-sm text-slate-500">
-        Loading your itineraries...
-      </Text>
+    <View className="flex-1 px-4 pt-5">
+      {[0, 1, 2].map((index) => (
+        <ItineraryCardSkeleton key={`itinerary-skeleton-${index}`} />
+      ))}
     </View>
   );
 }
@@ -190,18 +189,25 @@ export default function MyItinerariesScreen() {
   const [bookings, setBookings] = useState<ItineraryBooking[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const hasLoadedBookings = useRef(false);
 
   const loadBookings = useCallback(async () => {
-    setLoading(true);
+    const showInitialSkeleton = !hasLoadedBookings.current;
+    if (showInitialSkeleton) {
+      setLoading(true);
+    }
     setError(null);
 
     try {
       const result = await fetchMyItineraryBookings();
       setBookings(result);
+      hasLoadedBookings.current = true;
     } catch (requestError) {
       setError(getErrorMessage(requestError));
     } finally {
-      setLoading(false);
+      if (showInitialSkeleton) {
+        setLoading(false);
+      }
     }
   }, []);
 

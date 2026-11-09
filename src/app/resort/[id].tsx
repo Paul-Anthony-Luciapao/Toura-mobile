@@ -12,6 +12,7 @@ import {
   View,
 } from "react-native";
 import PrimaryButton from "../../components/common/PrimaryButton";
+import ResortDetailSkeleton from "@/components/ui/skeletons/ResortDetailSkeleton";
 import type { Resort } from "../../data/types";
 import { formatCurrency } from "../../lib/formatters";
 import { startConversation } from "../../services/chat";
@@ -51,11 +52,7 @@ export default function ResortDetailScreen() {
   );
 
   if (loading) {
-    return (
-      <View className="flex-1 items-center justify-center bg-white">
-        <ActivityIndicator color={colors.primary} />
-      </View>
-    );
+    return <ResortDetailSkeleton />;
   }
 
   if (!resort) {

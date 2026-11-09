@@ -1,4 +1,5 @@
 import ResortCard from "@/components/home/ResortCard";
+import CardSkeleton from "@/components/ui/skeletons/CardSkeleton";
 import type { Resort } from "@/data/types";
 import { getErrorMessage } from "@/services/api";
 import { fetchResorts } from "@/services/resorts";
@@ -6,7 +7,6 @@ import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import {
-  ActivityIndicator,
   Pressable,
   ScrollView,
   Text,
@@ -43,11 +43,13 @@ export default function HotelsScreen() {
   }, [loadResorts]);
 
   const renderContent = () => {
-    // Show a loading indicator while resort data is being fetched.
+    // Match the resort cards while the initial resort request is in progress.
     if (loading) {
       return (
-        <View className="mt-16 items-center">
-          <ActivityIndicator color="#0f766e" />
+        <View className="items-center gap-4 px-5 pt-4">
+          {[0, 1, 2].map((index) => (
+            <CardSkeleton key={`resort-skeleton-${index}`} />
+          ))}
         </View>
       );
     }
