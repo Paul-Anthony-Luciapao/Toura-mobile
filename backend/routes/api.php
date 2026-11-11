@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BookingController;
 use App\Http\Controllers\Api\ItineraryBookingController;
 use App\Http\Controllers\Api\ItineraryPackageController;
+use App\Http\Controllers\Api\HotelController;
 use App\Http\Controllers\Api\OfferController;
 use App\Http\Controllers\Api\ResortController;
 use App\Http\Controllers\Api\TouristSpotController;
@@ -33,6 +34,8 @@ Route::prefix('v1')->group(function () {
         ->middleware('throttle:5,1');
 
     // Public browsing
+    Route::get('/hotels', [HotelController::class, 'index']);
+    Route::get('/hotels/{hotel}', [HotelController::class, 'show']);
     Route::get('/resorts', [ResortController::class, 'index']);
     Route::get('/resorts/{resort}', [ResortController::class, 'show']);
 

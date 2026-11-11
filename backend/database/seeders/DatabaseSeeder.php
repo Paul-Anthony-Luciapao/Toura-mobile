@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
 
         $this->call(ItineraryPackageSeeder::class);
         $this->call(TourPackageSeeder::class);
+        $this->call(HotelSeeder::class);
 
         User::factory()->create([
             'name' => 'Test User',
