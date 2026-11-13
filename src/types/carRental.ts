@@ -10,6 +10,7 @@ export interface CarRentalProvider {
   id: string;
   name: string;
   image: ImageSourcePropType;
+  imageFit: "cover" | "contain";
   rating?: number;
   phone: string;
   location: string;

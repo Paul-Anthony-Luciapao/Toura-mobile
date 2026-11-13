@@ -56,8 +56,9 @@ export default function CarRentalDetailScreen() {
       <View className="relative">
         <Image
           source={provider.image}
-          resizeMode="cover"
-          accessibilityLabel={`${provider.name} rental vehicle`}
+          resizeMode={provider.imageFit}
+          accessibilityLabel={`${provider.name} rental provider image`}
+          style={{ width: "100%", height: 250 }}
           className="h-[250px] w-full bg-[#EAF5F2]"
         />
         <Pressable

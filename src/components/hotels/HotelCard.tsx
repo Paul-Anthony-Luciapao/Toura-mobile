@@ -19,6 +19,7 @@ export default function HotelCard({ hotel, onPress }: Props) {
         source={hotel.image}
         resizeMode="cover"
         accessibilityLabel={`${hotel.name} hotel photo`}
+        style={{ width: "100%", height: 196 }}
         className="h-[196px] w-full bg-slate-100"
       />
       <View className="p-4">

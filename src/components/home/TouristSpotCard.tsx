@@ -36,6 +36,7 @@ export default function TouristSpotCard({
       <Image
         source={getPackageSpotImage(spot.image)}
         resizeMode="cover"
+        style={{ width: "100%", height: 180 }}
         className="h-[180px] w-full bg-slate-200"
       />
 

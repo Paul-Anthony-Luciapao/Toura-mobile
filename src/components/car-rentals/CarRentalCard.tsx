@@ -17,8 +17,9 @@ export default function CarRentalCard({ provider, onPress }: Props) {
     >
       <Image
         source={provider.image}
-        resizeMode="cover"
-        accessibilityLabel={`${provider.name} rental vehicle`}
+        resizeMode={provider.imageFit}
+        accessibilityLabel={`${provider.name} rental provider image`}
+        style={{ width: "100%", height: 176 }}
         className="h-[176px] w-full bg-[#EAF5F2]"
       />
 

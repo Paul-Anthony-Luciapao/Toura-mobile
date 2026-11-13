@@ -54,6 +54,7 @@ export default function TourPackageCard({
         <Image
           source={image}
           resizeMode="cover"
+          style={{ width: "100%", height: 196 }}
           className="h-[196px] w-full"
         />
 

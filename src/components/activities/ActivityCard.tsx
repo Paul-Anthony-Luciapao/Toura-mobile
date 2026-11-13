@@ -27,6 +27,7 @@ export default function ActivityCard({ activity, place, image, onPress }: Props)
         source={image}
         accessibilityLabel={`${activity.name} in ${place}`}
         resizeMode="cover"
+        style={{ width: "100%", height: 196 }}
         className="h-[196px] w-full bg-slate-100"
       />
 

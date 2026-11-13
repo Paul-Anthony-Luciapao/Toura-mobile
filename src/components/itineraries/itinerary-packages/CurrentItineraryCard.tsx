@@ -26,6 +26,7 @@ export default function SelectedItineraryCard({
       <Image
         source={getPackageSpotImage(itinerary.image)}
         resizeMode="cover"
+        style={{ width: "100%", height: 240 }}
         className="h-[240px] w-full bg-slate-200"
       />
 

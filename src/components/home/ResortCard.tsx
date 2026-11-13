@@ -26,6 +26,7 @@ export default function ResortCard({ resort }: Props) {
       <Pressable className="mr-4 w-[280px] overflow-hidden rounded-[18px] border border-coral-100 bg-white shadow-sm shadow-black/[0.06]">
         <Image
           source={{ uri: resort.coverImage }}
+          style={{ width: "100%", height: 190 }}
           className="h-[190px] w-full bg-coral-100"
         />
 
