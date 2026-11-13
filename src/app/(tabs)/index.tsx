@@ -102,10 +102,16 @@ export default function Index() {
         <View className="-mt-10 z-10 rounded-2xl bg-transparent px-2 py-3.5">
           <CategoryIcons
             onSelect={(item) => {
-              if (item.id === "hotels") {
+              if (item.id === "activities") {
+                router.push("/activities");
+              } else if (item.id === "car-rentals") {
+                router.push("/car-rentals");
+              } else if (item.id === "hotels") {
                 router.push("/hotels");
               } else if (item.id === "esims") {
                 router.push("/esim");
+              } else if (item.id === "more") {
+                router.push("/all-services");
               }
             }}
           />

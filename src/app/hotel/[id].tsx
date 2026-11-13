@@ -1,3 +1,4 @@
+import { safeBack } from "@/lib/navigation";
 import Skeleton from "@/components/ui/Skeleton";
 import { getErrorMessage } from "@/services/api";
 import { fetchHotel } from "@/services/hotels";
@@ -84,7 +85,7 @@ export default function HotelDetailScreen() {
             <Text className="font-poppins-medium text-[13px] text-slate-700">Try again</Text>
           </Pressable>
         ) : null}
-        <Pressable onPress={() => router.back()} className="mt-3 rounded-full bg-[#4F9B8F] px-4 py-2">
+        <Pressable onPress={() => safeBack()} className="mt-3 rounded-full bg-[#4F9B8F] px-4 py-2">
           <Text className="font-poppins-medium text-[13px] text-white">Go back</Text>
         </Pressable>
       </View>
@@ -101,7 +102,7 @@ export default function HotelDetailScreen() {
           className="h-[270px] w-full bg-slate-100"
         />
         <Pressable
-          onPress={() => router.back()}
+          onPress={() => safeBack()}
           accessibilityRole="button"
           accessibilityLabel="Go back"
           className="absolute left-5 h-10 w-10 items-center justify-center rounded-full bg-white/95 shadow-sm"

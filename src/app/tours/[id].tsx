@@ -1,3 +1,4 @@
+import { safeBack } from "@/lib/navigation";
 import { colors } from "@/styles/global";
 import {
   createTourBooking,
@@ -127,7 +128,7 @@ export default function TourBookingScreen() {
     return (
       <SafeAreaView className="flex-1 items-center justify-center bg-background px-6">
         <Text className="font-poppins-semibold text-textMain">Tour not found.</Text>
-        <Pressable onPress={() => router.back()} className="mt-4 rounded-xl bg-primary px-5 py-3">
+        <Pressable onPress={() => safeBack()} className="mt-4 rounded-xl bg-primary px-5 py-3">
           <Text className="font-poppins-semibold text-white">Go back</Text>
         </Pressable>
       </SafeAreaView>
@@ -137,7 +138,7 @@ export default function TourBookingScreen() {
   return (
     <SafeAreaView className="flex-1 bg-background" edges={["top", "bottom"]}>
       <View className="flex-row items-center gap-3 px-5 py-3">
-        <Pressable onPress={() => router.back()} accessibilityRole="button" className="h-10 w-10 items-center justify-center rounded-full bg-white">
+        <Pressable onPress={() => safeBack()} accessibilityRole="button" className="h-10 w-10 items-center justify-center rounded-full bg-white">
           <Ionicons name="chevron-back" size={22} color={colors.text} />
         </Pressable>
         <Text className="flex-1 font-poppins-semibold text-lg text-textMain">Book this tour</Text>

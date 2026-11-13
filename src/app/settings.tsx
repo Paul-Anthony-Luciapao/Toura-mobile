@@ -1,3 +1,4 @@
+import { safeBack } from "@/lib/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
@@ -94,7 +95,7 @@ export default function Settings() {
       <View className="flex-row items-center gap-3 py-3">
         <Pressable
           // Return to the previous screen without creating a new route.
-          onPress={() => router.back()}
+          onPress={() => safeBack()}
           accessibilityRole="button"
           accessibilityLabel="Go back"
           className="h-11 w-11 items-center justify-center rounded-full"

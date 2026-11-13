@@ -1,3 +1,4 @@
+import { safeBack } from "@/lib/navigation";
 import Buttons from "@/components/buttons/Buttons";
 import { getItineraryPackageSpot } from "@/data/itineraryPackage";
 import { PAYMENT_METHODS } from "@/data/mockData";
@@ -384,7 +385,7 @@ export default function Payment() {
 
           {/* Back Button */}
           <Pressable
-            onPress={() => router.back()}
+            onPress={() => safeBack()}
             hitSlop={8}
             accessibilityRole="button"
             accessibilityLabel="Go back"

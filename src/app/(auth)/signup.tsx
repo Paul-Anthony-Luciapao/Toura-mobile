@@ -1,3 +1,4 @@
+import { safeBack } from "@/lib/navigation";
 import AuthLayout from "@/components/auth/AuthLayout";
 import AuthTextField from "@/components/auth/AuthTextField";
 import GradientButton from "@/components/common/GradientButton";
@@ -142,7 +143,7 @@ export default function SignUpScreen() {
         <Text className="font-['Poppins_400Regular'] text-[12px] text-[#334155]">
           Already have an account?{" "}
         </Text>
-        <Pressable onPress={() => router.back()} hitSlop={8}>
+        <Pressable onPress={() => safeBack()} hitSlop={8}>
           <Text className="font-['Poppins_600SemiBold'] text-[12px] text-[#238276]">
             Log in
           </Text>

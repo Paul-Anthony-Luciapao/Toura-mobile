@@ -14,7 +14,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { useEffect, useState } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
-import { ActivityIndicator, View } from "react-native";
+import { ActivityIndicator, Platform, View } from "react-native";
 import "../../global.css";
 import "../lib/icons";
 
@@ -102,23 +102,33 @@ export default function RootLayout() {
     <SafeAreaProvider>
       <AuthProvider>
         <>
-          <Stack
-            screenOptions={{
-              headerShown: false,
-              animation: "slide_from_bottom",
+          <View
+            style={{
+              flex: 1,
+              width: "100%",
+              ...(Platform.OS === "web"
+                ? { maxWidth: 768, alignSelf: "center" as const }
+                : {}),
             }}
           >
-            <Stack.Screen name="(tabs)" />
-            <Stack.Screen name="(auth)" />
-            <Stack.Screen name="settings" />
-            <Stack.Screen name="hotels" />
-            <Stack.Screen name="esim" />
-            <Stack.Screen
-              name="resort/[id]"
-              options={{ headerShown: true, title: "Resort" }}
-            />
-            <Stack.Screen name="itinerary-packages/index" />
-          </Stack>
+            <Stack
+              screenOptions={{
+                headerShown: false,
+                animation: "slide_from_bottom",
+              }}
+            >
+              <Stack.Screen name="(tabs)" />
+              <Stack.Screen name="(auth)" />
+              <Stack.Screen name="settings" />
+              <Stack.Screen name="hotels" />
+              <Stack.Screen name="esim" />
+              <Stack.Screen
+                name="resort/[id]"
+                options={{ headerShown: true, title: "Resort" }}
+              />
+              <Stack.Screen name="itinerary-packages/index" />
+            </Stack>
+          </View>
 
           {/* Enforce route access based on the current authentication state. */}
           <AuthRouteGuard />

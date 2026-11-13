@@ -1,3 +1,4 @@
+import { safeBack } from "@/lib/navigation";
 import { getItineraryPackageSpot } from "@/data/itineraryPackage";
 import type { TimePickerSettings } from "@/data/types";
 import { colors } from "@/styles/global";
@@ -83,7 +84,7 @@ export default function AvailabilityScreen() {
         </Text>
 
         <Pressable
-          onPress={() => router.back()}
+          onPress={() => safeBack()}
           accessibilityRole="button"
           className="mt-4 rounded-xl bg-primary px-5 py-3"
         >
@@ -136,7 +137,7 @@ export default function AvailabilityScreen() {
 
           {/* Back button over the hero image */}
           <Pressable
-            onPress={() => router.back()}
+            onPress={() => safeBack()}
             hitSlop={8}
             accessibilityRole="button"
             accessibilityLabel="Go back"

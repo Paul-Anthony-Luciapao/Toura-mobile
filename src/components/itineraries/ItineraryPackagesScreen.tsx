@@ -1,3 +1,4 @@
+import { safeBack } from "@/lib/navigation";
 import PackageFilterRow from "@/app/itinerary-packages/PackageFilterRow";
 import TourPackageCard from "@/app/itinerary-packages/TourPackageCard";
 import SearchBar from "@/components/common/SearchBar";
@@ -107,7 +108,7 @@ const ItineraryPackagesScreen = ({
           <View className="h-[30px] flex-row items-center justify-center">
             {showBackButton && (
               <Pressable
-                onPress={() => router.back()}
+                onPress={() => safeBack()}
                 hitSlop={10}
                 accessibilityLabel="Go back"
                 className="absolute left-0 h-[30px] w-[30px] items-center justify-center rounded-full bg-white shadow-sm shadow-black/10 active:opacity-70"

@@ -1,3 +1,4 @@
+import { safeBack } from "@/lib/navigation";
 import {
     INITIAL_ITINERARY_PACKAGES,
     PACKAGE_RESORTS,
@@ -109,7 +110,7 @@ export default function CurrentItineraryPackage() {
           Itinerary package not found.
         </Text>
 
-        <Pressable onPress={() => router.back()} className="mt-4 p-3">
+        <Pressable onPress={() => safeBack()} className="mt-4 p-3">
           <Text className="font-poppins-semibold text-primary">Go back</Text>
         </Pressable>
       </SafeAreaView>
@@ -175,7 +176,7 @@ export default function CurrentItineraryPackage() {
           >
             <View className="flex-row justify-between">
               <Pressable
-                onPress={() => router.back()}
+                onPress={() => safeBack()}
                 accessibilityLabel="Go back"
                 className="h-10 w-10 items-center justify-center rounded-full bg-black/40"
               >

@@ -1,3 +1,4 @@
+import { safeBack } from "@/lib/navigation";
 import type { LegalSection } from "@/data/legalContent";
 import { colors } from "@/styles/global";
 import { Ionicons } from "@expo/vector-icons";
@@ -17,7 +18,7 @@ export default function LegalScreen({ title, sections, footer }: Props) {
   return (
     <View className="flex-1 bg-white">
       <View className="px-5 pb-3" style={{ paddingTop: insets.top + 8 }}>
-        <Pressable onPress={() => router.back()} hitSlop={12}>
+        <Pressable onPress={() => safeBack()} hitSlop={12}>
           <Ionicons name="chevron-back" size={24} color={colors.text} />
         </Pressable>
       </View>

@@ -1,3 +1,4 @@
+import { safeBack } from "@/lib/navigation";
 import ChatAvatar from "@/components/chat/ChatAvatar";
 import MessageBubble from "@/components/chat/MessageBubble";
 import ChatThreadSkeleton from "@/components/ui/skeletons/ChatThreadSkeleton";
@@ -217,7 +218,7 @@ export default function ChatThread() {
       <View
         className="flex-row items-center gap-3 border-b border-coral-100 bg-white px-3 pb-3"
         style={{ paddingTop: insets.top + 8 }}>
-        <Pressable onPress={() => router.back()} hitSlop={12}>
+        <Pressable onPress={() => safeBack()} hitSlop={12}>
           <Ionicons name="chevron-back" size={26} color={colors.text} />
         </Pressable>
 

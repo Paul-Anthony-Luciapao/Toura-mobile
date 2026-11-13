@@ -1,3 +1,4 @@
+import { safeBack } from "@/lib/navigation";
 import GradientButton from "@/components/common/GradientButton";
 import type { LegalSection } from "@/data/legalContent";
 import { router } from "expo-router";
@@ -44,7 +45,7 @@ export default function ConsentStep({
         className="flex-row gap-3 border-t border-slate-200 bg-white px-6 pt-4"
         style={{ paddingBottom: insets.bottom + 16 }}>
         <Pressable
-          onPress={onDecline ?? (() => router.back())}
+          onPress={onDecline ?? (() => safeBack())}
           className="flex-1 items-center justify-center rounded-xl border border-slate-300 py-3">
           <Text className="font-['Poppins_600SemiBold'] text-[14px] text-[#334155]">
             Decline

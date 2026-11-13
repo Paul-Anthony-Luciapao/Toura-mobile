@@ -1,3 +1,4 @@
+import { safeBack } from "@/lib/navigation";
 import { getItineraryPackageSpot } from "@/data/itineraryPackage";
 import { colors } from "@/styles/global";
 import Button from "@components/buttons/Buttons";
@@ -60,7 +61,7 @@ export default function VerificationScreen() {
 
           {/* Back button */}
           <Pressable
-            onPress={() => router.back()}
+            onPress={() => safeBack()}
             hitSlop={8}
             accessibilityRole="button"
             accessibilityLabel="Go back"

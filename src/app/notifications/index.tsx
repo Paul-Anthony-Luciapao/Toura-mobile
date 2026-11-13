@@ -1,3 +1,4 @@
+import { safeBack } from "@/lib/navigation";
 import NotificationCard from "@/components/notifications/NotificationCard";
 import { INITIAL_NOTIFICATIONS } from "@/data/mockData";
 import type { Notification } from "@/data/types";
@@ -89,7 +90,7 @@ export default function NotificationsScreen() {
       {/* Top Header */}
       <View className="flex-row items-center gap-3 border-b border-border px-4 py-4">
         <Pressable
-          onPress={() => router.back()}
+          onPress={() => safeBack()}
           hitSlop={8}
           className="h-11 w-11 items-center justify-center rounded-full active:opacity-70">
           <Ionicons name="arrow-back" size={24} color={colors.text} />

@@ -1,3 +1,4 @@
+import { safeBack } from "@/lib/navigation";
 import {
   getItineraryPackageSpot,
   INITIAL_ITINERARY_PACKAGES,
@@ -301,7 +302,7 @@ export default function ReviewScreen() {
 
           {/* Back Button - same as Payment.tsx */}
           <Pressable
-            onPress={() => router.back()}
+            onPress={() => safeBack()}
             hitSlop={8}
             accessibilityRole="button"
             accessibilityLabel="Go back"

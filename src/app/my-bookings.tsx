@@ -1,3 +1,4 @@
+import { safeBack } from "@/lib/navigation";
 import { getCustomTabBarContentPadding } from "@/components/CustomTabBar";
 import { getErrorMessage } from "@/services/api";
 import {
@@ -137,7 +138,7 @@ export default function MyBookingsScreen() {
         <Pressable
           accessibilityRole="button"
           accessibilityLabel="Go back"
-          onPress={() => router.back()}
+          onPress={() => safeBack()}
           className="h-10 w-10 items-center justify-center rounded-full bg-white"
         >
           <Ionicons name="chevron-back" size={22} color={colors.text} />

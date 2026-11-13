@@ -1,3 +1,4 @@
+import { safeBack } from "@/lib/navigation";
 import { getErrorMessage } from "@/services/api";
 import {
   fetchMyItineraryBookings,
@@ -259,7 +260,7 @@ export default function MyItinerariesScreen() {
         <Pressable
           accessibilityRole="button"
           accessibilityLabel="Go back"
-          onPress={() => router.back()}
+          onPress={() => safeBack()}
           hitSlop={10}
           className="absolute left-5 h-9 w-9 items-center justify-center rounded-full bg-white">
           <Ionicons name="chevron-back" size={22} color={colors.text} />

@@ -1,3 +1,4 @@
+import { safeBack } from "@/lib/navigation";
 import {
   getItineraryPackageSpot,
   INITIAL_ITINERARY_PACKAGES,
@@ -220,7 +221,7 @@ function GuestBookingForm({
 
         {/* Back button */}
         <Pressable
-          onPress={() => router.back()}
+          onPress={() => safeBack()}
           hitSlop={8}
           accessibilityRole="button"
           accessibilityLabel="Go back"

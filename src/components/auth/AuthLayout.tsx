@@ -1,3 +1,4 @@
+import { safeBack } from "@/lib/navigation";
 import { LEGAL_FOOTER } from "@/data/legalContent";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
@@ -43,7 +44,7 @@ export default function AuthLayout({
           <View className="h-10">
             {showBack ? (
               <Pressable
-                onPress={() => router.back()}
+                onPress={() => safeBack()}
                 hitSlop={12}
                 className="h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white">
                 <Ionicons

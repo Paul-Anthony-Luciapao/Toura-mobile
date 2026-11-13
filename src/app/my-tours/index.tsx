@@ -1,3 +1,4 @@
+import { safeBack } from "@/lib/navigation";
 import { colors } from "@/styles/global";
 import { getErrorMessage } from "@/services/api";
 import {
@@ -68,7 +69,7 @@ export default function MyToursScreen() {
   return (
     <SafeAreaView className="flex-1 bg-background" edges={["top"]}>
       <View className="flex-row items-center gap-3 px-5 py-4">
-        <Pressable onPress={() => router.back()} className="h-10 w-10 items-center justify-center rounded-full bg-white">
+        <Pressable onPress={() => safeBack()} className="h-10 w-10 items-center justify-center rounded-full bg-white">
           <Ionicons name="chevron-back" size={22} color={colors.text} />
         </Pressable>
         <Text className="font-poppins-semibold text-xl text-textMain">My Tour Bookings</Text>

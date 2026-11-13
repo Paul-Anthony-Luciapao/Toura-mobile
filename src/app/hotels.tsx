@@ -1,3 +1,4 @@
+import { safeBack } from "@/lib/navigation";
 import SearchBar from "@/components/common/SearchBar";
 import HotelCard from "@/components/hotels/HotelCard";
 import Skeleton from "@/components/ui/Skeleton";
@@ -243,7 +244,7 @@ export default function HotelsScreen() {
       {/* Header */}
       <View className="flex-row items-center gap-3 px-5 pb-4">
         <Pressable
-          onPress={() => router.back()}
+          onPress={() => safeBack()}
           hitSlop={12}
           accessibilityRole="button"
           accessibilityLabel="Go back"

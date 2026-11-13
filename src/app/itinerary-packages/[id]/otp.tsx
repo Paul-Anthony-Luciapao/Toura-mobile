@@ -1,3 +1,4 @@
+import { safeBack } from "@/lib/navigation";
 import Otp from "@/components/itineraries/itinerary-packages/otp/Otp";
 import { getItineraryPackageSpot } from "@/data/itineraryPackage";
 import { colors } from "@/styles/global";
@@ -64,7 +65,7 @@ export default function OtpScreen() {
         </Text>
 
         <Pressable
-          onPress={() => router.back()}
+          onPress={() => safeBack()}
           className="mt-4 rounded-xl bg-primary px-5 py-3"
         >
           <Text className="font-poppins-medium text-white">Go back</Text>
@@ -89,7 +90,7 @@ export default function OtpScreen() {
         <ItineraryHero itinerary={itinerary} />
 
         <Pressable
-          onPress={() => router.back()}
+          onPress={() => safeBack()}
           hitSlop={8}
           accessibilityRole="button"
           accessibilityLabel="Go back"

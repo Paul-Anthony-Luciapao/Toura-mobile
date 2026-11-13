@@ -1,3 +1,4 @@
+import { safeBack } from "@/lib/navigation";
 import { colors } from "@/styles/global";
 import {
   getCheckoutFailureReason,
@@ -109,7 +110,7 @@ export default function TourPaymentScreen() {
 
   return (
     <SafeAreaView className="flex-1 bg-background px-5 pt-4">
-      <Pressable onPress={() => router.back()} className="mb-5 h-10 w-10 items-center justify-center rounded-full bg-white">
+      <Pressable onPress={() => safeBack()} className="mb-5 h-10 w-10 items-center justify-center rounded-full bg-white">
         <Ionicons name="chevron-back" size={22} color={colors.text} />
       </Pressable>
       <View className="rounded-2xl bg-white p-5">
