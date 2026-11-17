@@ -1,13 +1,15 @@
 import { getCustomTabBarContentPadding } from "@/components/CustomTabBar";
 import { useAuth } from "@/context/AuthContext";
+import { getStoredItem, setStoredItem } from "@/lib/secure-storage";
 import { fetchMyItineraryBookings } from "@/services/itineraryBookings";
 import { roleLabel } from "@/services/auth";
 import { fetchMyTourBookings } from "@/services/tourBookings";
 import { colors } from "@/styles/global";
 import { Ionicons } from "@expo/vector-icons";
+import * as ImagePicker from "expo-image-picker";
 import { LinearGradient } from "expo-linear-gradient";
 import { useFocusEffect, useRouter } from "expo-router";
-import { useCallback, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useState, type ReactNode } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -111,6 +113,30 @@ export default function Profile() {
   } | null>(null);
   const [summaryLoading, setSummaryLoading] = useState(false);
   const [signingOut, setSigningOut] = useState(false);
+  const [profileImages, setProfileImages] = useState<{
+    userId: string;
+    photo: string | null;
+    background: string | null;
+  } | null>(null);
+  const userId = user?.id;
+
+  useEffect(() => {
+    let active = true;
+    if (!userId) return;
+
+    void Promise.all([
+      getStoredItem(`toura.profile.photo.${userId}`),
+      getStoredItem(`toura.profile.background.${userId}`),
+    ]).then(([photo, background]) => {
+      if (active) {
+        setProfileImages({ userId, photo, background });
+      }
+    });
+
+    return () => {
+      active = false;
+    };
+  }, [userId]);
 
   useFocusEffect(
     useCallback(() => {
@@ -157,18 +183,60 @@ export default function Profile() {
     }
   };
 
+  const chooseProfileImage = async (kind: "photo" | "background") => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ["images"],
+      allowsEditing: true,
+      aspect: kind === "photo" ? [1, 1] : [16, 7],
+      quality: 0.85,
+    });
+
+    if (result.canceled || !user) return;
+
+    const uri = result.assets[0]?.uri;
+    if (!uri) return;
+
+    const images = {
+      userId: user.id,
+      photo: profileImages?.userId === user.id ? profileImages.photo : null,
+      background:
+        profileImages?.userId === user.id ? profileImages.background : null,
+    };
+
+    if (kind === "photo") {
+      setProfileImages({ ...images, photo: uri });
+      await setStoredItem(`toura.profile.photo.${user.id}`, uri);
+    } else {
+      setProfileImages({ ...images, background: uri });
+      await setStoredItem(`toura.profile.background.${user.id}`, uri);
+    }
+  };
+
+  const promptForImage = (kind: "photo" | "background") => {
+    Alert.alert(
+      kind === "photo" ? "Update profile photo" : "Update profile background",
+      "Choose an image from your library.",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Choose photo",
+          onPress: () => void chooseProfileImage(kind).catch(() =>
+            Alert.alert("Could not update image", "Please try again."),
+          ),
+        },
+      ],
+    );
+  };
+
   const displayName = user?.name?.trim() || "Traveler";
-  const initials = displayName
-    .split(/\s+/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((part) => part[0]?.toUpperCase() ?? "")
-    .join("");
   const profileImage = user?.avatar ? { uri: user.avatar } : fallbackAvatar;
+  const profilePhoto = profileImages?.userId === user?.id ? profileImages.photo : null;
+  const profileBackground =
+    profileImages?.userId === user?.id ? profileImages.background : null;
 
   return (
     <SafeAreaView className="flex-1 bg-background" edges={["top"]}>
-      <StatusBar style="light" />
+      <StatusBar style="dark" />
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
@@ -176,7 +244,7 @@ export default function Profile() {
         }}>
         <View className="h-[230px] overflow-hidden">
           <Image
-            source={coverImage}
+            source={profileBackground ? { uri: profileBackground } : coverImage}
             resizeMode="cover"
             accessible={false}
             className="absolute inset-0 h-full w-full"
@@ -186,6 +254,18 @@ export default function Profile() {
             colors={["rgba(15, 23, 42, 0.22)", "rgba(15, 23, 42, 0.62)"]}
             className="absolute inset-0"
           />
+          {user ? (
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel="Change profile background"
+              onPress={() => promptForImage("background")}
+              className="absolute bottom-4 right-5 flex-row items-center rounded-full bg-black/45 px-3 py-2">
+              <Ionicons name="camera-outline" size={16} color="white" />
+              <Text className="ml-1.5 font-poppins-medium text-xs text-white">
+                Edit cover
+              </Text>
+            </Pressable>
+          ) : null}
           <View className="flex-row items-center justify-between px-5 pt-3">
             <Text className="font-poppins-semibold text-xl text-white">
               Profile
@@ -204,13 +284,23 @@ export default function Profile() {
 
         <View className="-mt-7 rounded-t-[28px] bg-background px-5 pb-6 pt-3">
           <View className="relative h-12 flex-row items-end">
-            <Image
-              source={profileImage}
-              resizeMode="cover"
-              accessibilityLabel="Profile photo"
-              className="h-24 w-24 rounded-full border-4 border-white bg-coral-50"
-              style={{ position: "absolute", left: 0, top: -56 }}
-            />
+            <View style={{ position: "absolute", left: 0, top: -56 }}>
+              <Image
+                source={profilePhoto ? { uri: profilePhoto } : profileImage}
+                resizeMode="cover"
+                accessibilityLabel="Profile photo"
+                className="h-24 w-24 rounded-full border-4 border-white bg-coral-50"
+              />
+              {user ? (
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityLabel="Change profile photo"
+                  onPress={() => promptForImage("photo")}
+                  className="absolute bottom-0 right-0 h-8 w-8 items-center justify-center rounded-full border-2 border-white bg-primary">
+                  <Ionicons name="camera" size={15} color="white" />
+                </Pressable>
+              ) : null}
+            </View>
             <View className="mb-1 ml-[108px] flex-1">
               {user && !authLoading ? (
                 <>

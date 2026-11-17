@@ -1,12 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
-import React, { useEffect, useState } from "react";
-import { LayoutChangeEvent, Pressable, View } from "react-native";
-
-import Animated, {
-    useAnimatedStyle,
-    useSharedValue,
-    withSpring,
-} from "react-native-reanimated";
+import { Pressable, Text, View } from "react-native";
 
 import { colors } from "@/styles/global";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -30,6 +23,7 @@ type TabState = {
 };
 
 type TabOptions = {
+  title?: string;
   tabBarAccessibilityLabel?: string;
   tabBarButtonTestID?: string;
 };
@@ -69,78 +63,6 @@ const TAB_ICONS = {
   },
 } as const;
 
-// Sliding indicator
-function AnimatedIndicator({
-  index,
-  tabWidth,
-}: {
-  index: number;
-  tabWidth: number;
-}) {
-  const translateX = useSharedValue(0);
-
-  useEffect(() => {
-    translateX.value = withSpring(index * tabWidth, {
-      damping: 18,
-      stiffness: 140,
-      mass: 0.8,
-    });
-  }, [index, tabWidth]);
-
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ translateX: translateX.value }],
-  }));
-
-  return (
-    <Animated.View
-      pointerEvents="none"
-      className="absolute top-[10px] h-10 w-[46px] rounded-full"
-      style={[
-        {
-          left: (tabWidth - 46) / 2,
-          backgroundColor: colors.accentBadge,
-        },
-        animatedStyle,
-      ]}
-    />
-  );
-}
-
-// Animated icon
-function AnimatedTabIcon({
-  focused,
-  color,
-  icon,
-  activeIcon,
-}: {
-  focused: boolean;
-  color: string;
-  icon: keyof typeof Ionicons.glyphMap;
-  activeIcon: keyof typeof Ionicons.glyphMap;
-}) {
-  const scale = useSharedValue(1);
-  const translateY = useSharedValue(0);
-
-  useEffect(() => {
-    scale.value = withSpring(focused ? 1.12 : 1, {
-      damping: 10,
-      stiffness: 180,
-    });
-
-    translateY.value = withSpring(focused ? -2 : 0);
-  }, [focused]);
-
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: scale.value }, { translateY: translateY.value }],
-  }));
-
-  return (
-    <Animated.View style={animatedStyle}>
-      <Ionicons name={focused ? activeIcon : icon} size={24} color={color} />
-    </Animated.View>
-  );
-}
-
 // Custom navigation bar
 export default function CustomTabBar({
   state,
@@ -149,21 +71,11 @@ export default function CustomTabBar({
 }: CustomTabBarProps) {
   const insets = useSafeAreaInsets();
 
-  const [containerWidth, setContainerWidth] = useState(0);
-
   const tabBarHeight = CUSTOM_TAB_BAR_HEIGHT;
   const tabBarBottom = Math.max(insets.bottom, 12);
 
-  const tabWidth =
-    containerWidth > 0 ? containerWidth / state.routes.length : 0;
-
-  const handleLayout = (event: LayoutChangeEvent) => {
-    setContainerWidth(event.nativeEvent.layout.width);
-  };
-
   return (
     <View
-      onLayout={handleLayout}
       className="absolute left-4 right-4 flex-row items-center justify-around rounded-[30px] border-t"
       style={{
         bottom: tabBarBottom,
@@ -183,16 +95,12 @@ export default function CustomTabBar({
         shadowRadius: 8,
       }}
     >
-      {/* Animated background */}
-      {tabWidth > 0 && (
-        <AnimatedIndicator index={state.index} tabWidth={tabWidth} />
-      )}
-
       {/* Tabs */}
       {state.routes.map((route, index) => {
         const focused = state.index === index;
 
         const options = descriptors[route.key]?.options;
+        const label = options?.title ?? route.name;
 
         const tabConfig = TAB_ICONS[route.name as keyof typeof TAB_ICONS];
 
@@ -211,7 +119,7 @@ export default function CustomTabBar({
             key={route.key}
             accessibilityRole="tab"
             accessibilityState={focused ? { selected: true } : {}}
-            accessibilityLabel={options?.tabBarAccessibilityLabel}
+            accessibilityLabel={options?.tabBarAccessibilityLabel ?? label}
             testID={options?.tabBarButtonTestID}
             onPress={onPress}
             android_ripple={{
@@ -219,12 +127,17 @@ export default function CustomTabBar({
             }}
             className="h-[60px] flex-1 items-center justify-center"
           >
-            <AnimatedTabIcon
-              focused={focused}
+            <Ionicons
+              name={focused ? tabConfig.activeIcon : tabConfig.icon}
+              size={22}
               color={color}
-              icon={tabConfig.icon}
-              activeIcon={tabConfig.activeIcon}
             />
+            <Text
+              numberOfLines={1}
+              className="mt-1 max-w-full font-poppins-medium text-[10px]"
+              style={{ color }}>
+              {label}
+            </Text>
           </Pressable>
         );
       })}

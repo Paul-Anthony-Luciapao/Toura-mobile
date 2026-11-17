@@ -4,6 +4,7 @@
 use App\Http\Controllers\Api\AccommodationController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BookingController;
+use App\Http\Controllers\Api\ConversationController;
 use App\Http\Controllers\Api\ItineraryBookingController;
 use App\Http\Controllers\Api\ItineraryPackageController;
 use App\Http\Controllers\Api\HotelController;
@@ -64,6 +65,15 @@ Route::prefix('v1')->group(function () {
         Route::post('/auth/logout', [AuthController::class, 'logout']);
         Route::delete('/auth/account', [AuthController::class, 'deleteAccount']);
         Route::get('/me', [AuthController::class, 'me']);
+
+        // Private traveler-owner messaging.
+        Route::get('/conversations', [ConversationController::class, 'index']);
+        Route::get('/conversations/unread-count', [ConversationController::class, 'unreadCount']);
+        Route::post('/conversations', [ConversationController::class, 'store']);
+        Route::get('/conversations/{conversation}', [ConversationController::class, 'show']);
+        Route::get('/conversations/{conversation}/messages', [ConversationController::class, 'messages']);
+        Route::post('/conversations/{conversation}/messages', [ConversationController::class, 'sendMessage']);
+        Route::post('/conversations/{conversation}/read', [ConversationController::class, 'markRead']);
 
         // Bookings
         Route::apiResource('bookings', BookingController::class)
