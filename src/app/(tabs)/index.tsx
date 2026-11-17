@@ -1,3 +1,4 @@
+import HomeTourCard from "@/app/itinerary-packages/HomeTourCard";
 import TourPackageCard from "@/app/itinerary-packages/TourPackageCard";
 import { getCustomTabBarContentPadding } from "@/components/CustomTabBar";
 import CategoryIcons from "@/components/home/CategoryIcons";
@@ -9,6 +10,7 @@ import {
     PACKAGE_SPOTS,
 } from "@/data/itineraryPackage";
 import { getPackageSpotImage } from "@/data/packageImages";
+import { tourPackages } from "@/data/tourPackages";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { ScrollView, StatusBar, View } from "react-native";
@@ -24,7 +26,7 @@ const HOME_PACKAGES = INITIAL_ITINERARY_PACKAGES.map((pkg) => {
     throw new Error(`Missing mock data for itinerary ${pkg.spotId}`);
   }
 
-  return { pkg, spot, resort };
+  return { pkg, spot };
 });
 
 export default function Index() {
@@ -32,19 +34,13 @@ export default function Index() {
   const insets = useSafeAreaInsets();
 
   const [favoritePackageIds, setFavoritePackageIds] = useState<string[]>([]);
-  const renderPackageCards = () => (
+  const renderItineraryCards = () => (
     <ScrollView
       horizontal
       showsHorizontalScrollIndicator={false}
       contentContainerClassName="pb-1"
     >
-      {HOME_PACKAGES.map(({ pkg, spot, resort }) => {
-        const bedCount = resort.accommodations[0]?.bedCount;
-        const detailParts = [
-          bedCount ? `${bedCount} ${bedCount === 1 ? "Bed" : "Beds"}` : null,
-          "Free breakfast",
-        ].filter(Boolean);
-
+      {HOME_PACKAGES.map(({ pkg, spot }) => {
         return (
           <View key={pkg.id} className="mr-3.5 w-[280px]">
             <TourPackageCard
@@ -52,7 +48,7 @@ export default function Index() {
               image={getPackageSpotImage(spot.image)}
               rating={spot.rating}
               reviewCount={spot.reviewCount}
-              detail={`· ${detailParts.join(" · ")}`}
+              detail={pkg.activities.slice(0, 2).join(" · ")}
               duration={pkg.duration}
               price={pkg.price}
               priceBasis={pkg.priceBasis}
@@ -69,6 +65,40 @@ export default function Index() {
                 router.push({
                   pathname: "/itinerary-packages/[id]",
                   params: { id: pkg.id },
+                })
+              }
+            />
+          </View>
+        );
+      })}
+    </ScrollView>
+  );
+
+  const renderTourCards = () => (
+    <ScrollView
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      contentContainerClassName="pb-1"
+    >
+      {tourPackages.slice(0, 6).map((tour) => {
+        const image =
+          tour.municipality === "Coron"
+            ? require("../../../assets/images/coron.jpg")
+            : tour.municipality === "Puerto Princesa"
+              ? require("../../../assets/images/puertoprinsesa.jpg")
+              : tour.municipality === "San Vicente"
+                ? require("../../../assets/images/sanvicente.jpg")
+                : require("../../../assets/images/elnido.jpg");
+
+        return (
+          <View key={tour.id} className="mr-3.5 w-[280px]">
+            <HomeTourCard
+              item={tour}
+              image={image}
+              onPress={() =>
+                router.push({
+                  pathname: "/tours/[id]",
+                  params: { id: tour.id },
                 })
               }
             />
@@ -124,7 +154,7 @@ export default function Index() {
             action="View all"
             onActionPress={() => router.push("/itinerary-packages")}
           />
-          {renderPackageCards()}
+          {renderItineraryCards()}
         </View>
 
         {/* Tour Packages */}
@@ -132,9 +162,9 @@ export default function Index() {
           <SectionHeader
             title="Tour Packages"
             action="View all"
-            onActionPress={() => router.push("/itinerary-packages")}
+            onActionPress={() => router.push("/tours")}
           />
-          {renderPackageCards()}
+          {renderTourCards()}
         </View>
       </View>
     </ScrollView>

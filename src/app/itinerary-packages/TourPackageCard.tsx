@@ -9,7 +9,7 @@ type Props = Readonly<{
   image: ImageSourcePropType;
   rating: number;
   reviewCount: number;
-  /** Line under the title, e.g. "· 2 Beds · Free breakfast". */
+  /** Short activity preview shown under the title. */
   detail: string;
   duration: string;
   price: number;
@@ -20,14 +20,6 @@ type Props = Readonly<{
   onToggleFavorite: () => void;
   onPress: () => void;
 }>;
-
-// No reviewer photos exist in the data, so the avatar stack uses placeholder initials.
-const AVATARS = [
-  { initial: "A", color: "#4F9B8F" },
-  { initial: "M", color: "#EA8677" },
-  { initial: "J", color: "#364153" },
-  { initial: "L", color: "#878A93" },
-] as const;
 
 export default function TourPackageCard({
   title,
@@ -48,14 +40,14 @@ export default function TourPackageCard({
       onPress={onPress}
       accessibilityRole="button"
       accessibilityLabel={title}
-      className="active:opacity-90">
+      className="rounded-2xl border border-slate-200 bg-white active:opacity-90">
       {/* Image */}
-      <View className="overflow-hidden rounded-[16px] bg-slate-200">
+      <View className="overflow-hidden rounded-t-2xl bg-slate-200">
         <Image
           source={image}
           resizeMode="cover"
-          style={{ width: "100%", height: 196 }}
-          className="h-[196px] w-full"
+          style={{ width: "100%", height: 184 }}
+          className="h-[184px] w-full"
         />
 
         {/* Keeps the rating readable over bright photos */}
@@ -71,78 +63,67 @@ export default function TourPackageCard({
           }}
         />
 
-        {isPopular ? (
-          <View className="absolute right-[20px] top-[19px] rounded-full bg-[#418076] px-[10px] py-[2px]">
+        {isPopular && (
+          <View className="absolute left-3 top-3 rounded-full bg-[#418076] px-3 py-1">
             <Text className="font-poppins-medium text-[12px] text-white">
               Popular
             </Text>
           </View>
-        ) : (
-          <Pressable
-            onPress={onToggleFavorite}
-            hitSlop={10}
-            accessibilityLabel={isFavorite ? "Remove favorite" : "Add favorite"}
-            className="absolute right-[20px] top-[19px]">
-            <Ionicons
-              name="heart"
-              size={26}
-              color={isFavorite ? "#EA8677" : "rgba(255,255,255,0.8)"}
-            />
-          </Pressable>
         )}
 
-        {/* Avatars + rating */}
-        <View className="absolute bottom-[12px] left-[20px] flex-row items-center">
-          <View className="flex-row">
-            {AVATARS.map((avatar, index) => (
-              <View
-                key={avatar.initial}
-                className="h-[20px] w-[20px] items-center justify-center rounded-full border-[1.5px] border-white"
-                style={{
-                  backgroundColor: avatar.color,
-                  marginLeft: index === 0 ? 0 : -8,
-                }}>
-                <Text className="font-poppins-semibold text-[9px] text-white">
-                  {avatar.initial}
-                </Text>
-              </View>
-            ))}
-          </View>
-
+        <Pressable
+          onPress={(event) => {
+            event.stopPropagation();
+            onToggleFavorite();
+          }}
+          hitSlop={10}
+          accessibilityRole="button"
+          accessibilityLabel={isFavorite ? "Remove favorite" : "Add favorite"}
+          className="absolute right-3 top-3 h-9 w-9 items-center justify-center rounded-full bg-black/30">
           <Ionicons
-            name="star"
-            size={14}
-            color="#D97264"
-            style={{ marginLeft: 8 }}
+            name={isFavorite ? "heart" : "heart-outline"}
+            size={20}
+            color={isFavorite ? "#EA8677" : "white"}
           />
-          <Text className="ml-1 font-poppins text-[11px] text-white">
+        </Pressable>
+
+        {/* Rating */}
+        <View className="absolute bottom-3 left-3 flex-row items-center rounded-full bg-black/35 px-2.5 py-1">
+          <Ionicons name="star" size={14} color="#FFD166" />
+          <Text className="ml-1 font-poppins-medium text-xs text-white">
             {rating.toFixed(1)} ({formatReviewCount(reviewCount)})
           </Text>
         </View>
       </View>
 
       {/* Text */}
-      <View className="pt-2">
+      <View className="px-3.5 pb-3.5 pt-3">
         <Text
-          className="font-poppins text-[16px] leading-6 text-[#111729]"
-          numberOfLines={1}>
+          className="font-poppins-semibold text-base leading-6 text-[#111729]"
+          numberOfLines={2}>
           {title}
         </Text>
 
-        <View className="mt-0.5 flex-row items-center">
-          <Text
-            className="flex-1 pr-3 font-poppins text-[12px] text-[#364153]"
-            numberOfLines={1}>
-            {detail}
-          </Text>
-
-          <Text className="font-poppins text-[13px] text-[#364153]">
+        <View className="mt-2 flex-row items-center">
+          <Ionicons name="time-outline" size={14} color="#64748B" />
+          <Text className="ml-1.5 font-poppins-medium text-xs text-slate-600">
             {duration}
           </Text>
+        </View>
 
-          <Text className="ml-3 font-poppins-semibold text-[14px] text-[#111729]">
-            {formatCurrency(price)}/{priceBasis}
+        <Text
+          className="mt-1.5 font-poppins text-xs leading-5 text-slate-500"
+          numberOfLines={1}>
+          {detail}
+        </Text>
+
+        <View className="mt-3 flex-row items-center justify-between border-t border-slate-100 pt-3">
+          <Text
+            className="font-poppins text-xs text-slate-500">
+            From <Text className="font-poppins-semibold text-base text-[#111729]">{formatCurrency(price)}</Text>
+            <Text className="font-poppins text-xs text-slate-500">/{priceBasis}</Text>
           </Text>
+          <Ionicons name="arrow-forward-circle" size={22} color="#418076" />
         </View>
       </View>
     </Pressable>
