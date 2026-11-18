@@ -57,10 +57,6 @@ const TAB_ICONS = {
     icon: "person-outline",
     activeIcon: "person",
   },
-  more: {
-    icon: "ellipsis-horizontal",
-    activeIcon: "ellipsis-horizontal",
-  },
 } as const;
 
 // Custom navigation bar

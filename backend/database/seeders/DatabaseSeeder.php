@@ -21,9 +21,12 @@ class DatabaseSeeder extends Seeder
         $this->call(TourPackageSeeder::class);
         $this->call(HotelSeeder::class);
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        User::firstOrCreate(
+            ['email' => 'test@example.com'],
+            User::factory()->raw([
+                'name' => 'Test User',
+                'email' => 'test@example.com',
+            ]),
+        );
     }
 }

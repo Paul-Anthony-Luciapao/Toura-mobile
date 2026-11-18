@@ -1,26 +1,29 @@
 import { getCustomTabBarContentPadding } from "@/components/CustomTabBar";
 import { useAuth } from "@/context/AuthContext";
 import { getStoredItem, setStoredItem } from "@/lib/secure-storage";
-import { fetchMyItineraryBookings } from "@/services/itineraryBookings";
 import { roleLabel } from "@/services/auth";
+import { fetchMyItineraryBookings } from "@/services/itineraryBookings";
 import { fetchMyTourBookings } from "@/services/tourBookings";
 import { colors } from "@/styles/global";
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import { LinearGradient } from "expo-linear-gradient";
 import { useFocusEffect, useRouter } from "expo-router";
+import { StatusBar } from "expo-status-bar";
 import { useCallback, useEffect, useState, type ReactNode } from "react";
 import {
-  ActivityIndicator,
-  Alert,
-  Image,
-  Pressable,
-  ScrollView,
-  Text,
-  View,
+    ActivityIndicator,
+    Alert,
+    Image,
+    Pressable,
+    ScrollView,
+    Text,
+    View,
 } from "react-native";
-import { StatusBar } from "expo-status-bar";
-import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
+import {
+    SafeAreaView,
+    useSafeAreaInsets,
+} from "react-native-safe-area-context";
 
 const fallbackAvatar = require("../../../assets/images/profile-images/ChatGPT Image Sep 30, 2026, 02_26_30 PM 1.png");
 const coverImage = require("../../../assets/images/elnido.jpg");
@@ -39,7 +42,8 @@ function ProfileRow({ icon, label, onPress, isLast = false }: ProfileRowProps) {
       onPress={onPress}
       className={`min-h-14 flex-row items-center px-4 active:bg-coral-50 ${
         isLast ? "" : "border-b border-slate-100"
-      }`}>
+      }`}
+    >
       <View className="h-9 w-9 items-center justify-center rounded-xl bg-coral-50">
         <Ionicons name={icon} size={19} color={colors.primaryDark} />
       </View>
@@ -60,7 +64,7 @@ function ProfileSection({
       <Text className="mb-2 px-1 font-poppins-semibold text-xs uppercase tracking-wider text-textMuted">
         {title}
       </Text>
-      <View className="overflow-hidden rounded-2xl border border-coral-100 bg-white">
+      <View className="overflow-hidden rounded-2xl border border-slate-100 bg-white">
         {children}
       </View>
     </View>
@@ -85,7 +89,8 @@ function TravelStat({
       accessibilityRole="button"
       accessibilityLabel={`${label}: ${value ?? (loading ? "loading" : "unavailable")}`}
       onPress={onPress}
-      className="flex-1 rounded-2xl border border-coral-100 bg-white p-4 active:bg-coral-50">
+      className="flex-1 rounded-2xl border border-slate-100 bg-white p-4 active:bg-coral-50"
+    >
       <View className="h-9 w-9 items-center justify-center rounded-xl bg-coral-50">
         <Ionicons name={icon} size={19} color={colors.primaryDark} />
       </View>
@@ -220,9 +225,10 @@ export default function Profile() {
         { text: "Cancel", style: "cancel" },
         {
           text: "Choose photo",
-          onPress: () => void chooseProfileImage(kind).catch(() =>
-            Alert.alert("Could not update image", "Please try again."),
-          ),
+          onPress: () =>
+            void chooseProfileImage(kind).catch(() =>
+              Alert.alert("Could not update image", "Please try again."),
+            ),
         },
       ],
     );
@@ -230,7 +236,8 @@ export default function Profile() {
 
   const displayName = user?.name?.trim() || "Traveler";
   const profileImage = user?.avatar ? { uri: user.avatar } : fallbackAvatar;
-  const profilePhoto = profileImages?.userId === user?.id ? profileImages.photo : null;
+  const profilePhoto =
+    profileImages?.userId === user?.id ? profileImages.photo : null;
   const profileBackground =
     profileImages?.userId === user?.id ? profileImages.background : null;
 
@@ -241,7 +248,8 @@ export default function Profile() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
           paddingBottom: getCustomTabBarContentPadding(insets.bottom),
-        }}>
+        }}
+      >
         <View className="h-[230px] overflow-hidden">
           <Image
             source={profileBackground ? { uri: profileBackground } : coverImage}
@@ -259,7 +267,8 @@ export default function Profile() {
               accessibilityRole="button"
               accessibilityLabel="Change profile background"
               onPress={() => promptForImage("background")}
-              className="absolute bottom-4 right-5 flex-row items-center rounded-full bg-black/45 px-3 py-2">
+              className="absolute bottom-8 right-5 flex-row items-center rounded-full bg-black/45 px-3 py-2"
+            >
               <Ionicons name="camera-outline" size={16} color="white" />
               <Text className="ml-1.5 font-poppins-medium text-xs text-white">
                 Edit cover
@@ -275,7 +284,8 @@ export default function Profile() {
                 accessibilityRole="button"
                 accessibilityLabel="Open account settings"
                 onPress={() => router.push("/settings")}
-                className="h-10 w-10 items-center justify-center rounded-full bg-black/25">
+                className="h-10 w-10 items-center justify-center rounded-full bg-black/25"
+              >
                 <Ionicons name="settings-outline" size={20} color="white" />
               </Pressable>
             ) : null}
@@ -296,7 +306,8 @@ export default function Profile() {
                   accessibilityRole="button"
                   accessibilityLabel="Change profile photo"
                   onPress={() => promptForImage("photo")}
-                  className="absolute bottom-0 right-0 h-8 w-8 items-center justify-center rounded-full border-2 border-white bg-primary">
+                  className="absolute bottom-0 right-0 h-8 w-8 items-center justify-center rounded-full border-2 border-white bg-primary"
+                >
                   <Ionicons name="camera" size={15} color="white" />
                 </Pressable>
               ) : null}
@@ -306,7 +317,8 @@ export default function Profile() {
                 <>
                   <Text
                     numberOfLines={1}
-                    className="font-poppins-bold text-lg text-textMain">
+                    className="font-poppins-bold text-lg text-textMain"
+                  >
                     {displayName}
                   </Text>
                   <Text className="font-poppins-medium text-xs text-coral-600">
@@ -329,7 +341,8 @@ export default function Profile() {
             <>
               <Text
                 numberOfLines={1}
-                className="mt-3 font-poppins text-sm text-textMuted">
+                className="mt-3 font-poppins text-sm text-textMuted"
+              >
                 {user.email}
               </Text>
               {user.phone ? (
@@ -385,12 +398,17 @@ export default function Profile() {
                 accessibilityState={{ disabled: signingOut }}
                 disabled={signingOut}
                 onPress={() => void handleSignOut()}
-                className="mt-6 min-h-14 flex-row items-center justify-center rounded-2xl border border-coral-100 bg-white px-4 active:bg-coral-50">
+                className="mt-6 min-h-14 flex-row items-center justify-center rounded-2xl border border-slate-100 bg-white px-4 active:bg-coral-50"
+              >
                 {signingOut ? (
                   <ActivityIndicator color={colors.primary} />
                 ) : (
                   <>
-                    <Ionicons name="log-out-outline" size={19} color={colors.accent} />
+                    <Ionicons
+                      name="log-out-outline"
+                      size={19}
+                      color={colors.accent}
+                    />
                     <Text className="ml-2 font-poppins-semibold text-sm text-coral-600">
                       Sign out
                     </Text>
@@ -399,7 +417,7 @@ export default function Profile() {
               </Pressable>
             </>
           ) : (
-            <View className="mt-5 rounded-2xl border border-coral-100 bg-white p-5">
+            <View className="mt-5 rounded-2xl border border-slate-100 bg-white p-5">
               <Text className="font-poppins-semibold text-lg text-textMain">
                 Sign in to your account
               </Text>
@@ -409,13 +427,15 @@ export default function Profile() {
               <Pressable
                 accessibilityRole="button"
                 onPress={() => router.push("/login")}
-                className="mt-5 items-center rounded-xl bg-coral-400 px-4 py-3 active:opacity-80">
+                className="mt-5 items-center rounded-xl bg-coral-400 px-4 py-3 active:opacity-80"
+              >
                 <Text className="font-poppins-semibold text-white">Log in</Text>
               </Pressable>
               <Pressable
                 accessibilityRole="button"
                 onPress={() => router.push("/signup-role")}
-                className="mt-2 items-center rounded-xl border border-slate-200 px-4 py-3 active:bg-slate-50">
+                className="mt-2 items-center rounded-xl border border-slate-200 px-4 py-3 active:bg-slate-50"
+              >
                 <Text className="font-poppins-semibold text-textMain">
                   Create account
                 </Text>

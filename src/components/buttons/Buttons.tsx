@@ -27,7 +27,7 @@ export default function Button({
         ${backgroundColor}
         items-center
         justify-center
-        rounded-[14px]
+        rounded-xl
         px-[18px]
         ${disabled ? "opacity-60" : "active:opacity-80"}
         ${className}

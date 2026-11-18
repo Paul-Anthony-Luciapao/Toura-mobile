@@ -8,7 +8,6 @@ const TAB_SCREENS = [
   { name: "itinerary", title: "Itineraries" },
   { name: "messages", title: "Messages" },
   { name: "profile", title: "Profile" },
-  { name: "more", title: "More" },
 ] as const;
 
 export default function TabsLayout() {

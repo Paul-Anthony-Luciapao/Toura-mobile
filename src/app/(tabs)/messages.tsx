@@ -2,21 +2,21 @@ import ConversationRow from "@/components/chat/ConversationRow";
 import { getCustomTabBarContentPadding } from "@/components/CustomTabBar";
 import { useAuth } from "@/context/AuthContext";
 import type { Conversation } from "@/data/types";
-import { describeApiError } from "@/services/toura";
 import { fetchConversations } from "@/services/chat";
+import { describeApiError } from "@/services/toura";
 import { colors } from "@/styles/global";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useMemo, useState } from "react";
 import {
-  ActivityIndicator,
-  FlatList,
-  Pressable,
-  RefreshControl,
-  Text,
-  TextInput,
-  View,
+    ActivityIndicator,
+    FlatList,
+    Pressable,
+    RefreshControl,
+    Text,
+    TextInput,
+    View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -58,7 +58,10 @@ export default function Messages() {
       }
 
       void loadConversations();
-      const timer = setInterval(() => void loadConversations(true), REFRESH_INTERVAL_MS);
+      const timer = setInterval(
+        () => void loadConversations(true),
+        REFRESH_INTERVAL_MS,
+      );
       return () => clearInterval(timer);
     }, [loadConversations, user]),
   );
@@ -90,7 +93,7 @@ export default function Messages() {
       />
 
       <View className="z-10 mt-4 px-5">
-        <View className="flex-row items-center rounded-full border border-slate-200 bg-white px-4 py-2.5">
+        <View className="flex-row items-center rounded-full border border-slate-200 bg-white px-4 py-.5 shadow-md">
           <Ionicons name="search" size={20} color={colors.text} />
           <TextInput
             value={search}
@@ -106,8 +109,13 @@ export default function Messages() {
               accessibilityRole="button"
               accessibilityLabel="Clear search"
               onPress={() => setSearch("")}
-              hitSlop={10}>
-              <Ionicons name="close-circle" size={19} color={colors.textSubtle} />
+              hitSlop={10}
+            >
+              <Ionicons
+                name="close-circle"
+                size={19}
+                color={colors.textSubtle}
+              />
             </Pressable>
           ) : null}
         </View>
@@ -120,13 +128,15 @@ export default function Messages() {
           </Text>
           {!loading && conversations.length > 0 ? (
             <Text className="mt-0.5 font-poppins text-xs text-textMuted">
-              {conversations.length} {conversations.length === 1 ? "conversation" : "conversations"}
+              {conversations.length}{" "}
+              {conversations.length === 1 ? "conversation" : "conversations"}
             </Text>
           ) : null}
         </View>
         {conversations.some((conversation) => conversation.unreadCount > 0) ? (
           <Text className="font-poppins-medium text-xs text-primary">
-            {conversations.reduce((total, item) => total + item.unreadCount, 0)} unread
+            {conversations.reduce((total, item) => total + item.unreadCount, 0)}{" "}
+            unread
           </Text>
         ) : null}
       </View>
@@ -134,7 +144,11 @@ export default function Messages() {
       {!user ? (
         <View className="flex-1 items-center justify-center px-8 pb-20">
           <View className="h-16 w-16 items-center justify-center rounded-full bg-coral-50">
-            <Ionicons name="chatbubbles-outline" size={30} color={colors.primary} />
+            <Ionicons
+              name="chatbubbles-outline"
+              size={30}
+              color={colors.primary}
+            />
           </View>
           <Text className="mt-4 text-center font-poppins-semibold text-base text-textMain">
             Sign in to view your messages
@@ -142,8 +156,11 @@ export default function Messages() {
           <Pressable
             accessibilityRole="button"
             onPress={() => router.push("/login")}
-            className="mt-4 rounded-xl bg-primary px-5 py-3">
-            <Text className="font-poppins-semibold text-sm text-white">Log in</Text>
+            className="mt-4 rounded-xl bg-primary px-5 py-3"
+          >
+            <Text className="font-poppins-semibold text-sm text-white">
+              Log in
+            </Text>
           </Pressable>
         </View>
       ) : loading ? (
@@ -155,15 +172,22 @@ export default function Messages() {
         </View>
       ) : error && conversations.length === 0 ? (
         <View className="flex-1 items-center justify-center px-8 pb-20">
-          <Ionicons name="cloud-offline-outline" size={34} color={colors.textSubtle} />
+          <Ionicons
+            name="cloud-offline-outline"
+            size={34}
+            color={colors.textSubtle}
+          />
           <Text className="mt-3 text-center font-poppins text-sm leading-5 text-textMuted">
             {error}
           </Text>
           <Pressable
             accessibilityRole="button"
             onPress={() => void loadConversations()}
-            className="mt-4 rounded-xl bg-primary px-5 py-3">
-            <Text className="font-poppins-semibold text-sm text-white">Try again</Text>
+            className="mt-4 rounded-xl bg-primary px-5 py-3"
+          >
+            <Text className="font-poppins-semibold text-sm text-white">
+              Try again
+            </Text>
           </Pressable>
         </View>
       ) : (
@@ -194,10 +218,16 @@ export default function Messages() {
           ListEmptyComponent={
             <View className="flex-1 items-center justify-center px-8 pb-16">
               <View className="h-16 w-16 items-center justify-center rounded-full bg-coral-50">
-                <Ionicons name="chatbubble-ellipses-outline" size={29} color={colors.primary} />
+                <Ionicons
+                  name="chatbubble-ellipses-outline"
+                  size={29}
+                  color={colors.primary}
+                />
               </View>
               <Text className="mt-4 text-center font-poppins-semibold text-base text-textMain">
-                {search.trim() ? "No matching conversations" : "No messages yet"}
+                {search.trim()
+                  ? "No matching conversations"
+                  : "No messages yet"}
               </Text>
               <Text className="mt-1 text-center font-poppins text-sm leading-5 text-textMuted">
                 {search.trim()
