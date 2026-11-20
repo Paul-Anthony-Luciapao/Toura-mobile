@@ -2,11 +2,8 @@
 
 namespace App\Services;
 
-use App\Models\ItineraryBooking;
 use App\Models\Order;
-use App\Models\TourBooking;
 use Illuminate\Http\Client\ConnectionException;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use RuntimeException;
 
@@ -73,7 +70,7 @@ class PaymongoPaymentVerifier
                 ->timeout(10)
                 ->get(
                     'https://api.paymongo.com/v1/checkout_sessions/'
-                        . rawurlencode($sessionId)
+                        .rawurlencode($sessionId)
                 );
         } catch (ConnectionException $exception) {
             throw new RuntimeException(
@@ -100,7 +97,7 @@ class PaymongoPaymentVerifier
     }
 
     /**
-     * @param array<string, mixed> $session
+     * @param  array<string, mixed>  $session
      */
     private function hasPaidPayment(array $session): bool
     {
@@ -117,30 +114,11 @@ class PaymongoPaymentVerifier
 
     private function markPaid(Order $order): void
     {
-        DB::transaction(function () use ($order): void {
-            $order->update([
-                'payment_status' => 'paid',
-                'status' => 'paid',
-            ]);
-
-            ItineraryBooking::where(
-                'booking_reference',
-                $order->reference_number
-            )
-                ->where('user_id', $order->user_id)
-                    ->update(['status' => 'confirmed', 'payment_status' => 'paid']);
-
-            TourBooking::where(
-                'booking_reference',
-                $order->reference_number
-            )
-                ->where('user_id', $order->user_id)
-                    ->update(['status' => 'confirmed', 'payment_status' => 'paid']);
-        });
+        app(NotificationEvents::class)->markOrderPaid($order);
     }
 
     /**
-     * @param array<string, mixed> $session
+     * @param  array<string, mixed>  $session
      */
     private function failureReason(array $session): ?string
     {
@@ -163,24 +141,18 @@ class PaymongoPaymentVerifier
         return match (true) {
             str_contains($code, 'insufficient_funds'),
             str_contains($code, 'credit_limit_exceeded'),
-            str_contains($code, 'debit_card_usage_limit_exceeded')
-                => 'insufficient_funds',
+            str_contains($code, 'debit_card_usage_limit_exceeded') => 'insufficient_funds',
             str_contains($code, 'expired_card'),
-            str_contains($code, 'card_expired')
-                => 'expired_card',
+            str_contains($code, 'card_expired') => 'expired_card',
             str_contains($code, 'card_number_invalid'),
             str_contains($code, 'card_type_mismatch'),
             str_contains($code, 'cvc_invalid'),
             str_contains($code, 'cvc_incorrect'),
             str_contains($code, 'incorrect_number'),
-            str_contains($code, 'invalid_number')
-                => 'invalid_card_details',
-            str_contains($code, 'authentication')
-                => 'authentication_failed',
-            str_contains($code, 'timeout')
-                => 'connection_timeout',
-            str_contains($code, 'duplicate')
-                => 'duplicate_payment',
+            str_contains($code, 'invalid_number') => 'invalid_card_details',
+            str_contains($code, 'authentication') => 'authentication_failed',
+            str_contains($code, 'timeout') => 'connection_timeout',
+            str_contains($code, 'duplicate') => 'duplicate_payment',
             default => 'payment_declined',
         };
     }

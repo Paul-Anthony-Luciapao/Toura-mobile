@@ -1,4 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
+import type { Href } from "expo-router";
 import type { ComponentProps, ComponentType } from "react";
 import type { ImageSourcePropType } from "react-native";
 import type { SvgProps } from "react-native-svg";
@@ -167,6 +168,7 @@ export type Notification = {
   kind: NotificationKind;
   title: string;
   body: string;
+  href?: Href;
   /** ISO 8601 timestamp — drives both the "2h ago" label and the Today/Yesterday grouping. */
   createdAt: string;
   read: boolean;

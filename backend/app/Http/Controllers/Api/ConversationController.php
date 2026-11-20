@@ -6,11 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Models\Conversation;
 use App\Models\ConversationMessage;
 use App\Models\Resort;
+use App\Services\NotificationEvents;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\ValidationException;
 
 class ConversationController extends Controller
 {
@@ -25,8 +25,7 @@ class ConversationController extends Controller
             ->orderByDesc('id')
             ->get();
 
-        $data = $conversations->map(fn (Conversation $conversation) =>
-            $this->conversationPayload($conversation, $user->id)
+        $data = $conversations->map(fn (Conversation $conversation) => $this->conversationPayload($conversation, $user->id)
         );
 
         return response()->json([
@@ -129,8 +128,7 @@ class ConversationController extends Controller
             'success' => true,
             'next_cursor' => $nextCursor,
             'has_more' => $hasMore,
-            'data' => $messages->map(fn (ConversationMessage $message) =>
-                $this->messagePayload($message)
+            'data' => $messages->map(fn (ConversationMessage $message) => $this->messagePayload($message)
             ),
         ]);
     }
@@ -152,7 +150,9 @@ class ConversationController extends Controller
                     ->where('sender_id', $user->id)
                     ->where('client_id', $validated['client_id'])
                     ->first();
-                if ($existing) return $existing;
+                if ($existing) {
+                    return $existing;
+                }
             }
 
             $message = $conversation->messages()->create([
@@ -169,6 +169,10 @@ class ConversationController extends Controller
 
             return $message;
         });
+
+        if ($message->wasRecentlyCreated) {
+            app(NotificationEvents::class)->messageReceived($conversation, $message);
+        }
 
         return response()->json([
             'success' => true,

@@ -181,6 +181,24 @@ class PaymongoWebhookTest extends TestCase
             'status' => 'confirmed',
             'payment_status' => 'paid',
         ]);
+        $paymentNotification = $user->notifications()->firstOrFail();
+        $this->assertSame('payment', $paymentNotification->data['kind']);
+
+        // Webhook retries must not create duplicate paid notifications.
+        $this->call(
+            'POST',
+            '/api/v1/webhooks/paymongo',
+            [],
+            [],
+            [],
+            [
+                'CONTENT_TYPE' => 'application/json',
+                'HTTP_PAYMONGO_SIGNATURE' => "t={$timestamp},v1={$signature}",
+            ],
+            $payload,
+        )->assertOk();
+
+        $this->assertSame(1, $user->notifications()->count());
     }
 
     private function createPendingOrder(): Order

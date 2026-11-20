@@ -101,3 +101,11 @@ export async function resetPassword(input: {
     email: input.email.trim(),
   });
 }
+
+export async function changePasswordRequest(input: {
+  current_password: string;
+  password: string;
+  password_confirmation: string;
+}): Promise<void> {
+  await api.post("/auth/change-password", input);
+}

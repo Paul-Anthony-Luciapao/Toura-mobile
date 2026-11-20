@@ -57,7 +57,10 @@ export default function NotificationCard({ notification, onPress }: Props) {
   return (
     <Pressable
       onPress={() => onPress?.(notification)}
-      className={`mb-3 flex-row gap-3 rounded-2xl border border-border p-3.5 active:opacity-80 ${
+      accessibilityRole="button"
+      accessibilityLabel={`${notification.title}. ${notification.body}`}
+      accessibilityHint={notification.href ? "Opens the related screen" : undefined}
+      className={`mb-3 flex-row items-center gap-3 rounded-2xl border border-border p-3.5 active:opacity-80 ${
         isUnread ? "bg-surfaceSoft/70" : "bg-surface"
       }`}>
       <View
@@ -90,6 +93,9 @@ export default function NotificationCard({ notification, onPress }: Props) {
           {notification.body}
         </Text>
       </View>
+      {notification.href ? (
+        <Ionicons name="chevron-forward" size={16} color={colors.textMuted} />
+      ) : null}
     </Pressable>
   );
 }

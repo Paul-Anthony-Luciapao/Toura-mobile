@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\TourBooking;
 use App\Models\TourPackage;
+use App\Services\NotificationEvents;
 use App\Services\PaymongoPaymentVerifier;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -104,6 +105,12 @@ class TourBookingController extends Controller
 
             return $booking;
         });
+
+        app(NotificationEvents::class)->bookingReceived(
+            $request->user(),
+            $booking->pricing_snapshot['package_name'] ?? 'your tour',
+            '/my-bookings',
+        );
 
         return response()->json(
             $booking->load('tourPackage'),

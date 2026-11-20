@@ -70,6 +70,8 @@ class BookingApiTest extends TestCase
             'resort_id' => $resort->id,
             'accommodation_id' => $accommodation->id,
         ]);
+        $this->assertSame(1, $user->notifications()->count());
+        $this->assertSame('booking', $user->notifications()->firstOrFail()->data['kind']);
     }
 
     public function test_unauthenticated_user_cannot_create_booking(): void

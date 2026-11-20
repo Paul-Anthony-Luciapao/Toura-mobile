@@ -5,20 +5,21 @@ use App\Http\Controllers\Api\AccommodationController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BookingController;
 use App\Http\Controllers\Api\ConversationController;
+use App\Http\Controllers\Api\HotelController;
 use App\Http\Controllers\Api\ItineraryBookingController;
 use App\Http\Controllers\Api\ItineraryPackageController;
-use App\Http\Controllers\Api\HotelController;
+use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\OfferController;
-use App\Http\Controllers\Api\ResortController;
-use App\Http\Controllers\Api\TouristSpotController;
-use App\Http\Controllers\Api\TourBookingController;
-use App\Http\Controllers\Api\TourPackageController;
 use App\Http\Controllers\Api\PaymentController;
+use App\Http\Controllers\Api\ResortController;
+use App\Http\Controllers\Api\TourBookingController;
+use App\Http\Controllers\Api\TouristSpotController;
+use App\Http\Controllers\Api\TourPackageController;
 use App\Http\Controllers\Api\WebhookController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/test', fn () => response()->json([
-    'message' => 'Laravel API is working!'
+    'message' => 'Laravel API is working!',
 ]));
 
 Route::prefix('v1')->group(function () {
@@ -50,9 +51,8 @@ Route::prefix('v1')->group(function () {
         ->only(['index', 'show']);
 
     Route::get('/itinerary-packages', [ItineraryPackageController::class, 'index']);
-     // PayMongo webhook (public, no auth)
-     Route::post('/webhooks/paymongo', [WebhookController::class, 'paymongo']);
-
+    // PayMongo webhook (public, no auth)
+    Route::post('/webhooks/paymongo', [WebhookController::class, 'paymongo']);
 
     Route::get('/itinerary-packages/{id}', [ItineraryPackageController::class, 'show']);
     Route::get('/tour-packages', [TourPackageController::class, 'index']);
@@ -63,8 +63,16 @@ Route::prefix('v1')->group(function () {
 
         // Authentication
         Route::post('/auth/logout', [AuthController::class, 'logout']);
+        Route::post('/auth/change-password', [AuthController::class, 'changePassword'])
+            ->middleware('throttle:6,1');
         Route::delete('/auth/account', [AuthController::class, 'deleteAccount']);
         Route::get('/me', [AuthController::class, 'me']);
+
+        // In-app notifications
+        Route::get('/notifications', [NotificationController::class, 'index']);
+        Route::get('/notifications/unread-count', [NotificationController::class, 'unreadCount']);
+        Route::post('/notifications/read-all', [NotificationController::class, 'markAllRead']);
+        Route::post('/notifications/{notificationId}/read', [NotificationController::class, 'markRead']);
 
         // Private traveler-owner messaging.
         Route::get('/conversations', [ConversationController::class, 'index']);

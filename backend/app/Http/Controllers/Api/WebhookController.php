@@ -3,9 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\ItineraryBooking;
 use App\Models\Order;
-use App\Models\TourBooking;
+use App\Services\NotificationEvents;
 use Illuminate\Http\Request;
 
 class WebhookController extends Controller
@@ -57,21 +56,7 @@ class WebhookController extends Controller
             }
 
             if ($order) {
-                $order->update([
-                    'payment_status' => 'paid',
-                    'status' => 'paid',
-                ]);
-
-                // Keep the related itinerary booking in sync when possible.
-                $booking = ItineraryBooking::where('booking_reference', $order->reference_number)->first();
-                if ($booking) {
-                    $booking->update(['status' => 'confirmed', 'payment_status' => 'paid']);
-                }
-
-                $tourBooking = TourBooking::where('booking_reference', $order->reference_number)->first();
-                if ($tourBooking) {
-                    $tourBooking->update(['status' => 'confirmed', 'payment_status' => 'paid']);
-                }
+                app(NotificationEvents::class)->markOrderPaid($order);
             }
         }
 

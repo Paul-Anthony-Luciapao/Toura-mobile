@@ -1,13 +1,19 @@
 import { safeBack } from "@/lib/navigation";
 import NotificationCard from "@/components/notifications/NotificationCard";
-import { INITIAL_NOTIFICATIONS } from "@/data/mockData";
+import { useAuth } from "@/context/AuthContext";
 import type { Notification } from "@/data/types";
 import { groupBySection, unreadCount } from "@/lib/notifications";
+import { getErrorMessage } from "@/services/api";
+import {
+  fetchNotifications,
+  markAllNotificationsRead,
+  markNotificationRead,
+} from "@/services/notifications";
 import { colors } from "@/styles/global";
 import { Ionicons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
-import { useMemo, useState } from "react";
-import { FlatList, Pressable, Text, View } from "react-native";
+import { useFocusEffect, useRouter } from "expo-router";
+import { useCallback, useMemo, useState } from "react";
+import { ActivityIndicator, FlatList, Pressable, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 type Filter = "all" | "unread";
@@ -43,7 +49,7 @@ function EmptyState({ filter }: Readonly<{ filter: Filter }>) {
       <Text className="text-center font-poppins text-[13px] text-textMuted">
         {filter === "unread"
           ? "You are all caught up — check back after your next booking."
-          : "Booking confirmations, trip reminders and offers will show up here."}
+          : "Booking, payment, trip, and message updates will show up here."}
       </Text>
     </View>
   );
@@ -51,8 +57,34 @@ function EmptyState({ filter }: Readonly<{ filter: Filter }>) {
 
 export default function NotificationsScreen() {
   const router = useRouter();
-  const [items, setItems] = useState<Notification[]>(INITIAL_NOTIFICATIONS);
+  const { user } = useAuth();
+  const [items, setItems] = useState<Notification[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState<Filter>("all");
+
+  const loadNotifications = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      setItems(await fetchNotifications());
+    } catch (loadError) {
+      setError(getErrorMessage(loadError));
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (!user) {
+        setItems([]);
+        setLoading(false);
+        return;
+      }
+      void loadNotifications();
+    }, [loadNotifications, user]),
+  );
 
   const unread = unreadCount(items);
 
@@ -75,15 +107,33 @@ export default function NotificationsScreen() {
     ]);
   }, [items, filter]);
 
-  const markRead = (notification: Notification) =>
-    setItems((prev) =>
-      prev.map((item) =>
-        item.id === notification.id ? { ...item, read: true } : item
-      )
-    );
+  const markRead = async (notification: Notification) => {
+    if (notification.read) return;
+    setItems((current) => current.map((item) =>
+      item.id === notification.id ? { ...item, read: true } : item,
+    ));
+    try {
+      await markNotificationRead(notification.id);
+    } catch {
+      setItems((current) => current.map((item) =>
+        item.id === notification.id ? { ...item, read: false } : item,
+      ));
+    }
+  };
 
-  const markAllRead = () =>
-    setItems((prev) => prev.map((item) => ({ ...item, read: true })));
+  const markAllRead = async () => {
+    setItems((current) => current.map((item) => ({ ...item, read: true })));
+    try {
+      await markAllNotificationsRead();
+    } catch {
+      void loadNotifications();
+    }
+  };
+
+  const openNotification = (notification: Notification) => {
+    void markRead(notification);
+    if (notification.href) router.push(notification.href);
+  };
 
   return (
     <SafeAreaView className="flex-1 bg-background" edges={["top"]}>
@@ -101,7 +151,7 @@ export default function NotificationsScreen() {
             Notifications
           </Text>
           <Text className="font-poppins text-[12px] text-textMuted">
-            {unread > 0 ? `${unread} unread` : "All caught up"}
+            {loading ? "Loading notifications" : unread > 0 ? `${unread} unread` : "All caught up"}
           </Text>
         </View>
 
@@ -140,11 +190,24 @@ export default function NotificationsScreen() {
 
       <FlatList
         data={rows}
+        refreshing={loading}
+        onRefresh={() => void loadNotifications()}
         keyExtractor={(row) => row.id}
         className="flex-1"
         contentContainerClassName="px-4 pb-8 pt-3"
         showsVerticalScrollIndicator={false}
-        ListEmptyComponent={<EmptyState filter={filter} />}
+        ListEmptyComponent={
+          loading ? (
+            <View className="items-center pt-20"><ActivityIndicator color={colors.primary} /></View>
+          ) : error ? (
+            <View className="items-center gap-3 px-8 pt-20">
+              <Text className="text-center font-poppins text-[13px] text-textMuted">{error}</Text>
+              <Pressable onPress={() => void loadNotifications()} className="rounded-full bg-primary px-5 py-2">
+                <Text className="font-poppins-semibold text-white">Try again</Text>
+              </Pressable>
+            </View>
+          ) : <EmptyState filter={filter} />
+        }
         renderItem={({ item }) =>
           item.type === "section" ? (
             <Text className="mb-2 mt-3 font-poppins-semibold text-[12px] uppercase tracking-[0.8px] text-textMuted">
@@ -153,7 +216,7 @@ export default function NotificationsScreen() {
           ) : (
             <NotificationCard
               notification={item.notification}
-              onPress={markRead}
+              onPress={openNotification}
             />
           )
         }

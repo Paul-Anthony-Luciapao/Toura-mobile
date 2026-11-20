@@ -5,10 +5,11 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Accommodation;
 use App\Models\Booking;
+use App\Services\NotificationEvents;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
 class BookingController extends Controller
@@ -92,7 +93,7 @@ class BookingController extends Controller
                 ->diffInDays(Carbon::parse($validated['check_out_date']));
 
             $totalPrice = $accommodation->price_per_night * $nights;
-            $bookingReference = 'TOURA-' . Str::upper(Str::random(8));
+            $bookingReference = 'TOURA-'.Str::upper(Str::random(8));
 
             return Booking::create([
                 'booking_reference' => $bookingReference,
@@ -110,6 +111,13 @@ class BookingController extends Controller
                 'status' => 'pending',
             ]);
         });
+
+        $booking->load(['accommodation', 'resort']);
+        app(NotificationEvents::class)->bookingReceived(
+            $request->user(),
+            $booking->accommodation?->title ?? $booking->resort?->name ?? 'your stay',
+            '/my-bookings',
+        );
 
         return response()->json($booking, 201);
     }

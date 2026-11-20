@@ -8,15 +8,16 @@ use App\Models\ItineraryPackage;
 use App\Models\Order;
 use App\Models\TourBooking;
 use App\Models\User;
+use App\Services\NotificationEvents;
 use App\Services\PaymongoPaymentVerifier;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
-use Illuminate\Support\Carbon;
 use RuntimeException;
 
 class ItineraryBookingController extends Controller
@@ -24,8 +25,7 @@ class ItineraryBookingController extends Controller
     public function index(
         Request $request,
         PaymongoPaymentVerifier $paymentVerifier
-    ): JsonResponse
-    {
+    ): JsonResponse {
         $this->syncPaidBookings($request->user()->id, $paymentVerifier);
         $this->expirePendingBookings($request->user()->id);
 
@@ -41,8 +41,7 @@ class ItineraryBookingController extends Controller
         Request $request,
         ItineraryBooking $booking,
         PaymongoPaymentVerifier $paymentVerifier
-    ): JsonResponse
-    {
+    ): JsonResponse {
         // Return 404 rather than disclose that another user's booking exists.
         abort_unless($booking->user_id === $request->user()->id, 404);
 
@@ -170,6 +169,12 @@ class ItineraryBookingController extends Controller
             return $booking;
         });
 
+        app(NotificationEvents::class)->bookingReceived(
+            $request->user(),
+            $booking->pricing_snapshot['package_title'] ?? 'your itinerary',
+            '/my-itineraries',
+        );
+
         return response()->json(
             $booking->load(['itineraryPackage', 'guests']),
             201,
@@ -188,8 +193,7 @@ class ItineraryBookingController extends Controller
         int $userId,
         PaymongoPaymentVerifier $paymentVerifier,
         ?string $bookingReference = null
-    ): void
-    {
+    ): void {
         $orders = Order::query()
             ->where('user_id', $userId)
             ->where('payment_status', '!=', 'paid')
@@ -257,8 +261,7 @@ class ItineraryBookingController extends Controller
         Request $request,
         ItineraryBooking $booking,
         PaymongoPaymentVerifier $paymentVerifier
-    ): JsonResponse
-    {
+    ): JsonResponse {
         abort_unless($booking->user_id === $request->user()->id, 404);
         abort_unless($booking->status === 'pending', 409, 'Only pending bookings can be cancelled.');
 
@@ -292,6 +295,7 @@ class ItineraryBookingController extends Controller
         }
 
         $booking->update(['status' => 'cancelled']);
+
         return response()->json($booking->refresh());
     }
 }

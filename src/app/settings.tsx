@@ -7,6 +7,7 @@ import {
   ActivityIndicator,
   Alert,
   Pressable,
+  ScrollView,
   StatusBar,
   Text,
   View,
@@ -129,11 +130,27 @@ export default function Settings() {
           </Pressable>
         </View>
       ) : (
-        <View className="mt-8">
+        <ScrollView
+          className="mt-8 flex-1"
+          keyboardShouldPersistTaps="handled"
+          contentContainerStyle={{ paddingBottom: 28 }}>
           <Text className="text-[13px] font-poppins-semibold text-[#64748B]">
             ACCOUNT
           </Text>
           <Text className="mt-2 font-poppins text-[#334155]">{user.email}</Text>
+
+          <Pressable
+            disabled={busy}
+            onPress={() => router.push("/change-password")}
+            accessibilityRole="button"
+            accessibilityLabel="Change password"
+            className="mt-7 min-h-14 flex-row items-center justify-between rounded-xl border border-[#E5E7EB] px-4 active:opacity-70">
+            <View className="flex-row items-center gap-3">
+              <Ionicons name="lock-closed-outline" size={21} color={COLORS.teal} />
+              <Text className="font-poppins-medium text-[#172033]">Change password</Text>
+            </View>
+            <Ionicons name="chevron-forward" size={20} color="#64748B" />
+          </Pressable>
 
           <Pressable
             // Prevent another account operation while logout or deletion is processing.
@@ -159,7 +176,7 @@ export default function Settings() {
             </Text>
             <Ionicons name="trash-outline" size={21} color="#B42318" />
           </Pressable>
-        </View>
+        </ScrollView>
       )}
     </SafeAreaView>
   );

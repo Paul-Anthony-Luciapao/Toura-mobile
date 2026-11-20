@@ -42,11 +42,12 @@ export function sectionTitleFor(iso: string, now: number = Date.now()) {
 
   if (dayGap <= 0) return "Today";
   if (dayGap === 1) return "Yesterday";
+  if (dayGap <= 7) return "This week";
   return "Earlier";
 }
 
 /**
- * Groups a newest-first list into consecutive Today/Yesterday/Earlier buckets.
+ * Groups a newest-first list into consecutive Today/Yesterday/This week/Earlier buckets.
  * Items are assumed to already be sorted by createdAt descending.
  */
 export function groupBySection(

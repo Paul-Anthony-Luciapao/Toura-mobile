@@ -50,12 +50,13 @@ function AuthRouteGuard() {
     segments[0] === "my-tours" ||
     segments[0] === "my-itineraries" ||
     (segments[0] === "tours" && segments.length > 1);
+  const isAccountRoute = segments[0] === "change-password";
 
   // Wait for authentication to finish before deciding whether a redirect is needed.
   const shouldRedirect =
     !loading &&
     ((user !== null && isAuthRoute) ||
-      (user === null && (isBookingRoute || isTourBookingRoute)));
+      (user === null && (isBookingRoute || isTourBookingRoute || isAccountRoute)));
 
   useEffect(() => {
     if (!shouldRedirect) return;
@@ -120,6 +121,7 @@ export default function RootLayout() {
               <Stack.Screen name="(tabs)" />
               <Stack.Screen name="(auth)" />
               <Stack.Screen name="settings" />
+              <Stack.Screen name="change-password" />
               <Stack.Screen name="hotels" />
               <Stack.Screen name="esim" />
               <Stack.Screen
